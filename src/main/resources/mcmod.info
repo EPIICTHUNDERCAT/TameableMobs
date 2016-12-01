@@ -1,0 +1,16 @@
+[
+{
+  "modid": "tameablemobs",
+  "name": "Tameable Mobs",
+  "description": "Making Everything Tameable!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["EPIIC_THUNDERCAT"],
+  "credits": "TheRealP455w0rd- Helping with taming code!",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
