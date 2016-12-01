@@ -18,8 +18,9 @@ public class TMItems {
 	// Items/Materials //
 		public static List<Item> items = new ArrayList();
 		
-		public static Item TAMING_SEED = new TMItem("TAMING_SEED");
-		
+		public static Item taming_seed = new TMItem("taming_seed");
+		public static Item creeper_healer = new TMItem("creeper_healer");
+		public static Item creeper_tamer = new TMItem("creeper_tamer");
 		
 		
 		private static List<Item> getItems() {

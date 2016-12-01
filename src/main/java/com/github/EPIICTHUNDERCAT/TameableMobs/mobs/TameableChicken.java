@@ -234,7 +234,7 @@ public class TameableChicken extends EntityChicken implements IEntityOwnable {
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == TMItems.TAMING_SEED) {
+				if (stack.getItem() == TMItems.taming_seed) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -258,7 +258,7 @@ public class TameableChicken extends EntityChicken implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == TMItems.TAMING_SEED) {
+		} else if (stack != null && stack.getItem() == TMItems.taming_seed) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}

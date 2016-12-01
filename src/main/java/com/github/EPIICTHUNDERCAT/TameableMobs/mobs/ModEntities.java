@@ -72,9 +72,9 @@ public class ModEntities {
 		// TameableCow
 		//EntityRegistry.registerModEntity(TameableCow.class, "TameableCow", 6, TameableMobs.instance, 80, 3, false, 0,
 		//		tameablecowColor);
-		// TameableCreeper
-		//EntityRegistry.registerModEntity(TameableCreeper.class, "TameableCreeper", 7, TameableMobs.instance, 80, 3, false, 0,
-		//		tameablecreeperColor);
+		//TameableCreeper
+		EntityRegistry.registerModEntity(TameableCreeper.class, "TameableCreeper", 7, TameableMobs.instance, 80, 3, false, 0,
+				tameablecreeperColor);
 		// TameableZombie
 		//EntityRegistry.registerModEntity(TameableZombie.class, "TameableZombie", 8, TameableMobs.instance, 80, 3, false, 0,
 		//		tameablezombieColor);
@@ -185,25 +185,27 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameablePig.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
 		// TameablePigZombie
 		EntityRegistry.addSpawn(TameablePigZombie.class, 3, 43, 8, EnumCreatureType.MONSTER, Biomes.HELL);
+		// TameableCreeper
+		EntityRegistry.addSpawn(TameableCreeper.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		/*
 		// TameableCow
 		EntityRegistry.addSpawn(TameableCow.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
 		// TameableCreeper
 		EntityRegistry.addSpawn(TameableCreeper.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				// TameableZombie
-				EntityRegistry.addSpawn(TameableZombie.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				// TameableRabbit
-				EntityRegistry.addSpawn(TameableRabbit.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
-				// TameableEndermite
-				EntityRegistry.addSpawn(TameableEndermite.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				// TameableEnderman
-				EntityRegistry.addSpawn(TameableEnderman.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				// TameableVillager
-				EntityRegistry.addSpawn(TameableVillager.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
-				// TameableSnowGolem
-				EntityRegistry.addSpawn(TameableSnowGolem.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				// TameableIronGolem
-				EntityRegistry.addSpawn(TameableIronGolem.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
+		// TameableZombie
+		EntityRegistry.addSpawn(TameableZombie.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
+		// TameableRabbit
+		EntityRegistry.addSpawn(TameableRabbit.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
+		// TameableEndermite
+		EntityRegistry.addSpawn(TameableEndermite.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
+		// TameableEnderman
+		EntityRegistry.addSpawn(TameableEnderman.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
+		// TameableVillager
+		EntityRegistry.addSpawn(TameableVillager.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
+		// TameableSnowGolem
+		EntityRegistry.addSpawn(TameableSnowGolem.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
+		// TameableIronGolem
+		EntityRegistry.addSpawn(TameableIronGolem.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 				// TameableMooshroom
 				EntityRegistry.addSpawn(TameableMooshroom.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
 				// TameableSquid
@@ -270,8 +272,8 @@ public class ModEntities {
 		// SpawnPlacementType.ON_GROUND); //
 
 		// TameableCreeper
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableCreeper.class,
-		// SpawnPlacementType.ON_GROUND);
+		 EntitySpawnPlacementRegistry.setPlacementType(TameableCreeper.class,
+		 SpawnPlacementType.ON_GROUND);
 
 		// TameableZombie
 		// EntitySpawnPlacementRegistry.setPlacementType(TameableZombie.class,

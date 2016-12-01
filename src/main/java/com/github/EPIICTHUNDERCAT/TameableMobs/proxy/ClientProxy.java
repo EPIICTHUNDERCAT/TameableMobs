@@ -3,6 +3,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableChicken;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePolarBear;
@@ -11,6 +12,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableChicken;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
@@ -19,8 +21,6 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableSheep2;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidRegistry.FluidRegisterEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -41,6 +41,7 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableSheep.class, new RenderTameableSheep(rm, new ModelTameableSheep2(), 0.7F));
 		rm.entityRenderMap.put(TameablePig.class, new RenderTameablePig(rm));
 		rm.entityRenderMap.put(TameablePigZombie.class, new RenderTameablePigZombie(rm));
+		rm.entityRenderMap.put(TameableCreeper.class, new RenderTameableCreeper(rm));
 		
 		  
 
