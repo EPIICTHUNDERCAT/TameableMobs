@@ -9,9 +9,6 @@ import net.minecraft.world.World;
 
 public class TameableCreeper extends EntityCreeper implements IEntityOwnable{
 
-	
-	
-	public int j = 3;
 	public TameableCreeper(World worldIn) {
 		super(worldIn);
 		// TODO Auto-generated constructor stub
