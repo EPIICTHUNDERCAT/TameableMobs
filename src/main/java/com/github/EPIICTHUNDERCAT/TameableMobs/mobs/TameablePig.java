@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -69,9 +70,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
-	
-	private static final DataParameter<Boolean> SADDLED = EntityDataManager.<Boolean>createKey(TameablePig.class, DataSerializers.BOOLEAN);
-    private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(new Item[] {Items.CARROT, Items.POTATO, Items.BEETROOT});
+	private static final DataParameter<Boolean> SADDLED = EntityDataManager.<Boolean>createKey(TameablePig.class,
+			DataSerializers.BOOLEAN);
+	private static final Set<Item> TEMPTATION_ITEMS = Sets
+			.newHashSet(new Item[] { Items.CARROT, Items.POTATO, Items.BEETROOT });
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameablePig.class,
 			DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameablePig.class,
@@ -83,15 +85,14 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
 	protected EntityAISit aiSit;
 	private boolean boosting;
-    private int boostTime;
-    private int totalBoostTime;
-
+	private int boostTime;
+	private int totalBoostTime;
 
 	public TameablePig(World worldIn) {
 		super(worldIn);
 		setTamed(false);
-		 setSize(0.9F, 0.9F);
-		
+		setSize(0.9F, 0.9F);
+
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(1, new EntityAIPanic(this, 1.25D));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(4, new EntityAITempt(this, 1.2D, Items.CARROT_ON_A_STICK, false));
-        tasks.addTask(4, new EntityAITempt(this, 1.2D, false, TEMPTATION_ITEMS));
+		tasks.addTask(4, new EntityAITempt(this, 1.2D, false, TEMPTATION_ITEMS));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
 		aiSit = new TameablePig.EntityAISit(this);
 		tasks.addTask(1, aiSit);
@@ -146,16 +147,9 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
 	}
 
-	
-
-
 	@Override
-	 public boolean isBreedingItem(@Nullable ItemStack stack)
-	    {
+	public boolean isBreedingItem(@Nullable ItemStack stack) {
 		return stack != null && TEMPTATION_ITEMS.contains(stack.getItem());
-	    }
-	public static void registerFixesSheep(DataFixer fixer) {
-		EntityLiving.registerFixesMob(fixer, "TameablePig");
 	}
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
@@ -165,7 +159,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
-		 compound.setBoolean("Saddle", this.getSaddled());
+		compound.setBoolean("Saddle", this.getSaddled());
 		if (getOwnerId() == null) {
 			compound.setString("OwnerUUID", "");
 		} else {
@@ -211,10 +205,11 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
+		
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.FISH) {
-					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
+				if (stack.getItem() == Items.CARROT) {
+					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
 						}
@@ -237,18 +232,18 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.FISH) {
+		} else if (stack != null && stack.getItem() == TMItems.taming_carrot) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
 
 			if (!worldObj.isRemote) {
-				if (rand.nextInt(10) == 0) {
+				if (rand.nextInt(5) == 0) {
 					setTamed(true);
 					navigator.clearPathEntity();
 					setAttackTarget((EntityLivingBase) null);
 					// aiSit.setSitting(true);
-					setHealth(30.0F);
+					setHealth(60.0F);
 					setOwnerId(player.getUniqueID());
 					playTameEffect(true);
 					worldObj.setEntityState(this, (byte) 7);
@@ -261,23 +256,18 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
 			return true;
 		}
-		 if (!super.processInteract(player, hand, stack))
-	        {
-	            if (this.getSaddled() && !this.worldObj.isRemote && !this.isBeingRidden())
-	            {
-	                player.startRiding(this);
-	                return true;
-	            }
-	            else
-	            {
-	                return false;
-	            }
-	        }
-	        else
-	        {
-	            return true;
-	        }
+		if (!super.processInteract(player, hand, stack)) {
+			if (this.getSaddled() && !this.worldObj.isRemote && !this.isBeingRidden()) {
+				player.startRiding(this);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		return super.processInteract(player, hand, stack);
 	}
+
 	public boolean isTamed() {
 		return (dataManager.get(TAMED).byteValue() & 4) != 0;
 	}
@@ -1006,247 +996,189 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	 /**
-     * For vehicles, the first passenger is generally considered the controller and "drives" the vehicle. For example,
-     * Pigs, Horses, and Boats are generally "steered" by the controlling passenger.
-     */
-    @Nullable
-    public Entity getControllingPassenger()
-    {
-        return this.getPassengers().isEmpty() ? null : (Entity)this.getPassengers().get(0);
-    }
+	/**
+	 * For vehicles, the first passenger is generally considered the controller
+	 * and "drives" the vehicle. For example, Pigs, Horses, and Boats are
+	 * generally "steered" by the controlling passenger.
+	 */
+	@Nullable
+	public Entity getControllingPassenger() {
+		return this.getPassengers().isEmpty() ? null : (Entity) this.getPassengers().get(0);
+	}
 
-    /**
-     * returns true if all the conditions for steering the entity are met. For pigs, this is true if it is being ridden
-     * by a player and the player is holding a carrot-on-a-stick
-     */
-    public boolean canBeSteered()
-    {
-        Entity entity = this.getControllingPassenger();
+	/**
+	 * returns true if all the conditions for steering the entity are met. For
+	 * pigs, this is true if it is being ridden by a player and the player is
+	 * holding a carrot-on-a-stick
+	 */
+	public boolean canBeSteered() {
+		Entity entity = this.getControllingPassenger();
 
-        if (!(entity instanceof EntityPlayer))
-        {
-            return false;
-        }
-        else
-        {
-            EntityPlayer entityplayer = (EntityPlayer)entity;
-            ItemStack itemstack = entityplayer.getHeldItemMainhand();
+		if (!(entity instanceof EntityPlayer)) {
+			return false;
+		} else {
+			EntityPlayer entityplayer = (EntityPlayer) entity;
+			ItemStack itemstack = entityplayer.getHeldItemMainhand();
 
-            if (itemstack != null && itemstack.getItem() == Items.CARROT_ON_A_STICK)
-            {
-                return true;
-            }
-            else
-            {
-                itemstack = entityplayer.getHeldItemOffhand();
-                return itemstack != null && itemstack.getItem() == Items.CARROT_ON_A_STICK;
-            }
-        }
-    }
+			if (itemstack != null && itemstack.getItem() == Items.CARROT_ON_A_STICK) {
+				return true;
+			} else {
+				itemstack = entityplayer.getHeldItemOffhand();
+				return itemstack != null && itemstack.getItem() == Items.CARROT_ON_A_STICK;
+			}
+		}
+	}
 
-  
-    public static void registerFixesPig(DataFixer fixer)
-    {
-        EntityLiving.registerFixesMob(fixer, "TameablePig");
-    }
+	public static void registerFixesPig(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "TameablePig");
+	}
 
-  
-    protected SoundEvent getAmbientSound()
-    {
-        return SoundEvents.ENTITY_PIG_AMBIENT;
-    }
+	protected SoundEvent getAmbientSound() {
+		return SoundEvents.ENTITY_PIG_AMBIENT;
+	}
 
-    protected SoundEvent getHurtSound()
-    {
-        return SoundEvents.ENTITY_PIG_HURT;
-    }
+	protected SoundEvent getHurtSound() {
+		return SoundEvents.ENTITY_PIG_HURT;
+	}
 
-    protected SoundEvent getDeathSound()
-    {
-        return SoundEvents.ENTITY_PIG_DEATH;
-    }
+	protected SoundEvent getDeathSound() {
+		return SoundEvents.ENTITY_PIG_DEATH;
+	}
 
-    protected void playStepSound(BlockPos pos, Block blockIn)
-    {
-        this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
-    }
+	protected void playStepSound(BlockPos pos, Block blockIn) {
+		this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
+	}
 
-   
-    /**
-     * Drop the equipment for this entity.
-     */
-    protected void dropEquipment(boolean wasRecentlyHit, int lootingModifier)
-    {
-        super.dropEquipment(wasRecentlyHit, lootingModifier);
+	/**
+	 * Drop the equipment for this entity.
+	 */
+	protected void dropEquipment(boolean wasRecentlyHit, int lootingModifier) {
+		super.dropEquipment(wasRecentlyHit, lootingModifier);
 
-        if (this.getSaddled())
-        {
-            this.dropItem(Items.SADDLE, 1);
-        }
-    }
+		if (this.getSaddled()) {
+			this.dropItem(Items.SADDLE, 1);
+		}
+	}
 
-    @Nullable
-    protected ResourceLocation getLootTable()
-    {
-        return LootTableList.ENTITIES_PIG;
-    }
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return LootTableList.ENTITIES_PIG;
+	}
 
-    /**
-     * Returns true if the pig is saddled.
-     */
-    public boolean getSaddled()
-    {
-        return ((Boolean)this.dataManager.get(SADDLED)).booleanValue();
-    }
+	/**
+	 * Returns true if the pig is saddled.
+	 */
+	public boolean getSaddled() {
+		return ((Boolean) this.dataManager.get(SADDLED)).booleanValue();
+	}
 
-    /**
-     * Set or remove the saddle of the pig.
-     */
-    public void setSaddled(boolean saddled)
-    {
-        if (saddled)
-        {
-            this.dataManager.set(SADDLED, Boolean.valueOf(true));
-        }
-        else
-        {
-            this.dataManager.set(SADDLED, Boolean.valueOf(false));
-        }
-    }
+	/**
+	 * Set or remove the saddle of the pig.
+	 */
+	public void setSaddled(boolean saddled) {
+		if (saddled) {
+			this.dataManager.set(SADDLED, Boolean.valueOf(true));
+		} else {
+			this.dataManager.set(SADDLED, Boolean.valueOf(false));
+		}
+	}
 
-    /**
-     * Called when a lightning bolt hits the entity.
-     */
-    public void onStruckByLightning(EntityLightningBolt lightningBolt)
-    {
-        if (!this.worldObj.isRemote && !this.isDead)
-        {
-            TameablePigZombie TameablePigzombie = new TameablePigZombie(this.worldObj);
-            TameablePigzombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
-            TameablePigzombie.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
-            TameablePigzombie.setNoAI(this.isAIDisabled());
+	/**
+	 * Called when a lightning bolt hits the entity.
+	 */
+	public void onStruckByLightning(EntityLightningBolt lightningBolt) {
+		if (!this.worldObj.isRemote && !this.isDead) {
+			TameablePigZombie TameablePigzombie = new TameablePigZombie(this.worldObj);
+			TameablePigzombie.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+			TameablePigzombie.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw,
+					this.rotationPitch);
+			TameablePigzombie.setNoAI(this.isAIDisabled());
 
-            if (this.hasCustomName())
-            {
-                TameablePigzombie.setCustomNameTag(this.getCustomNameTag());
-                TameablePigzombie.setAlwaysRenderNameTag(this.getAlwaysRenderNameTag());
-            }
+			if (this.hasCustomName()) {
+				TameablePigzombie.setCustomNameTag(this.getCustomNameTag());
+				TameablePigzombie.setAlwaysRenderNameTag(this.getAlwaysRenderNameTag());
+			}
 
-            this.worldObj.spawnEntityInWorld(TameablePigzombie);
-            this.setDead();
-        }
-    }
+			this.worldObj.spawnEntityInWorld(TameablePigzombie);
+			this.setDead();
+		}
+	}
 
-    public void fall(float distance, float damageMultiplier)
-    {
-        super.fall(distance, damageMultiplier);
+	public void fall(float distance, float damageMultiplier) {
+		super.fall(distance, damageMultiplier);
 
-        if (distance > 5.0F)
-        {
-            for (EntityPlayer entityplayer : this.getRecursivePassengersByType(EntityPlayer.class))
-            {
-                entityplayer.addStat(AchievementList.FLY_PIG);
-            }
-        }
-    }
+		if (distance > 5.0F) {
+			for (EntityPlayer entityplayer : this.getRecursivePassengersByType(EntityPlayer.class)) {
+				entityplayer.addStat(AchievementList.FLY_PIG);
+			}
+		}
+	}
 
-    /**
-     * Moves the entity based on the specified heading.
-     */
-    public void moveEntityWithHeading(float strafe, float forward)
-    {
-        Entity entity = this.getPassengers().isEmpty() ? null : (Entity)this.getPassengers().get(0);
+	/**
+	 * Moves the entity based on the specified heading.
+	 */
+	public void moveEntityWithHeading(float strafe, float forward) {
+		Entity entity = this.getPassengers().isEmpty() ? null : (Entity) this.getPassengers().get(0);
 
-        if (this.isBeingRidden() && this.canBeSteered())
-        {
-            this.rotationYaw = entity.rotationYaw;
-            this.prevRotationYaw = this.rotationYaw;
-            this.rotationPitch = entity.rotationPitch * 0.5F;
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-            this.renderYawOffset = this.rotationYaw;
-            this.rotationYawHead = this.rotationYaw;
-            this.stepHeight = 1.0F;
-            this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+		if (this.isBeingRidden() && this.canBeSteered()) {
+			this.rotationYaw = entity.rotationYaw;
+			this.prevRotationYaw = this.rotationYaw;
+			this.rotationPitch = entity.rotationPitch * 0.5F;
+			this.setRotation(this.rotationYaw, this.rotationPitch);
+			this.renderYawOffset = this.rotationYaw;
+			this.rotationYawHead = this.rotationYaw;
+			this.stepHeight = 1.0F;
+			this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
 
-            if (this.canPassengerSteer())
-            {
-                float f = (float)this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.225F;
+			if (this.canPassengerSteer()) {
+				float f = (float) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()
+						* 0.225F;
 
-                if (this.boosting)
-                {
-                    if (this.boostTime++ > this.totalBoostTime)
-                    {
-                        this.boosting = false;
-                    }
+				if (this.boosting) {
+					if (this.boostTime++ > this.totalBoostTime) {
+						this.boosting = false;
+					}
 
-                    f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
-                }
+					f += f * 1.15F
+							* MathHelper.sin((float) this.boostTime / (float) this.totalBoostTime * (float) Math.PI);
+				}
 
-                this.setAIMoveSpeed(f);
-                super.moveEntityWithHeading(0.0F, 1.0F);
-            }
-            else
-            {
-                this.motionX = 0.0D;
-                this.motionY = 0.0D;
-                this.motionZ = 0.0D;
-            }
+				this.setAIMoveSpeed(f);
+				super.moveEntityWithHeading(0.0F, 1.0F);
+			} else {
+				this.motionX = 0.0D;
+				this.motionY = 0.0D;
+				this.motionZ = 0.0D;
+			}
 
-            this.prevLimbSwingAmount = this.limbSwingAmount;
-            double d1 = this.posX - this.prevPosX;
-            double d0 = this.posZ - this.prevPosZ;
-            float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0) * 4.0F;
+			this.prevLimbSwingAmount = this.limbSwingAmount;
+			double d1 = this.posX - this.prevPosX;
+			double d0 = this.posZ - this.prevPosZ;
+			float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0) * 4.0F;
 
-            if (f1 > 1.0F)
-            {
-                f1 = 1.0F;
-            }
+			if (f1 > 1.0F) {
+				f1 = 1.0F;
+			}
 
-            this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
-            this.limbSwing += this.limbSwingAmount;
-        }
-        else
-        {
-            this.stepHeight = 0.5F;
-            this.jumpMovementFactor = 0.02F;
-            super.moveEntityWithHeading(strafe, forward);
-        }
-    }
+			this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
+			this.limbSwing += this.limbSwingAmount;
+		} else {
+			this.stepHeight = 0.5F;
+			this.jumpMovementFactor = 0.02F;
+			super.moveEntityWithHeading(strafe, forward);
+		}
+	}
 
-    public boolean boost()
-    {
-        if (this.boosting)
-        {
-            return false;
-        }
-        else
-        {
-            this.boosting = true;
-            this.boostTime = 0;
-            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
-            return true;
-        }
-    }
+	public boolean boost() {
+		if (this.boosting) {
+			return false;
+		} else {
+			this.boosting = true;
+			this.boostTime = 0;
+			this.totalBoostTime = this.getRNG().nextInt(841) + 140;
+			return true;
+		}
+	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 }

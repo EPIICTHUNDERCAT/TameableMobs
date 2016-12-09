@@ -101,6 +101,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 
 	public TameableCreeper(World worldIn) {
 		super(worldIn);
+		setTamed(false);
 		this.setSize(0.6F, 1.7F);
 
 	}

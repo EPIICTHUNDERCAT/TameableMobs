@@ -3,6 +3,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableChicken;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCow;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePigZombie;
@@ -12,6 +13,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableChicken;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCow;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
@@ -42,6 +44,7 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameablePig.class, new RenderTameablePig(rm));
 		rm.entityRenderMap.put(TameablePigZombie.class, new RenderTameablePigZombie(rm));
 		rm.entityRenderMap.put(TameableCreeper.class, new RenderTameableCreeper(rm));
+		rm.entityRenderMap.put(TameableCow.class, new RenderTameableCow(rm));
 		
 		  
 
