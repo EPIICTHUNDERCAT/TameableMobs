@@ -23,6 +23,7 @@ public class TMItems {
 		public static Item creeper_tamer = new TMItem("creeper_tamer");
 		public static Item taming_wheat = new TMItem("taming_wheat");
 		public static Item taming_carrot = new TMItem("taming_carrot");
+		public static Item ender_tamer = new TMItem("ender_tamer");
 		
 		
 		private static List<Item> getItems() {

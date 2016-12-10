@@ -1104,6 +1104,22 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		}
 
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 		/**
 		 * The maximum height from where the entity is alowed to jump (used in
@@ -1130,6 +1146,11 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 
 		
 
+		
+		
+		
+		
+		
 	
 		/**
 		 * Called to update the entity's position/logic.
