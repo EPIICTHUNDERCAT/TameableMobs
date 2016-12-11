@@ -2,6 +2,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.models;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -55,12 +56,26 @@ public class ModelTameableCreeper extends ModelBase
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+        if (this.isChild) {
+    		float f = 2.0F;
+    		GlStateManager.pushMatrix();
+    		GlStateManager.translate(0.0F, 10.0F * scale, 2.0F * scale);
+    		GlStateManager.scale(0.6F, 0.6F, 0.6F);
+            this.head.render(scale);
+            this.body.render(scale);
+            this.leg1.render(scale);
+            this.leg2.render(scale);
+            this.leg3.render(scale);
+            this.leg4.render(scale);
+    		GlStateManager.popMatrix();
+    	} else {
         this.head.render(scale);
         this.body.render(scale);
         this.leg1.render(scale);
         this.leg2.render(scale);
         this.leg3.render(scale);
         this.leg4.render(scale);
+    }
     }
 
     /**

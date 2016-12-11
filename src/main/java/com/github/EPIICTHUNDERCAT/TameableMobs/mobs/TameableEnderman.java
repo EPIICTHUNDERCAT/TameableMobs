@@ -115,7 +115,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameableEnderman.EntityAIBeg(this, 8.0F));
 		tasks.addTask(8, new EntityAILookIdle(this));
-		targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+		
 		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(3, new TameableEnderman.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));

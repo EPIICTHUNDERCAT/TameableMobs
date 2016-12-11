@@ -115,7 +115,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(1, new EntityAIPanic(this, 1.25D));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.WHEAT, false));
-		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
+		
 		aiSit = new TameableCreeper.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 

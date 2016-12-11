@@ -4,6 +4,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
@@ -165,5 +166,6 @@ public class ModelTameableEnderman extends ModelBiped {
 			float f2 = 1.0F;
 			this.bipedHead.rotationPointY -= 5.0F;
 		}
+		 
 	}
 }

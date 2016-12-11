@@ -59,6 +59,7 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableCaveSpider.class, new RenderTameableCaveSpider(rm));
 		
 		
+		
 		  
 
 	}

@@ -98,18 +98,18 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable{
 	        tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
 	        tasks.addTask(4, new TameableSpider.AISpiderAttack(this));
 	        tasks.addTask(5, new EntityAIWander(this, 0.8D));
-		tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, false));
+		
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.STRING, false));
-		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
+		
 		aiSit = new TameableSpider.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-		tasks.addTask(7, new EntityAIWander(this, 1.0D));
-		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+	
+		tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameableSpider.EntityAIBeg(this, 8.0F));
-		tasks.addTask(8, new EntityAILookIdle(this));
+		tasks.addTask(6, new EntityAILookIdle(this));
 		targetTasks.addTask(2, new TameableSpider.AISpiderTarget(this, EntityPlayer.class));
         targetTasks.addTask(3, new TameableSpider.AISpiderTarget(this, EntityIronGolem.class));
 		targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));

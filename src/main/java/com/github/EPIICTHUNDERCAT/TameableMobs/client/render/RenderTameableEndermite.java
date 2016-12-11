@@ -2,8 +2,8 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEndermite;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableEndermite;
 
-import net.minecraft.client.model.ModelEnderMite;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -18,7 +18,7 @@ public class RenderTameableEndermite extends RenderLiving<TameableEndermite>
 
 	    public RenderTameableEndermite(RenderManager rm)
 	    {
-	        super(rm, new ModelEnderMite(), 0.3F);
+	        super(rm, new ModelTameableEndermite(), 0.3F);
 	    }
 
 	   
