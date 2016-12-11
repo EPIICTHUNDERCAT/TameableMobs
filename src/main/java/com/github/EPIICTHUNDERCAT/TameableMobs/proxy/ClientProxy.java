@@ -1,5 +1,6 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderBatPee;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCaveSpider;
@@ -13,6 +14,8 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePigZo
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSheep;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSpider;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderWitchProjectile;
 import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBat;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBlaze;
@@ -27,10 +30,15 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableSheep2;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -57,6 +65,7 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableEnderman.class, new RenderTameableEnderman(rm));
 		rm.entityRenderMap.put(TameableSpider.class, new RenderTameableSpider(rm));
 		rm.entityRenderMap.put(TameableCaveSpider.class, new RenderTameableCaveSpider(rm));
+		rm.entityRenderMap.put(TameableWitch.class, new RenderTameableWitch(rm));
 		
 		
 		
@@ -69,5 +78,25 @@ public class ClientProxy extends CommonProxy {
 		TMItems.registerRender(event);
 		// NGBlocks.registerRender(event);
 	}
+	
+	@Override
+	public void registerEntities(FMLPreInitializationEvent preEvent) {
+		super.registerEntities(preEvent);
 
+		RenderingRegistry.registerEntityRenderingHandler(EntityWitchProjectile.class,
+				new IRenderFactory<EntityWitchProjectile>() {
+					@Override
+					public RenderWitchProjectile createRenderFor(RenderManager manager) {
+						return new RenderWitchProjectile(manager, TMItems.witch_projectile);
+					}
+				});
+
+		RenderingRegistry.registerEntityRenderingHandler(EntityBatPee.class,
+				new IRenderFactory<EntityBatPee>() {
+					@Override
+					public RenderBatPee createRenderFor(RenderManager manager) {
+						return new RenderBatPee(manager, TMItems.bat_pee);
+					}
+				});
+	}
 }

@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.TameableMobs;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
 
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
@@ -48,6 +50,7 @@ public class ModEntities {
 		int tameablewitchColor = new Color(254, 85, 176).getRGB();
 
 		// Every entity in our mod has an ID (local to this mod)
+		
 		// TameablePolarBear
 		EntityRegistry.registerModEntity(TameablePolarBear.class, "TameablePolarBear", 0, TameableMobs.instance, 80, 3,
 				false, 0, tameablepolarbearColor);
@@ -135,9 +138,13 @@ public class ModEntities {
 		//EntityRegistry.registerModEntity(TameableSlime.class, "TameableSlime", 27, TameableMobs.instance, 80, 3, false, 0,
 		//		tameableslimeColor);
 		// TameableWitch
-		//EntityRegistry.registerModEntity(TameableWitch.class, "TameablePigZombie", 28, TameableMobs.instance, 80, 3, false, 0,
-		//		tameablewitchColor);
-		
+		EntityRegistry.registerModEntity(TameableWitch.class, "TameableWitch", 28, TameableMobs.instance, 80, 3, false, 0,
+			tameablewitchColor);
+		//WitchProjectile
+		EntityRegistry.registerModEntity(EntityWitchProjectile.class, "WitchProjectile", 29, TameableMobs.instance, 64, 2, true);
+		//BatPee
+		EntityRegistry.registerModEntity(EntityBatPee.class, "BatPee", 30, TameableMobs.instance, 64, 2, true);
+
 	
 		
 		
@@ -197,7 +204,9 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
 		// TameableCaveSpider
 		EntityRegistry.addSpawn(TameableCaveSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
-									
+		// TameableWitch
+		EntityRegistry.addSpawn(TameableWitch.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
+													
 		
 		
 		/*
@@ -232,9 +241,7 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableSkeleton.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		// TameableSlime
 		EntityRegistry.addSpawn(TameableSlime.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-		// TameableWitch
-		EntityRegistry.addSpawn(TameableWitch.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-				
+		
 		
 		
 		
@@ -357,8 +364,8 @@ public class ModEntities {
 		// SpawnPlacementType.ON_GROUND);
 
 		// TameableWitch
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableWitch.class,
-		// SpawnPlacementType.ON_GROUND);
+		 EntitySpawnPlacementRegistry.setPlacementType(TameableWitch.class,
+		SpawnPlacementType.ON_GROUND);
 
 		/*
 		 * This is the loot table for our mob

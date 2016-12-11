@@ -1,13 +1,12 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
+import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -23,17 +22,29 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackRanged;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMate;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAITarget;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -42,11 +53,11 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.stats.AchievementList;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -60,47 +71,59 @@ import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableBat extends EntityAnimal implements IEntityOwnable, IRangedAttackMob {
-	// MAKE BAT PEE A PROJECTILE AS ATTACK SINCE MELEE IS NOT EFFECTIVE
-	private static final DataParameter<Byte> HANGING = EntityDataManager.<Byte>createKey(TameableBat.class,
-			DataSerializers.BYTE);
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableBat.class,
+public class TameableWitch extends EntityAnimal implements IEntityOwnable, IRangedAttackMob {
+
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableWitch.class,
 			DataSerializers.FLOAT);
-	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableBat.class,
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableWitch.class,
 			DataSerializers.BOOLEAN);
-	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableBat.class,
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableWitch.class,
 			DataSerializers.BYTE);
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-			.<Optional<UUID>>createKey(TameableBat.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-
-	private float headRotationCourse;
-	private float headRotationCourseOld;
+			.<Optional<UUID>>createKey(TameableWitch.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final UUID MODIFIER_UUID = UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E");
+	private static final AttributeModifier MODIFIER = (new AttributeModifier(MODIFIER_UUID, "Drinking speed penalty",
+			-0.25D, 0)).setSaved(false);
+	private static final DataParameter<Boolean> IS_AGGRESSIVE = EntityDataManager.<Boolean>createKey(EntityWitch.class,
+			DataSerializers.BOOLEAN);
+	/**
+	 * Timer used as interval for a witch's attack, decremented every tick if
+	 * aggressive and when reaches zero the witch will throw a potion at the
+	 * target entity.
+	 */
+	private int witchAttackTimer;
 	protected EntityAISit aiSit;
-	private BlockPos spawnPosition;
 
-	public TameableBat(World worldIn) {
+	public TameableWitch(World worldIn) {
 		super(worldIn);
 		setTamed(false);
-		this.setSize(0.5F, 0.9F);
-		this.setIsBatHanging(true);
+		this.setSize(0.6F, 1.95F);
 
 	}
 
 	@Override
 	protected void initEntityAI() {
-		aiSit = new TameableBat.EntityAISit(this);
+
+        tasks.addTask(2, new EntityAIAttackRanged(this, 1.0D, 60, 10.0F));
+  
+		
+		
+		
+		tasks.addTask(0, new EntityAISwimming(this));
+		tasks.addTask(1, new EntityAIPanic(this, 1.25D));
+		tasks.addTask(2, new EntityAIMate(this, 1.0D));
+		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.SUGAR, false));
+		aiSit = new TameableWitch.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 		tasks.addTask(1, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-		tasks.addTask(2, new EntityAIAttackRanged(this, 1.0D, 60, 20.0F));
-
-		tasks.addTask(6, new TameableBat.EntityAIMate(this, 1.0D));
-		// tasks.addTask(7, new EntityAIWander(this, 1.0D));
-		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-		tasks.addTask(8, new TameableBat.EntityAIBeg(this, 8.0F));
-		// tasks.addTask(8, new EntityAILookIdle(this));
-		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-		//targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
-		targetTasks.addTask(3, new TameableBat.AIFindPlayer(this));
+		tasks.addTask(7, new EntityAIWander(this, 1.0D));
+		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+		tasks.addTask(8, new TameableWitch.EntityAIBeg(this, 8.0F));
+		tasks.addTask(8, new EntityAILookIdle(this));
+		targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+		
+		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
+		targetTasks.addTask(1, new TameableWitch.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
 	}
@@ -110,12 +133,12 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		super.applyEntityAttributes();
 		getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 		if (isTamed()) {
-			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
+			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(20.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
+			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}
 
@@ -125,12 +148,21 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataManager.register(HANGING, Byte.valueOf((byte) 0));
+		getDataManager().register(IS_AGGRESSIVE, Boolean.valueOf(false));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
-		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
+	//	dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
 		dataManager.register(BEGGING, Boolean.valueOf(false));
 
+	}
+
+	@Override
+	public boolean isBreedingItem(@Nullable ItemStack stack) {
+		return stack == null ? false : stack.getItem() == Items.GLOWSTONE_DUST;
+	}
+
+	public static void registerFixesSheep(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "TameableWitch");
 	}
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
@@ -140,7 +172,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
-		compound.setByte("BatFlags", ((Byte) this.dataManager.get(HANGING)).byteValue());
+		
 		if (getOwnerId() == null) {
 			compound.setString("OwnerUUID", "");
 		} else {
@@ -153,7 +185,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
-		dataManager.set(HANGING, Byte.valueOf(compound.getByte("BatFlags")));
+		
 		String s;
 
 		if (compound.hasKey("OwnerUUID", 8)) {
@@ -184,16 +216,13 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		return isTamed() && isOwner(player);
 	}
 
-	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.BLAZE_POWDER;
-	}
-
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
+
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.BLAZE_ROD) {
-					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
+				if (stack.getItem() == Items.SUGAR) {
+					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
 						}
@@ -216,7 +245,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.BLAZE_POWDER) {
+		} else if (stack != null && stack.getItem() == TMItems.witch_compound) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
@@ -241,7 +270,10 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 			return true;
 		}
 
+		
+
 		return super.processInteract(player, hand, stack);
+
 	}
 
 	public boolean isTamed() {
@@ -294,12 +326,12 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 			return false;
 		} else if (!this.isTamed()) {
 			return false;
-		} else if (!(otherAnimal instanceof TameableBat)) {
+		} else if (!(otherAnimal instanceof TameableWitch)) {
 			return false;
 		} else {
-			TameableBat entityTameableBat = (TameableBat) otherAnimal;
-			return !entityTameableBat.isTamed() ? false
-					: (entityTameableBat.isSitting() ? false : this.isInLove() && entityTameableBat.isInLove());
+			TameableWitch entityTameableWitch = (TameableWitch) otherAnimal;
+			return !entityTameableWitch.isTamed() ? false
+					: (entityTameableWitch.isSitting() ? false : this.isInLove() && entityTameableWitch.isInLove());
 		}
 	}
 
@@ -352,19 +384,27 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void handleStatusUpdate(byte id) {
+		if (id == 15) {
+			for (int i = 0; i < this.rand.nextInt(35) + 10; ++i) {
+				this.worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH,
+						this.posX + this.rand.nextGaussian() * 0.12999999523162842D,
+						this.getEntityBoundingBox().maxY + 0.5D + this.rand.nextGaussian() * 0.12999999523162842D,
+						this.posZ + this.rand.nextGaussian() * 0.12999999523162842D, 0.0D, 0.0D, 0.0D, new int[0]);
+			}
+		} else {
+			super.handleStatusUpdate(id);
+		}
 		if (id == 7) {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
-		} else {
-			super.handleStatusUpdate(id);
 		}
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
-		if (!(p_142018_1_ instanceof EntityCreeper) && !(p_142018_1_ instanceof EntityGhast)) {
-			if (p_142018_1_ instanceof TameableBat) {
-				TameableBat entityChicken = (TameableBat) p_142018_1_;
+		if (!(p_142018_1_ instanceof TameableWitch) && !(p_142018_1_ instanceof EntityGhast)) {
+			if (p_142018_1_ instanceof TameableWitch) {
+				TameableWitch entityChicken = (TameableWitch) p_142018_1_;
 
 				if (entityChicken.isTamed() && entityChicken.getOwner() == p_142018_2_) {
 					return false;
@@ -380,13 +420,13 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	static class EntityAIBeg extends EntityAIBase {
-		private final TameableBat theBat;
+		private final TameableWitch theBat;
 		private EntityPlayer thePlayer;
 		private final World worldObject;
 		private final float minPlayerDistance;
 		private int timeoutCounter;
 
-		public EntityAIBeg(TameableBat blaze, float minDistance) {
+		public EntityAIBeg(TameableWitch blaze, float minDistance) {
 			theBat = blaze;
 			worldObject = blaze.worldObj;
 			minPlayerDistance = minDistance;
@@ -467,13 +507,13 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	static class EntityAISit extends EntityAIBase {
-		private final TameableBat theEntity;
+		private final TameableWitch theEntity;
 
 		/** If the EntityTameable is sitting. */
 
 		private boolean isSitting;
 
-		public EntityAISit(TameableBat entityIn) {
+		public EntityAISit(TameableWitch entityIn) {
 			theEntity = entityIn;
 			setMutexBits(5);
 		}
@@ -523,172 +563,20 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	@Override
-	public TameableBat createChild(EntityAgeable ageable) {
-		TameableBat entityTameableBat = new TameableBat(this.worldObj);
+	public TameableWitch createChild(EntityAgeable ageable) {
+		TameableWitch entityTameableWitch = new TameableWitch(this.worldObj);
 		UUID uuid = this.getOwnerId();
 
 		if (uuid != null) {
-			entityTameableBat.setOwnerId(uuid);
-			entityTameableBat.setTamed(true);
+			entityTameableWitch.setOwnerId(uuid);
+			entityTameableWitch.setTamed(true);
 		}
 
-		return entityTameableBat;
-	}
-
-	static class EntityAIMate extends EntityAIBase {
-		private final TameableBat theAnimal;
-		World theWorld;
-		private EntityAnimal targetMate;
-		/**
-		 * Delay preventing a baby from spawning immediately when two mate-able
-		 * animals find each other.
-		 */
-		int spawnBabyDelay;
-		/** The speed the creature moves at during mating behavior. */
-		double moveSpeed;
-
-		public EntityAIMate(TameableBat Blaze, double speedIn) {
-			theAnimal = Blaze;
-			theWorld = Blaze.worldObj;
-			moveSpeed = speedIn;
-			setMutexBits(3);
-		}
-
-		/**
-		 * Returns whether the EntityAIBase should begin execution.
-		 */
-		@Override
-		public boolean shouldExecute() {
-			if (!this.theAnimal.isInLove()) {
-				return false;
-			} else {
-				this.targetMate = this.getNearbyMate();
-				return this.targetMate != null;
-			}
-		}
-
-		/**
-		 * Returns whether an in-progress EntityAIBase should continue executing
-		 */
-		@Override
-		public boolean continueExecuting() {
-			return this.targetMate.isEntityAlive() && this.targetMate.isInLove() && this.spawnBabyDelay < 60;
-		}
-
-		/**
-		 * Resets the task
-		 */
-		@Override
-		public void resetTask() {
-			this.targetMate = null;
-			this.spawnBabyDelay = 0;
-		}
-
-		/**
-		 * Updates the task
-		 */
-		@Override
-		public void updateTask() {
-			this.theAnimal.getLookHelper().setLookPositionWithEntity(this.targetMate, 10.0F,
-					(float) this.theAnimal.getVerticalFaceSpeed());
-			this.theAnimal.getNavigator().tryMoveToEntityLiving(this.targetMate, this.moveSpeed);
-			++this.spawnBabyDelay;
-
-			if (this.spawnBabyDelay >= 60 && this.theAnimal.getDistanceSqToEntity(this.targetMate) < 9.0D) {
-				this.spawnBaby();
-			}
-		}
-
-		/**
-		 * Loops through nearby animals and finds another animal of the same
-		 * type that can be mated with. Returns the first valid mate found.
-		 */
-
-		private EntityAnimal getNearbyMate() {
-			List<EntityAnimal> list = this.theWorld.<EntityAnimal>getEntitiesWithinAABB(this.theAnimal.getClass(),
-					this.theAnimal.getEntityBoundingBox().expandXyz(8.0D));
-			double d0 = Double.MAX_VALUE;
-			EntityAnimal entityanimal = null;
-
-			for (EntityAnimal entityanimal1 : list) {
-				if (this.theAnimal.canMateWith(entityanimal1)
-						&& this.theAnimal.getDistanceSqToEntity(entityanimal1) < d0) {
-					entityanimal = entityanimal1;
-					d0 = this.theAnimal.getDistanceSqToEntity(entityanimal1);
-				}
-			}
-
-			return entityanimal;
-		}
-
-		/**
-		 * Spawns a baby animal of the same type.
-		 */
-
-		private void spawnBaby() {
-			EntityAgeable entityageable = this.theAnimal.createChild(this.targetMate);
-
-			final net.minecraftforge.event.entity.living.BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(
-					theAnimal, targetMate, entityageable);
-			final boolean cancelled = net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
-			entityageable = event.getChild();
-			if (cancelled) {
-				// Reset the "inLove" state for the animals
-				this.theAnimal.setGrowingAge(6000);
-				this.targetMate.setGrowingAge(6000);
-				this.theAnimal.resetInLove();
-				this.targetMate.resetInLove();
-				return;
-			}
-
-			if (entityageable != null) {
-				EntityPlayer entityplayer = this.theAnimal.getPlayerInLove();
-
-				if (entityplayer == null && this.targetMate.getPlayerInLove() != null) {
-					entityplayer = this.targetMate.getPlayerInLove();
-				}
-
-				if (entityplayer != null) {
-					entityplayer.addStat(StatList.ANIMALS_BRED);
-
-					if (this.theAnimal instanceof TameableBat) {
-						entityplayer.addStat(AchievementList.BREED_COW);
-					}
-				}
-
-				this.theAnimal.setGrowingAge(6000);
-				this.targetMate.setGrowingAge(6000);
-				this.theAnimal.resetInLove();
-				this.targetMate.resetInLove();
-				entityageable.setGrowingAge(-24000);
-				entityageable.setLocationAndAngles(this.theAnimal.posX, this.theAnimal.posY, this.theAnimal.posZ, 0.0F,
-						0.0F);
-				this.theWorld.spawnEntityInWorld(entityageable);
-				Random random = this.theAnimal.getRNG();
-
-				for (int i = 0; i < 7; ++i) {
-					double d0 = random.nextGaussian() * 0.02D;
-					double d1 = random.nextGaussian() * 0.02D;
-					double d2 = random.nextGaussian() * 0.02D;
-					double d3 = random.nextDouble() * (double) this.theAnimal.width * 2.0D
-							- (double) this.theAnimal.width;
-					double d4 = 0.5D + random.nextDouble() * (double) this.theAnimal.height;
-					double d5 = random.nextDouble() * (double) this.theAnimal.width * 2.0D
-							- (double) this.theAnimal.width;
-					this.theWorld.spawnParticle(EnumParticleTypes.HEART, this.theAnimal.posX + d3,
-							this.theAnimal.posY + d4, this.theAnimal.posZ + d5, d0, d1, d2, new int[0]);
-				}
-
-				if (this.theWorld.getGameRules().getBoolean("doMobLoot")) {
-					this.theWorld.spawnEntityInWorld(new EntityXPOrb(this.theWorld, this.theAnimal.posX,
-							this.theAnimal.posY, this.theAnimal.posZ, random.nextInt(7) + 1));
-				}
-			}
-		}
+		return entityTameableWitch;
 	}
 
 	static class EntityAIFollowOwner extends EntityAIBase {
-		private final TameableBat thePet;
+		private final TameableWitch thePet;
 		private EntityLivingBase theOwner;
 		World theWorld;
 		private final double followSpeed;
@@ -698,7 +586,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		float minDist;
 		private float oldWaterCost;
 
-		public EntityAIFollowOwner(TameableBat thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
+		public EntityAIFollowOwner(TameableWitch thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
 			thePet = thePetIn;
 			theWorld = thePetIn.worldObj;
 			followSpeed = followSpeedIn;
@@ -808,11 +696,11 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	static class EntityAIOwnerHurtByTarget extends EntityAITarget {
-		TameableBat theDefendingTameable;
+		TameableWitch theDefendingTameable;
 		EntityLivingBase theOwnerAttacker;
 		private int timestamp;
 
-		public EntityAIOwnerHurtByTarget(TameableBat theDefendingTameableIn) {
+		public EntityAIOwnerHurtByTarget(TameableWitch theDefendingTameableIn) {
 			super(theDefendingTameableIn, false);
 			theDefendingTameable = theDefendingTameableIn;
 			setMutexBits(1);
@@ -856,22 +744,22 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	static class AIFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer> {
-		private final TameableBat tameableBat;
+		private final TameableWitch TameableWitch;
 		private EntityPlayer player;
 		private int aggroTime;
 		private int teleportTime;
 
-		public AIFindPlayer(TameableBat p_i45842_1_) {
+		public AIFindPlayer(TameableWitch p_i45842_1_) {
 			super(p_i45842_1_, EntityPlayer.class, false);
-			tameableBat = p_i45842_1_;
+			TameableWitch = p_i45842_1_;
 		}
 
 		@Override
 		public boolean shouldExecute() {
 			double d0 = getTargetDistance();
-			player = tameableBat.worldObj.getNearestAttackablePlayer(tameableBat.posX, tameableBat.posY,
-					tameableBat.posZ, d0, d0, (Function) null,
-					(@Nullable EntityPlayer player) -> (player != null) && (tameableBat.shouldAttackPlayer(player)));
+			player = TameableWitch.worldObj.getNearestAttackablePlayer(TameableWitch.posX, TameableWitch.posY,
+					TameableWitch.posZ, d0, d0, (Function) null,
+					(@Nullable EntityPlayer player) -> (player != null) && (TameableWitch.shouldAttackPlayer(player)));
 			return player != null;
 		}
 
@@ -890,10 +778,10 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		@Override
 		public boolean continueExecuting() {
 			if (player != null) {
-				if (!tameableBat.shouldAttackPlayer(player)) {
+				if (!TameableWitch.shouldAttackPlayer(player)) {
 					return false;
 				}
-				tameableBat.faceEntity(player, 10.0F, 10.0F);
+				TameableWitch.faceEntity(player, 10.0F, 10.0F);
 				return true;
 			}
 			return (targetEntity != null) && (targetEntity.isEntityAlive()) ? true : super.continueExecuting();
@@ -909,12 +797,12 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 				}
 			} else {
 				if (targetEntity != null) {
-					if (tameableBat.shouldAttackPlayer(targetEntity)) {
-						if (targetEntity.getDistanceSqToEntity(tameableBat) < 16.0D) {
+					if (TameableWitch.shouldAttackPlayer(targetEntity)) {
+						if (targetEntity.getDistanceSqToEntity(TameableWitch) < 16.0D) {
 						}
 						teleportTime = 0;
-					} else if ((targetEntity.getDistanceSqToEntity(tameableBat) > 256.0D) && (teleportTime++ >= 30)
-							&& (tameableBat.teleportToEntity(targetEntity))) {
+					} else if ((targetEntity.getDistanceSqToEntity(TameableWitch) > 256.0D) && (teleportTime++ >= 30)
+							&& (TameableWitch.teleportToEntity(targetEntity))) {
 						teleportTime = 0;
 					}
 				}
@@ -962,231 +850,178 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		return flag;
 	}
 
-	/**
-	 * Returns the volume for the sounds this mob makes.
-	 */
-	protected float getSoundVolume() {
-		return 0.1F;
+	public static void registerFixesWitch(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "Witch");
 	}
 
-	/**
-	 * Gets the pitch of living sounds in living entities.
-	 */
-	protected float getSoundPitch() {
-		return super.getSoundPitch() * 0.95F;
-	}
+	
 
-	@Nullable
 	protected SoundEvent getAmbientSound() {
-		return this.getIsBatHanging() && this.rand.nextInt(4) != 0 ? null : SoundEvents.ENTITY_BAT_AMBIENT;
+		return SoundEvents.ENTITY_WITCH_AMBIENT;
 	}
 
 	protected SoundEvent getHurtSound() {
-		return SoundEvents.ENTITY_BAT_HURT;
+		return SoundEvents.ENTITY_WITCH_HURT;
 	}
 
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_BAT_DEATH;
+		return SoundEvents.ENTITY_WITCH_DEATH;
 	}
 
 	/**
-	 * Returns true if this entity should push and be pushed by other entities
-	 * when colliding.
+	 * Set whether this witch is aggressive at an entity.
 	 */
-	public boolean canBePushed() {
-		return false;
+	public void setAggressive(boolean aggressive) {
+		this.getDataManager().set(IS_AGGRESSIVE, Boolean.valueOf(aggressive));
 	}
 
-	protected void collideWithEntity(Entity entityIn) {
+	public boolean isDrinkingPotion() {
+		return ((Boolean) this.getDataManager().get(IS_AGGRESSIVE)).booleanValue();
 	}
 
-	protected void collideWithNearbyEntities() {
-	}
-
-	public boolean getIsBatHanging() {
-		return (((Byte) this.dataManager.get(HANGING)).byteValue() & 1) != 0;
-	}
-
-	public void setIsBatHanging(boolean isHanging) {
-		byte b0 = ((Byte) this.dataManager.get(HANGING)).byteValue();
-
-		if (isHanging) {
-			this.dataManager.set(HANGING, Byte.valueOf((byte) (b0 | 1)));
-		} else {
-			this.dataManager.set(HANGING, Byte.valueOf((byte) (b0 & -2)));
-		}
-	}
+	
 
 	/**
-	 * Called to update the entity's position/logic.
+	 * Called frequently so the entity can update its state every tick as
+	 * required. For example, zombies and skeletons use this to react to
+	 * sunlight and start to burn.
 	 */
-	public void onUpdate() {
-		super.onUpdate();
+	public void onLivingUpdate() {
+		if (!this.worldObj.isRemote) {
+			if (this.isDrinkingPotion()) {
+				if (this.witchAttackTimer-- <= 0) {
+					this.setAggressive(false);
+					ItemStack itemstack = this.getHeldItemMainhand();
+					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, (ItemStack) null);
 
-		if (this.getIsBatHanging()) {
-			this.motionX = 0.0D;
-			this.motionY = 0.0D;
-			this.motionZ = 0.0D;
-			this.posY = (double) MathHelper.floor_double(this.posY) + 1.0D - (double) this.height;
-		} else {
-			this.motionY *= 0.6000000238418579D;
-		}
-	}
+					if (itemstack != null && itemstack.getItem() == Items.POTIONITEM) {
+						List<PotionEffect> list = PotionUtils.getEffectsFromStack(itemstack);
 
-	protected void updateAITasks() {
-		super.updateAITasks();
-		BlockPos blockpos = new BlockPos(this);
-		BlockPos blockpos1 = blockpos.up();
+						if (list != null) {
+							for (PotionEffect potioneffect : list) {
+								this.addPotionEffect(new PotionEffect(potioneffect));
+							}
+						}
+					}
 
-		if (this.getIsBatHanging()) {
-			if (this.worldObj.getBlockState(blockpos1).isNormalCube()) {
-				if (this.rand.nextInt(200) == 0) {
-					this.rotationYawHead = (float) this.rand.nextInt(360);
-				}
-
-				if (this.worldObj.getNearestPlayerNotCreative(this, 4.0D) != null) {
-					this.setIsBatHanging(false);
-					this.worldObj.playEvent((EntityPlayer) null, 1025, blockpos, 0);
+					this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(MODIFIER);
 				}
 			} else {
-				this.setIsBatHanging(false);
-				this.worldObj.playEvent((EntityPlayer) null, 1025, blockpos, 0);
-			}
-		} else {
-			if (this.spawnPosition != null
-					&& (!this.worldObj.isAirBlock(this.spawnPosition) || this.spawnPosition.getY() < 1)) {
-				this.spawnPosition = null;
+				PotionType potiontype = null;
+
+				if (this.rand.nextFloat() < 0.15F && this.isInsideOfMaterial(Material.WATER)
+						&& !this.isPotionActive(MobEffects.WATER_BREATHING)) {
+					potiontype = PotionTypes.WATER_BREATHING;
+				} else if (this.rand.nextFloat() < 0.15F
+						&& (this.isBurning()
+								|| this.getLastDamageSource() != null && this.getLastDamageSource().isFireDamage())
+						&& !this.isPotionActive(MobEffects.FIRE_RESISTANCE)) {
+					potiontype = PotionTypes.FIRE_RESISTANCE;
+				} else if (this.rand.nextFloat() < 0.05F && this.getHealth() < this.getMaxHealth()) {
+					potiontype = PotionTypes.HEALING;
+				} else if (this.rand.nextFloat() < 0.5F && this.getAttackTarget() != null
+						&& !this.isPotionActive(MobEffects.SPEED)
+						&& this.getAttackTarget().getDistanceSqToEntity(this) > 121.0D) {
+					potiontype = PotionTypes.SWIFTNESS;
+				}
+
+				if (potiontype != null) {
+					this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND,
+							PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), potiontype));
+					this.witchAttackTimer = this.getHeldItemMainhand().getMaxItemUseDuration();
+					this.setAggressive(true);
+					this.worldObj.playSound((EntityPlayer) null, this.posX, this.posY, this.posZ,
+							SoundEvents.ENTITY_WITCH_DRINK, this.getSoundCategory(), 1.0F,
+							0.8F + this.rand.nextFloat() * 0.4F);
+					IAttributeInstance iattributeinstance = this
+							.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+					iattributeinstance.removeModifier(MODIFIER);
+					iattributeinstance.applyModifier(MODIFIER);
+				}
 			}
 
-			if (this.spawnPosition == null || this.rand.nextInt(30) == 0
-					|| this.spawnPosition.distanceSq((double) ((int) this.posX), (double) ((int) this.posY),
-							(double) ((int) this.posZ)) < 4.0D) {
-				this.spawnPosition = new BlockPos((int) this.posX + this.rand.nextInt(7) - this.rand.nextInt(7),
-						(int) this.posY + this.rand.nextInt(6) - 2,
-						(int) this.posZ + this.rand.nextInt(7) - this.rand.nextInt(7));
+			if (this.rand.nextFloat() < 7.5E-4F) {
+				this.worldObj.setEntityState(this, (byte) 15);
 			}
-			// if (!isTamed()){
-			double d0 = (double) this.spawnPosition.getX() + 0.5D - this.posX;
-			double d1 = (double) this.spawnPosition.getY() + 0.1D - this.posY;
-			double d2 = (double) this.spawnPosition.getZ() + 0.5D - this.posZ;
-			motionX += (Math.signum(d0) * 0.5D - this.motionX) * 0.10000000149011612D;
-			motionY += (Math.signum(d1) * 0.699999988079071D - this.motionY) * 0.10000000149011612D;
-			motionZ += (Math.signum(d2) * 0.5D - this.motionZ) * 0.10000000149011612D;
-			float f = (float) (MathHelper.atan2(this.motionZ, this.motionX) * (180D / Math.PI)) - 90.0F;
-			float f1 = MathHelper.wrapDegrees(f - this.rotationYaw);
-			moveForward = 0.5F;
-			rotationYaw += f1;
-
-			if (this.rand.nextInt(100) == 0 && this.worldObj.getBlockState(blockpos1).isNormalCube()) {
-				this.setIsBatHanging(true);
-			}
-			// }
 		}
-		// if (isTamed()){
 
-		// }
+		super.onLivingUpdate();
 	}
+
+
 
 	/**
-	 * returns if this entity triggers Block.onEntityWalking on the blocks they
-	 * walk on. used for spiders and wolves to prevent them from trampling crops
+	 * Reduces damage, depending on potions
 	 */
-	protected boolean canTriggerWalking() {
-		return false;
-	}
+	protected float applyPotionDamageCalculations(DamageSource source, float damage) {
+		damage = super.applyPotionDamageCalculations(source, damage);
 
-	public void fall(float distance, float damageMultiplier) {
-	}
-
-	protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos) {
-	}
-
-	/**
-	 * Return whether this entity should NOT trigger a pressure plate or a
-	 * tripwire.
-	 */
-	public boolean doesEntityNotTriggerPressurePlate() {
-		return true;
-	}
-
-	/**
-	 * Called when the entity is attacked.
-	 */
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (this.isEntityInvulnerable(source)) {
-			return false;
-		} else {
-			if (!this.worldObj.isRemote && this.getIsBatHanging()) {
-				this.setIsBatHanging(false);
-			}
-
+		if (source.getEntity() == this) {
+			damage = 0.0F;
 		}
-		if ((source instanceof EntityDamageSourceIndirect)) {
-			for (int i = 0; i < 64; i++) {
-			}
-			return false;
+
+		if (source.isMagicDamage()) {
+			damage = (float) ((double) damage * 0.15D);
 		}
-		boolean flag = super.attackEntityFrom(source, amount);
-		if ((source.isUnblockable()) && (rand.nextInt(10) != 0)) {
 
-		}
-		return flag;
-
-	}
-
-	public static void func_189754_b(DataFixer p_189754_0_) {
-		EntityLiving.registerFixesMob(p_189754_0_, "TameableBat");
-	}
-
-	/**
-	 * Checks if the entity's current position is a valid location to spawn this
-	 * entity.
-	 */
-	public boolean getCanSpawnHere() {
-		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
-
-		if (blockpos.getY() >= this.worldObj.getSeaLevel()) {
-			return false;
-		} else {
-			int i = this.worldObj.getLightFromNeighbors(blockpos);
-			int j = 4;
-
-			if (this.isDateAroundHalloween(this.worldObj.getCurrentDate())) {
-				j = 7;
-			} else if (this.rand.nextBoolean()) {
-				return false;
-			}
-
-			return i > this.rand.nextInt(j) ? false : super.getCanSpawnHere();
-		}
-	}
-
-	private boolean isDateAroundHalloween(Calendar p_175569_1_) {
-		return p_175569_1_.get(2) + 1 == 10 && p_175569_1_.get(5) >= 20
-				|| p_175569_1_.get(2) + 1 == 11 && p_175569_1_.get(5) <= 3;
-	}
-
-	public float getEyeHeight() {
-		return this.height / 2.0F;
+		return damage;
 	}
 
 	@Nullable
 	protected ResourceLocation getLootTable() {
-		return LootTableList.ENTITIES_BAT;
+		return LootTableList.ENTITIES_WITCH;
 	}
 
+	/**
+	 * Attack the specified entity using a ranged attack.
+	 * 
+	 * @param distanceFactor
+	 *            How far the target is, normalized and clamped between 0.1 and
+	 *            1.0
+	 */
 	public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
-		if (isTamed()) {
-			EntityBatPee entitybatpee = new EntityBatPee(this.worldObj, this);
+		if (isTamed()){
+			 EntityWitchProjectile entitywitchprojectile = new EntityWitchProjectile(this.worldObj, this);
+		        double d0 = target.posY + (double)target.getEyeHeight() - 1.100000023841858D;
+		        double d1 = target.posX - this.posX;
+		        double d2 = d0 - entitywitchprojectile.posY;
+		        double d3 = target.posZ - this.posZ;
+		        float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3) * 0.2F;
+		        entitywitchprojectile.setThrowableHeading(d1, d2 + (double)f, d3, 1.6F, 12.0F);
+		        this.playSound(SoundEvents.ENTITY_WITCH_THROW, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+		        this.worldObj.spawnEntityInWorld(entitywitchprojectile);
+		}else{
+		if (!isTamed()){	
+		
+		if (!this.isDrinkingPotion()) {
 			double d0 = target.posY + (double) target.getEyeHeight() - 1.100000023841858D;
-			double d1 = target.posX - this.posX;
-			double d2 = d0 - entitybatpee.posY;
-			double d3 = target.posZ - this.posZ;
-			float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3) * 0.2F;
-			entitybatpee.setThrowableHeading(d1, d2 + (double) f, d3, 1.6F, 12.0F);
-			this.playSound(SoundEvents.ENTITY_WITCH_THROW, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
-			this.worldObj.spawnEntityInWorld(entitybatpee);
+			double d1 = target.posX + target.motionX - this.posX;
+			double d2 = d0 - this.posY;
+			double d3 = target.posZ + target.motionZ - this.posZ;
+			float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3);
+			PotionType potiontype = PotionTypes.HARMING;
 
+			if (f >= 8.0F && !target.isPotionActive(MobEffects.SLOWNESS)) {
+				potiontype = PotionTypes.SLOWNESS;
+			} else if (target.getHealth() >= 8.0F && !target.isPotionActive(MobEffects.POISON)) {
+				potiontype = PotionTypes.POISON;
+			} else if (f <= 3.0F && !target.isPotionActive(MobEffects.WEAKNESS) && this.rand.nextFloat() < 0.25F) {
+				potiontype = PotionTypes.WEAKNESS;
+			}
+
+			EntityPotion entitypotion = new EntityPotion(this.worldObj, this,
+					PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
+			entitypotion.rotationPitch -= -20.0F;
+			entitypotion.setThrowableHeading(d1, d2 + (double) (f * 0.2F), d3, 0.75F, 8.0F);
+			this.worldObj.playSound((EntityPlayer) null, this.posX, this.posY, this.posZ,
+					SoundEvents.ENTITY_WITCH_THROW, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
+			this.worldObj.spawnEntityInWorld(entitypotion);
+		}
 		}
 	}
+	}
+	public float getEyeHeight() {
+		return 1.62F;
+	}
+
 }

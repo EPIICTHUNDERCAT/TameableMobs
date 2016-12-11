@@ -32,6 +32,10 @@ public class CommonProxy {
 
 	}
 
-	
+	public void registerRender(FMLInitializationEvent event) {
+	}
+	public void registerEntities(FMLPreInitializationEvent preEvent) {
+		}
 
+	
 }
