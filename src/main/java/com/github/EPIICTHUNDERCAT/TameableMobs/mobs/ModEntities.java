@@ -100,8 +100,8 @@ public class ModEntities {
 		//EntityRegistry.registerModEntity(TameableMooshroom.class, "TameableMooshroom", 14, TameableMobs.instance, 80, 3, false, 0,
 		//		tameablemooshroomColor);
 		// TameableSquid
-		//EntityRegistry.registerModEntity(TameableBat.class, "TameableBat", 15, TameableMobs.instance, 80, 3, false, 0,
-		//		tameablebatColor);
+		EntityRegistry.registerModEntity(TameableSquid.class, "TameableSquid", 15, TameableMobs.instance, 80, 3, false, 0,
+				tameablesquidColor);
 
 		// TameableSpider
 		EntityRegistry.registerModEntity(TameableSpider.class, "TameableSpider", 16, TameableMobs.instance, 80, 3, false, 0,
@@ -206,7 +206,9 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableCaveSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
 		// TameableWitch
 		EntityRegistry.addSpawn(TameableWitch.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
-													
+		// TameableSquid
+		EntityRegistry.addSpawn(TameableSquid.class, 3, 43, 8, EnumCreatureType.WATER_CREATURE, Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.RIVER, Biomes.FROZEN_OCEAN, Biomes.FROZEN_RIVER);
+														
 		
 		
 		/*
@@ -222,8 +224,6 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableIronGolem.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		// TameableMooshroom
 		EntityRegistry.addSpawn(TameableMooshroom.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
-		// TameableSquid
-		EntityRegistry.addSpawn(TameableSquid.class, 3, 43, 8, EnumCreatureType.WATER_CREATURE, getBiomeList());
 		// TameableGhast
 		EntityRegistry.addSpawn(TameableGhast.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		// TameableGiantZombie
@@ -316,8 +316,8 @@ public class ModEntities {
 		// SpawnPlacementType.ON_GROUND);
 
 		// TameableSquid
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableSquid.class,
-		// SpawnPlacementType.IN_WATER);
+		 EntitySpawnPlacementRegistry.setPlacementType(TameableSquid.class,
+		 SpawnPlacementType.IN_WATER);
 
 		// TameableSpider
 		 EntitySpawnPlacementRegistry.setPlacementType(TameableSpider.class,

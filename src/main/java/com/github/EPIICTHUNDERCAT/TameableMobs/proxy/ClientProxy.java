@@ -14,6 +14,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePigZo
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSheep;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSpider;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSquid;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableWitch;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderWitchProjectile;
 import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
@@ -30,6 +31,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSquid;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
@@ -66,6 +68,7 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableSpider.class, new RenderTameableSpider(rm));
 		rm.entityRenderMap.put(TameableCaveSpider.class, new RenderTameableCaveSpider(rm));
 		rm.entityRenderMap.put(TameableWitch.class, new RenderTameableWitch(rm));
+		rm.entityRenderMap.put(TameableSquid.class, new RenderTameableSquid(rm));
 		
 		
 		

@@ -54,6 +54,10 @@ public class EntityBatPee extends EntityThrowable {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
+		if (result.entityHit != null && result.entityHit != this.shootingEntity) {
+			result.entityHit.attackEntityFrom(DamageSource.causeMobDamage((TameableBat) this.shootingEntity),
+					10.0F);
+			}
 		World world = this.worldObj;
 		if (result.typeOfHit.equals(result.typeOfHit.ENTITY)) {
 			if (result.entityHit instanceof EntityPlayer && player) {
@@ -72,10 +76,6 @@ public class EntityBatPee extends EntityThrowable {
 				}
 			}
 			if (result.entityHit instanceof EntityLiving && entity) {
-				if (result.entityHit != null && result.entityHit != this.shootingEntity) {
-					result.entityHit.attackEntityFrom(DamageSource.causeMobDamage((TameableBat) this.shootingEntity),
-							10.0F);
-					}
 				EntityLivingBase entity = (EntityLivingBase) result.entityHit;
 				if (!world.isRemote) {
 					entity.addPotionEffect(new PotionEffect(Potion.getPotionById(2), 400, 3, false, false));

@@ -1,9 +1,12 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.models;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -112,6 +115,129 @@ public class ModelTameableSpider extends ModelBase
         this.spiderLeg8.render(scale);
 	}
     }
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwingAmount, float ageInTicks,
+			float partialTickTime) {
+		super.setLivingAnimations(entitylivingbaseIn, limbSwingAmount, ageInTicks, partialTickTime);
+
+		TameableSpider TameableSpider = (TameableSpider) entitylivingbaseIn;
+		int height = 0;
+		if (TameableSpider.isSitting()) {
+			spiderHead.setRotationPoint(0.0F, 15.0F, -3.0F);
+			spiderHead.offsetY = 0.0f;
+			spiderNeck.setRotationPoint(0.0F, 15.0F, 0.0F);
+			spiderNeck.offsetY = 0.0f;
+			spiderBody.setRotationPoint(0.0F, 15.0F, 9.0F);
+			spiderBody.offsetY = 0.0f;
+			spiderLeg1.setRotationPoint(-4.0F, 15.0F, 2.0F);
+			spiderLeg1.rotationPointX = 0f;
+			spiderLeg1.rotateAngleY = 1f;
+			spiderLeg1.rotateAngleZ = 1f;
+			spiderLeg1.offsetY = 0.0f;
+			spiderLeg1.rotateAngleX = 1f;
+			spiderLeg2.setRotationPoint(4.0F, 15.0F, 2.0F);
+			spiderLeg2.rotationPointX = -2f;
+			spiderLeg2.rotateAngleY = 1f;
+			spiderLeg2.rotateAngleZ = 1f;
+			spiderLeg2.offsetY = 0.0f;
+			spiderLeg2.rotateAngleX = 1f;
+			spiderLeg3.setRotationPoint(-4.0F, 15.0F, 1.0F);
+			spiderLeg3.rotationPointX = -2f;
+			spiderLeg3.rotateAngleY = 1f;
+			spiderLeg3.rotateAngleZ = 1f;
+			spiderLeg3.offsetY = 0.0f;
+			spiderLeg3.rotateAngleX = 1f;
+			spiderLeg4.setRotationPoint(4.0F, 15.0F, 1.0F);
+			spiderLeg4.rotationPointX = -2f;
+			spiderLeg4.rotateAngleY = 1f;
+			spiderLeg4.rotateAngleZ = 1f;
+			spiderLeg4.offsetY = 0.0f;
+			spiderLeg4.rotateAngleX = 1f;
+			spiderLeg5.setRotationPoint(-4.0F, 15.0F, 0.0F);
+			spiderLeg5.rotationPointX = -2f;
+			spiderLeg5.rotateAngleY = 1f;
+			spiderLeg5.rotateAngleZ = 1f;
+			spiderLeg5.offsetY = 0.0f;
+			spiderLeg5.rotateAngleX = 1f;
+			spiderLeg6.setRotationPoint(4.0F, 15.0F, 0.0F);
+			spiderLeg6.rotationPointX = -2f;
+			spiderLeg6.rotateAngleY = 1f;
+			spiderLeg6.rotateAngleZ = 13f;
+			spiderLeg6.offsetY = 0.0f;
+			spiderLeg6.rotateAngleX = 1f;
+			spiderLeg7.setRotationPoint(-4.0F, 15.0F, -1.0F);
+			spiderLeg7.rotationPointX = -2f;
+			spiderLeg7.rotateAngleY = 1f;
+			spiderLeg7.rotateAngleZ = 1f;
+			spiderLeg7.offsetY = 0.0f;
+			spiderLeg7.rotateAngleX = 1f;
+			spiderLeg8.setRotationPoint(4.0F, 15.0F, -1.0F);
+			spiderLeg8.rotationPointX = -2f;
+			spiderLeg8.rotateAngleY = 1f;
+			spiderLeg8.rotateAngleZ = 1f;
+			spiderLeg8.offsetY = 0.0f;
+			spiderLeg8.rotateAngleX = 1f;
+			
+			
+
+		} else {
+			spiderHead.setRotationPoint(0.0F, 15.0F, -3.0F);
+			spiderHead.offsetY = 0.0f;
+			spiderNeck.setRotationPoint(0.0F, 15.0F, 0.0F);
+			spiderNeck.offsetY = 0.0f;
+			spiderBody.setRotationPoint(0.0F, 15.0F, 9.0F);
+			spiderBody.offsetY = 0.0f;
+			spiderLeg1.setRotationPoint(-4.0F, 15.0F, 2.0F);
+			spiderLeg1.rotationPointX = 0f;
+			spiderLeg1.rotateAngleY = 0f;
+			spiderLeg1.rotateAngleZ = 0f;
+			spiderLeg1.offsetY = 0.0f;
+			spiderLeg1.rotateAngleX = 0f;
+			spiderLeg2.setRotationPoint(4.0F, 15.0F, 2.0F);
+			spiderLeg2.rotationPointX = 0f;
+			spiderLeg2.rotateAngleY = 0f;
+			spiderLeg2.rotateAngleZ = 0f;
+			spiderLeg2.offsetY = 0.0f;
+			spiderLeg2.rotateAngleX = 0f;
+			spiderLeg3.setRotationPoint(-4.0F, 15.0F, 1.0F);
+			spiderLeg3.rotationPointX = 0f;
+			spiderLeg3.rotateAngleY = 0f;
+			spiderLeg3.rotateAngleZ = 0f;
+			spiderLeg3.offsetY = 0.0f;
+			spiderLeg3.rotateAngleX = 0f;
+			spiderLeg4.setRotationPoint(4.0F, 15.0F, 1.0F);
+			spiderLeg4.rotationPointX = 0f;
+			spiderLeg4.rotateAngleY = 0f;
+			spiderLeg4.rotateAngleZ = 0f;
+			spiderLeg4.offsetY = 0.0f;
+			spiderLeg4.rotateAngleX = 0f;
+			spiderLeg5.setRotationPoint(-4.0F, 15.0F, 0.0F);
+			spiderLeg5.rotationPointX = 0f;
+			spiderLeg5.rotateAngleY = 0f;
+			spiderLeg5.rotateAngleZ = 0f;
+			spiderLeg5.offsetY = 0.0f;
+			spiderLeg5.rotateAngleX = 0f;
+			spiderLeg6.setRotationPoint(4.0F, 15.0F, 0.0F);
+			spiderLeg6.rotationPointX = 0f;
+			spiderLeg6.rotateAngleY = 0f;
+			spiderLeg6.rotateAngleZ = 0f;
+			spiderLeg6.offsetY = 0.0f;
+			spiderLeg6.rotateAngleX = 0f;
+			spiderLeg7.setRotationPoint(-4.0F, 15.0F, -1.0F);
+			spiderLeg7.rotationPointX = 0f;
+			spiderLeg7.rotateAngleY = 0f;
+			spiderLeg7.rotateAngleZ = 0f;
+			spiderLeg7.offsetY = 0.0f;
+			spiderLeg7.rotateAngleX = 0f;
+			spiderLeg8.setRotationPoint(4.0F, 15.0F, -1.0F);
+			spiderLeg8.rotationPointX = 0f;
+			spiderLeg8.rotateAngleY = 0f;
+			spiderLeg8.rotateAngleZ = 0f;
+			spiderLeg8.offsetY = 0.0f;
+			spiderLeg8.rotateAngleX = 0f;
+			
+		}
+
+	}
 
     /**
      * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
