@@ -101,7 +101,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable{
 		tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, false));
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
-		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.ENDER_PEARL, false));
+		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.STRING, false));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
 		aiSit = new TameableSpider.EntityAISit(this);
 		tasks.addTask(1, aiSit);
@@ -204,7 +204,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable{
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.ENDER_PEARL) {
+				if (stack.getItem() == Items.STRING) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -228,7 +228,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable{
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == TMItems.ender_tamer) {
+		} else if (stack != null && stack.getItem() == TMItems.spider_tamer) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
