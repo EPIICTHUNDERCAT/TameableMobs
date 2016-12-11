@@ -101,12 +101,12 @@ public class ModEntities {
 		//		tameablebatColor);
 
 		// TameableSpider
-		//EntityRegistry.registerModEntity(TameableSpider.class, "TameableSpider", 16, TameableMobs.instance, 80, 3, false, 0,
-		//		tameablespiderColor);
+		EntityRegistry.registerModEntity(TameableSpider.class, "TameableSpider", 16, TameableMobs.instance, 80, 3, false, 0,
+				tameablespiderColor);
 
 		// TameableCaveSpider
-		//EntityRegistry.registerModEntity(TameableCaveSpider.class, "TameableCaveSpider", 17, TameableMobs.instance, 80, 3, false, 0,
-		//		tameablecavespiderColor);
+		EntityRegistry.registerModEntity(TameableCaveSpider.class, "TameableCaveSpider", 17, TameableMobs.instance, 80, 3, false, 0,
+				tameablecavespiderColor);
 		// TameableGhast
 		//EntityRegistry.registerModEntity(TameableGhast.class, "TameableGhast", 18, TameableMobs.instance, 80, 3, false, 0,
 		//		tameableghastColor);
@@ -193,7 +193,11 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableEndermite.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
 		// TameableEnderman
 		EntityRegistry.addSpawn(TameableEnderman.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
-							
+		// TameableSpider
+		EntityRegistry.addSpawn(TameableSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
+		// TameableCaveSpider
+		EntityRegistry.addSpawn(TameableCaveSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getMobBiomeList());
+									
 		
 		
 		/*
@@ -211,10 +215,6 @@ public class ModEntities {
 		EntityRegistry.addSpawn(TameableMooshroom.class, 3, 43, 8, EnumCreatureType.CREATURE, getBiomeList());
 		// TameableSquid
 		EntityRegistry.addSpawn(TameableSquid.class, 3, 43, 8, EnumCreatureType.WATER_CREATURE, getBiomeList());
-		// TameableSpider
-		EntityRegistry.addSpawn(TameableSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
-		// TameableCaveSpider
-		EntityRegistry.addSpawn(TameableCaveSpider.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		// TameableGhast
 		EntityRegistry.addSpawn(TameableGhast.class, 3, 43, 8, EnumCreatureType.MONSTER, getBiomeList());
 		// TameableGiantZombie
@@ -313,12 +313,12 @@ public class ModEntities {
 		// SpawnPlacementType.IN_WATER);
 
 		// TameableSpider
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableSpider.class,
-		// SpawnPlacementType.ON_GROUND);
+		 EntitySpawnPlacementRegistry.setPlacementType(TameableSpider.class,
+		 SpawnPlacementType.ON_GROUND);
 
 		// TameableCaveSpider
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableCaveSpider.class,
-		// SpawnPlacementType.ON_GROUND);
+		 EntitySpawnPlacementRegistry.setPlacementType(TameableCaveSpider.class,
+		 SpawnPlacementType.ON_GROUND);
 
 		// TameableGhast
 		// EntitySpawnPlacementRegistry.setPlacementType(TameableGhast.class,
