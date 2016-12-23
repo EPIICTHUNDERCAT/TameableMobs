@@ -9,10 +9,12 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCow;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableEnderman;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableEndermite;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableGhast;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSheep;
+import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableShulker;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSpider;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSquid;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableWitch;
@@ -26,16 +28,19 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCow;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEndermite;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGhast;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableShulker;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSquid;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableSheep2;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableShulker;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -53,6 +58,8 @@ public class ClientProxy extends CommonProxy {
 
 	public void init(FMLInitializationEvent event) {
 		super.init(event);
+		
+		
 		RenderManager rm = Minecraft.getMinecraft().getRenderManager();
 		rm.entityRenderMap.put(TameablePolarBear.class, new RenderTameablePolarBear(rm));
 		rm.entityRenderMap.put(TameableChicken.class, new RenderTameableChicken(rm));
@@ -69,6 +76,8 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableCaveSpider.class, new RenderTameableCaveSpider(rm));
 		rm.entityRenderMap.put(TameableWitch.class, new RenderTameableWitch(rm));
 		rm.entityRenderMap.put(TameableSquid.class, new RenderTameableSquid(rm));
+		rm.entityRenderMap.put(TameableGhast.class, new RenderTameableGhast(rm));
+		rm.entityRenderMap.put(TameableShulker.class, new RenderTameableShulker(rm));
 		
 		
 		

@@ -40,13 +40,12 @@ public class ModelTameableBlaze extends ModelBase
         
         for (int i = 0; i < this.blazeSticks.length; ++i)
         if (this.isChild) {
+	
 			float f = 2.0F;
-			this.childYOffset = 17.0F;
-			this.childZOffset = 1F;
 			GlStateManager.pushMatrix();
-			//GlStateManager.scale(0.6, 0.5, 0.5);
+			
 			GlStateManager.scale(0.6F, 0.6F, 0.6F);
-			GlStateManager.translate(0.0F, this.childYOffset * scale, this.childZOffset * scale);
+			GlStateManager.translate(0.0F, 10.0F * scale, 2.0F * scale);
 			this.blazeHead.render(scale);
 			GlStateManager.popMatrix();
 			GlStateManager.pushMatrix();
