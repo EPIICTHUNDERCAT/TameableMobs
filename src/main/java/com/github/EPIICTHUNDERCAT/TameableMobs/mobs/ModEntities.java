@@ -20,6 +20,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProj
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
@@ -375,18 +376,22 @@ public class ModEntities {
 		return biomes.toArray(new Biome[biomes.size()]);
 	}
 
-	private static Biome[] getPassiveBiomeList() {
-		List<Biome> biomes = new ArrayList<Biome>();
-		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
-		while (biomeList.hasNext()) {
-			Biome currentBiome = biomeList.next();
-			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
-			for (SpawnListEntry spawnEntry : spawnList) {
-
-			}
-		}
-		return biomes.toArray(new Biome[biomes.size()]);
-	}
+	  private static Biome[] getPassiveBiomeList() {
+	        List<Biome> biomes = new ArrayList<Biome>();
+	        Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+	        while (biomeList.hasNext()) {
+	            Biome currentBiome = biomeList.next();
+	            List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
+	            for (SpawnListEntry spawnEntry : spawnList) {
+	                if (spawnEntry.entityClass.isAssignableFrom(EntityAnimal.class)) {
+	                    if (!biomes.contains(currentBiome)) {
+	                        biomes.add(currentBiome);
+	                    }
+	                }
+	            }
+	        }
+	        return biomes.toArray(new Biome[biomes.size()]);
+	    }
 	private static Biome[] getWaterBiomeList() {
 		List<Biome> biomes = new ArrayList<Biome>();
 		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
