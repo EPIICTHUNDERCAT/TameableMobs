@@ -20,6 +20,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProj
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
@@ -174,7 +175,7 @@ public class ModEntities {
 		 */
 
 		// TameablePolarBear
-		EntityRegistry.addSpawn(TameablePolarBear.class, 100, 3, 8, EnumCreatureType.CREATURE, Biomes.ICE_PLAINS);
+		EntityRegistry.addSpawn(TameablePolarBear.class, 100, 3, 8, EnumCreatureType.CREATURE, Biomes.ICE_PLAINS, Biomes.ICE_MOUNTAINS, Biomes.MUTATED_ICE_FLATS);
 		// TameableChicken
 		EntityRegistry.addSpawn(TameableChicken.class, 10, 4, 8, EnumCreatureType.CREATURE, getPassiveBiomeList());
 
@@ -362,19 +363,22 @@ public class ModEntities {
 		// LootTableList.register(TameableChicken.LOOT_CHICKEN);
 
 	}
-
-	private static Biome[] getMobBiomeList() {
-		List<Biome> biomes = new ArrayList<Biome>();
-		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
-		while (biomeList.hasNext()) {
-			Biome currentBiome = biomeList.next();
-			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.MONSTER);
-			for (SpawnListEntry spawnEntry : spawnList) {
-
-			}
-		}
-		return biomes.toArray(new Biome[biomes.size()]);
-	}
+	  private static Biome[] getMobBiomeList() {
+	        List<Biome> biomes = new ArrayList<Biome>();
+	        Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+	        while (biomeList.hasNext()) {
+	            Biome currentBiome = biomeList.next();
+	            List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
+	            for (SpawnListEntry spawnEntry : spawnList) {
+	                if (spawnEntry.entityClass.isAssignableFrom(EntityMob.class)) {
+	                    if (!biomes.contains(currentBiome)) {
+	                        biomes.add(currentBiome);
+	                    }
+	                }
+	            }
+	        }
+	        return biomes.toArray(new Biome[biomes.size()]);
+	    }
 
 	  private static Biome[] getPassiveBiomeList() {
 	        List<Biome> biomes = new ArrayList<Biome>();
