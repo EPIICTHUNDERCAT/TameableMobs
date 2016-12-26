@@ -1,8 +1,10 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.init;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.item.TMInfoBook;
 import com.github.EPIICTHUNDERCAT.TameableMobs.item.TMItem;
 
 import net.minecraft.client.Minecraft;
@@ -25,9 +27,10 @@ public class TMItems {
 		public static Item taming_carrot = new TMItem("taming_carrot");
 		public static Item ender_tamer = new TMItem("ender_tamer");
 		public static Item spider_tamer = new TMItem("spider_tamer");
-		public static Item witch_compound = new TMItem("witch_compund");
+		public static Item witch_compound = new TMItem("witch_compound");
 		public static Item witch_projectile = new TMItem("witch_projectile");
 		public static Item bat_pee = new TMItem("bat_pee");
+		public static Item info_book = new TMInfoBook("info_book");
 		
 		
 		private static List<Item> getItems() {
