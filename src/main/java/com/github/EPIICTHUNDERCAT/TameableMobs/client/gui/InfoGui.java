@@ -52,16 +52,28 @@ public class InfoGui extends GuiScreen{
         mc.renderEngine.bindTexture(new ResourceLocation(Reference.ID, "textures/gui/gui_tameablemobs_book.png"));
         drawTexturedModalRect(guiX, guiY, 0, 0, guiWidth, guiHeight);
 
-        fontRendererObj.drawString(new TextComponentString("Tameable Mobs Info").getFormattedText(), guiX + 40, guiY + 17, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("Taming Guide").getFormattedText(), guiX + 55, guiY + 29, 0x444de5);
+        fontRendererObj.drawString(new TextComponentString("Tameable Mobs Info").getFormattedText(), guiX + 77, guiY + 20, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Taming Guide").getFormattedText(), guiX + 95, guiY + 29, 0x444de5);
 
-        fontRendererObj.drawString(new TextComponentString("Tame/Heal/Breed").getFormattedText(), guiX + 33, guiY + 50, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Tame / Heal / Breed").getFormattedText(), guiX + 93, guiY + 40, 0x000000);
         
-        fontRendererObj.drawString(new TextComponentString("Polar Bear: ").getFormattedText(), guiX + 33, guiY + 50, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("Tame:Fish Heal:Fish Breed:Fish").getFormattedText(), guiX + 33, guiY + 60, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("you will need to change the config").getFormattedText(), guiX + 25, guiY + 70, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("From `I:Recipe:1` to `I:Recipe:0`.").getFormattedText(), guiX + 25, guiY + 80, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("From `I:Recipe:1` to `I:Recipe:0`.").getFormattedText(), guiX + 25, guiY + 80, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Polar Bear:Fish / Fish / Fish ").getFormattedText(), guiX + 24, guiY + 58, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Bat:").getFormattedText(), guiX + 24, guiY + 72, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Bug / Bug / Bug").getFormattedText(), guiX + 93, guiY + 72, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze: Powder / BlazeRod / Powder").getFormattedText(), guiX + 24, guiY + 86, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Cave Spider: Spider Tamer/Spider Eye").getFormattedText(), guiX + 24, guiY + 100, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Cave Spider:").getFormattedText(), guiX + 24, guiY + 110, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 120, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Chicken:").getFormattedText(), guiX + 24, guiY + 130, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 140, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Cow:").getFormattedText(), guiX + 24, guiY + 150, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 160, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Creeper:").getFormattedText(), guiX + 24, guiY + 170, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 180, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Enderman:").getFormattedText(), guiX + 24, guiY + 190, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 200, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Endermite:").getFormattedText(), guiX + 24, guiY + 210, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 220, 0x000000);
         
         super.drawScreen(x, y, ticks);
     }

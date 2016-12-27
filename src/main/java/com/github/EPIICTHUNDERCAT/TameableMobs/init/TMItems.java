@@ -31,6 +31,7 @@ public class TMItems {
 		public static Item witch_projectile = new TMItem("witch_projectile");
 		public static Item bat_pee = new TMItem("bat_pee");
 		public static Item info_book = new TMInfoBook("info_book");
+		public static Item bug = new TMInfoBook("bug");
 		
 		
 		private static List<Item> getItems() {

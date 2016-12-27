@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -185,14 +186,14 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 	}
 
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.BLAZE_POWDER;
+		return stack == null ? false : stack.getItem() == TMItems.bug;
 	}
 
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.BLAZE_ROD) {
+				if (stack.getItem() == TMItems.bug) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -216,7 +217,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.BLAZE_POWDER) {
+		} else if (stack != null && stack.getItem() == TMItems.bug) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
