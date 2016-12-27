@@ -61,7 +61,7 @@ public class InfoGui extends GuiScreen{
         fontRendererObj.drawString(new TextComponentString("Bat:").getFormattedText(), guiX + 24, guiY + 72, 0x000000);
         fontRendererObj.drawString(new TextComponentString("Bug / Bug / Bug").getFormattedText(), guiX + 93, guiY + 72, 0x000000);
         fontRendererObj.drawString(new TextComponentString("Blaze: Powder / BlazeRod / Powder").getFormattedText(), guiX + 24, guiY + 86, 0x000000);
-        fontRendererObj.drawString(new TextComponentString("Cave Spider: Spider Tamer/Spider Eye").getFormattedText(), guiX + 24, guiY + 100, 0x000000);
+        fontRendererObj.drawString(new TextComponentString("Cave Spider: SpiderTamer/SpiderEye/").getFormattedText(), guiX + 24, guiY + 100, 0x000000);
         fontRendererObj.drawString(new TextComponentString("Cave Spider:").getFormattedText(), guiX + 24, guiY + 110, 0x000000);
         fontRendererObj.drawString(new TextComponentString("Blaze").getFormattedText(), guiX + 24, guiY + 120, 0x000000);
         fontRendererObj.drawString(new TextComponentString("Chicken:").getFormattedText(), guiX + 24, guiY + 130, 0x000000);
