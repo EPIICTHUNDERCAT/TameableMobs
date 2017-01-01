@@ -25,7 +25,6 @@ import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMate;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIPanic;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWander;
@@ -209,7 +208,7 @@ public class TameableSquid extends EntityAnimal implements IEntityOwnable {
 	}
 
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.WHEAT;
+		return stack == null ? false : stack.getItem() == Items.FISH;
 	}
 
 	@Override
@@ -228,7 +227,7 @@ public class TameableSquid extends EntityAnimal implements IEntityOwnable {
 		}
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.WHEAT) {
+				if (stack.getItem() == TMItems.ink_suplement) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -252,7 +251,7 @@ public class TameableSquid extends EntityAnimal implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == TMItems.taming_wheat) {
+		} else if (stack != null && stack.getItem() == Items.FISH) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}

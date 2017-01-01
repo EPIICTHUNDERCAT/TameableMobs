@@ -204,18 +204,7 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
-		if (stack != null && stack.getItem() == Items.BUCKET && !player.capabilities.isCreativeMode
-				&& !this.isChild()) {
-			player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-
-			if (--stack.stackSize == 0) {
-				player.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-			} else if (!player.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-				player.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-			}
-
-			return true;
-		}
+		
 		if (isTamed()) {
 			if (stack != null) {
 				if (stack.getItem() == TMItems.creeper_healer) {
@@ -1351,5 +1340,5 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 
 	protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos) {
 	}
-
+	 
 }

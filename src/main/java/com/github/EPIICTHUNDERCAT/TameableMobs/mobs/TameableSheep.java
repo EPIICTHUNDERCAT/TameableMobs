@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
@@ -280,7 +281,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.BREAD) {
+		} else if (stack != null && stack.getItem() == TMItems.taming_wheat) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}

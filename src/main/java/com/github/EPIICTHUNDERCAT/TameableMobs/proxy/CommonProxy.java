@@ -2,7 +2,9 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.ModEntities;
+import com.github.EPIICTHUNDERCAT.TameableMobs.util.TMEventHandler;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -24,6 +26,7 @@ public class CommonProxy {
 	private void register(FMLPreInitializationEvent preEvent) {
 		TMItems.register(preEvent);
 		//NGBlocks.register(preEvent);
+		MinecraftForge.EVENT_BUS.register(new TMEventHandler());
 		
 
 	}

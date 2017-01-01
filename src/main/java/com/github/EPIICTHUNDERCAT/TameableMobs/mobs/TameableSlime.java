@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -12,42 +11,39 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIFindEntityNearest;
+import net.minecraft.entity.ai.EntityAIFindEntityNearestPlayer;
 import net.minecraft.entity.ai.EntityAIFollowParent;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMate;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIPanic;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAITempt;
-import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
@@ -61,76 +57,58 @@ import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
+public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob {
 
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableCreeper.class,
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableSlime.class,
 			DataSerializers.FLOAT);
-	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableCreeper.class,
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableSlime.class,
 			DataSerializers.BOOLEAN);
-	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableCreeper.class,
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableSlime.class,
 			DataSerializers.BYTE);
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-			.<Optional<UUID>>createKey(TameableCreeper.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-
-	private static final DataParameter<Integer> STATE = EntityDataManager.<Integer>createKey(TameableCreeper.class,
+			.<Optional<UUID>>createKey(TameableSlime.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final DataParameter<Integer> SLIME_SIZE = EntityDataManager.<Integer>createKey(TameableSlime.class,
 			DataSerializers.VARINT);
-	private static final DataParameter<Boolean> POWERED = EntityDataManager.<Boolean>createKey(TameableCreeper.class,
-			DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> IGNITED = EntityDataManager.<Boolean>createKey(TameableCreeper.class,
-			DataSerializers.BOOLEAN);
-	/**
-	 * Time when this creeper was last in an active state (Messed up code here,
-	 * probably causes creeper animation to go weird)
-	 */
-	private int lastActiveTime;
-	/**
-	 * The amount of time since the creeper was close enough to the player to
-	 * ignite
-	 */
-	private int timeSinceIgnited;
-	private int fuseTime = 30;
-	/** Explosion radius for this creeper. */
-	private int explosionRadius = 3;
-	private int droppedSkulls;
+	public float squishAmount;
+	public float squishFactor;
+	public float prevSquishFactor;
+	private boolean wasOnGround;
 	protected EntityAISit aiSit;
 
-	public TameableCreeper(World worldIn) {
+	public TameableSlime(World worldIn) {
 		super(worldIn);
 		setTamed(false);
-		this.setSize(0.6F, 1.7F);
-
+		this.moveHelper = new TameableSlime.SlimeMoveHelper(this);
 	}
 
 	@Override
 	protected void initEntityAI() {
-
-		this.tasks.addTask(2, new EntityAICreeperSwell(this));
-		this.tasks.addTask(3, new EntityAIAvoidEntity(this, EntityOcelot.class, 6.0F, 1.0D, 1.2D));
-		tasks.addTask(0, new EntityAISwimming(this));
-		tasks.addTask(1, new EntityAIPanic(this, 1.25D));
+		tasks.addTask(1, new TameableSlime.AISlimeFloat(this));
+		tasks.addTask(2, new TameableSlime.AISlimeAttack(this));
+		tasks.addTask(3, new TameableSlime.AISlimeFaceRandom(this));
+		tasks.addTask(5, new TameableSlime.AISlimeHop(this));
+		targetTasks.addTask(1, new EntityAIFindEntityNearestPlayer(this));
+		targetTasks.addTask(3, new EntityAIFindEntityNearest(this, EntityIronGolem.class));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.WHEAT, false));
-		
-		aiSit = new TameableCreeper.EntityAISit(this);
+		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
+		aiSit = new TameableSlime.EntityAISit(this);
 		tasks.addTask(1, aiSit);
-
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-
-		tasks.addTask(2, new TameableCreeper.AIMeleeAttack(this, 1.0D, false));
-		tasks.addTask(7, new EntityAIWander(this, 1.0D));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-		tasks.addTask(8, new TameableCreeper.EntityAIBeg(this, 8.0F));
-		tasks.addTask(8, new EntityAILookIdle(this));
-		targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+		tasks.addTask(8, new TameableSlime.EntityAIBeg(this, 8.0F));
 		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
-		targetTasks.addTask(3, new TameableCreeper.AIFindPlayer(this));
+		targetTasks.addTask(3, new TameableSlime.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
 	}
@@ -155,9 +133,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataManager.register(STATE, Integer.valueOf(-1));
-		this.dataManager.register(POWERED, Boolean.valueOf(false));
-		this.dataManager.register(IGNITED, Boolean.valueOf(false));
+		dataManager.register(SLIME_SIZE, Integer.valueOf(1));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
 		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
@@ -165,16 +141,13 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 
 	}
 
-	
-
-	
 	@Override
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.GUNPOWDER;
+		return stack == null ? false : stack.getItem() == Items.SLIME_BALL;
 	}
 
-	public static void registerFixesSheep(DataFixer fixer) {
-		EntityLiving.registerFixesMob(fixer, "TameableCreeper");
+	public static void registerFixesSlime(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "TameableSlime");
 	}
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
@@ -184,13 +157,8 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
-		if (((Boolean) this.dataManager.get(POWERED)).booleanValue()) {
-			compound.setBoolean("powered", true);
-		}
-
-		compound.setShort("Fuse", (short) this.fuseTime);
-		compound.setByte("ExplosionRadius", (byte) this.explosionRadius);
-		compound.setBoolean("ignited", this.hasIgnited());
+		compound.setInteger("Size", this.getSlimeSize() - 1);
+		compound.setBoolean("wasOnGround", this.wasOnGround);
 		if (getOwnerId() == null) {
 			compound.setString("OwnerUUID", "");
 		} else {
@@ -203,19 +171,14 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
-		dataManager.set(POWERED, Boolean.valueOf(compound.getBoolean("powered")));
+		int i = compound.getInteger("Size");
 
-		if (compound.hasKey("Fuse", 99)) {
-			fuseTime = compound.getShort("Fuse");
+		if (i < 0) {
+			i = 0;
 		}
 
-		if (compound.hasKey("ExplosionRadius", 99)) {
-			explosionRadius = compound.getByte("ExplosionRadius");
-		}
-
-		if (compound.getBoolean("ignited")) {
-			ignite();
-		}
+		this.setSlimeSize(i + 1);
+		this.wasOnGround = compound.getBoolean("wasOnGround");
 		String s;
 
 		if (compound.hasKey("OwnerUUID", 8)) {
@@ -251,7 +214,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == TMItems.creeper_healer) {
+				if (stack.getItem() == Items.SLIME_BALL) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -275,7 +238,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == TMItems.creeper_tamer) {
+		} else if (stack != null && stack.getItem() == Items.SLIME_BALL) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
@@ -298,18 +261,6 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 			}
 
 			return true;
-		}
-
-		if (stack != null && stack.getItem() == Items.FLINT_AND_STEEL) {
-			this.worldObj.playSound(player, this.posX, this.posY, this.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE,
-					this.getSoundCategory(), 1.0F, this.rand.nextFloat() * 0.4F + 0.8F);
-			player.swingArm(hand);
-
-			if (!this.worldObj.isRemote) {
-				this.ignite();
-				stack.damageItem(1, player);
-				return true;
-			}
 		}
 
 		return super.processInteract(player, hand, stack);
@@ -366,12 +317,12 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 			return false;
 		} else if (!this.isTamed()) {
 			return false;
-		} else if (!(otherAnimal instanceof TameableCreeper)) {
+		} else if (!(otherAnimal instanceof TameableSlime)) {
 			return false;
 		} else {
-			TameableCreeper entityTameableCreeper = (TameableCreeper) otherAnimal;
-			return !entityTameableCreeper.isTamed() ? false
-					: (entityTameableCreeper.isSitting() ? false : this.isInLove() && entityTameableCreeper.isInLove());
+			TameableSlime entityTameableSlime = (TameableSlime) otherAnimal;
+			return !entityTameableSlime.isTamed() ? false
+					: (entityTameableSlime.isSitting() ? false : this.isInLove() && entityTameableSlime.isInLove());
 		}
 	}
 
@@ -429,13 +380,13 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
-		} 
+		}
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
-		if (!(p_142018_1_ instanceof TameableCreeper) && !(p_142018_1_ instanceof EntityGhast)) {
-			if (p_142018_1_ instanceof TameableCreeper) {
-				TameableCreeper entityChicken = (TameableCreeper) p_142018_1_;
+		if (!(p_142018_1_ instanceof EntityCreeper) && !(p_142018_1_ instanceof EntityGhast)) {
+			if (p_142018_1_ instanceof TameableSlime) {
+				TameableSlime entityChicken = (TameableSlime) p_142018_1_;
 
 				if (entityChicken.isTamed() && entityChicken.getOwner() == p_142018_2_) {
 					return false;
@@ -451,13 +402,13 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	}
 
 	static class EntityAIBeg extends EntityAIBase {
-		private final TameableCreeper theBat;
+		private final TameableSlime theBat;
 		private EntityPlayer thePlayer;
 		private final World worldObject;
 		private final float minPlayerDistance;
 		private int timeoutCounter;
 
-		public EntityAIBeg(TameableCreeper blaze, float minDistance) {
+		public EntityAIBeg(TameableSlime blaze, float minDistance) {
 			theBat = blaze;
 			worldObject = blaze.worldObj;
 			minPlayerDistance = minDistance;
@@ -538,13 +489,13 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	}
 
 	static class EntityAISit extends EntityAIBase {
-		private final TameableCreeper theEntity;
+		private final TameableSlime theEntity;
 
 		/** If the EntityTameable is sitting. */
 
 		private boolean isSitting;
 
-		public EntityAISit(TameableCreeper entityIn) {
+		public EntityAISit(TameableSlime entityIn) {
 			theEntity = entityIn;
 			setMutexBits(5);
 		}
@@ -594,20 +545,20 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	}
 
 	@Override
-	public TameableCreeper createChild(EntityAgeable ageable) {
-		TameableCreeper entityTameableCreeper = new TameableCreeper(this.worldObj);
+	public TameableSlime createChild(EntityAgeable ageable) {
+		TameableSlime entityTameableSlime = new TameableSlime(this.worldObj);
 		UUID uuid = this.getOwnerId();
 
 		if (uuid != null) {
-			entityTameableCreeper.setOwnerId(uuid);
-			entityTameableCreeper.setTamed(true);
+			entityTameableSlime.setOwnerId(uuid);
+			entityTameableSlime.setTamed(true);
 		}
 
-		return entityTameableCreeper;
+		return entityTameableSlime;
 	}
 
 	static class EntityAIFollowOwner extends EntityAIBase {
-		private final TameableCreeper thePet;
+		private final TameableSlime thePet;
 		private EntityLivingBase theOwner;
 		World theWorld;
 		private final double followSpeed;
@@ -617,7 +568,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		float minDist;
 		private float oldWaterCost;
 
-		public EntityAIFollowOwner(TameableCreeper thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
+		public EntityAIFollowOwner(TameableSlime thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
 			thePet = thePetIn;
 			theWorld = thePetIn.worldObj;
 			followSpeed = followSpeedIn;
@@ -727,11 +678,11 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	}
 
 	static class EntityAIOwnerHurtByTarget extends EntityAITarget {
-		TameableCreeper theDefendingTameable;
+		TameableSlime theDefendingTameable;
 		EntityLivingBase theOwnerAttacker;
 		private int timestamp;
 
-		public EntityAIOwnerHurtByTarget(TameableCreeper theDefendingTameableIn) {
+		public EntityAIOwnerHurtByTarget(TameableSlime theDefendingTameableIn) {
 			super(theDefendingTameableIn, false);
 			theDefendingTameable = theDefendingTameableIn;
 			setMutexBits(1);
@@ -775,22 +726,22 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 	}
 
 	static class AIFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer> {
-		private final TameableCreeper TameableCreeper;
+		private final TameableSlime TameableSlime;
 		private EntityPlayer player;
 		private int aggroTime;
 		private int teleportTime;
 
-		public AIFindPlayer(TameableCreeper p_i45842_1_) {
+		public AIFindPlayer(TameableSlime p_i45842_1_) {
 			super(p_i45842_1_, EntityPlayer.class, false);
-			TameableCreeper = p_i45842_1_;
+			TameableSlime = p_i45842_1_;
 		}
 
 		@Override
 		public boolean shouldExecute() {
 			double d0 = getTargetDistance();
-			player = TameableCreeper.worldObj.getNearestAttackablePlayer(TameableCreeper.posX, TameableCreeper.posY,
-					TameableCreeper.posZ, d0, d0, (Function) null, (@Nullable EntityPlayer player) -> (player != null)
-							&& (TameableCreeper.shouldAttackPlayer(player)));
+			player = TameableSlime.worldObj.getNearestAttackablePlayer(TameableSlime.posX, TameableSlime.posY,
+					TameableSlime.posZ, d0, d0, (Function) null,
+					(@Nullable EntityPlayer player) -> (player != null) && (TameableSlime.shouldAttackPlayer(player)));
 			return player != null;
 		}
 
@@ -809,10 +760,10 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		@Override
 		public boolean continueExecuting() {
 			if (player != null) {
-				if (!TameableCreeper.shouldAttackPlayer(player)) {
+				if (!TameableSlime.shouldAttackPlayer(player)) {
 					return false;
 				}
-				TameableCreeper.faceEntity(player, 10.0F, 10.0F);
+				TameableSlime.faceEntity(player, 10.0F, 10.0F);
 				return true;
 			}
 			return (targetEntity != null) && (targetEntity.isEntityAlive()) ? true : super.continueExecuting();
@@ -828,12 +779,12 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 				}
 			} else {
 				if (targetEntity != null) {
-					if (TameableCreeper.shouldAttackPlayer(targetEntity)) {
-						if (targetEntity.getDistanceSqToEntity(TameableCreeper) < 16.0D) {
+					if (TameableSlime.shouldAttackPlayer(targetEntity)) {
+						if (targetEntity.getDistanceSqToEntity(TameableSlime) < 16.0D) {
 						}
 						teleportTime = 0;
-					} else if ((targetEntity.getDistanceSqToEntity(TameableCreeper) > 256.0D) && (teleportTime++ >= 30)
-							&& (TameableCreeper.teleportToEntity(targetEntity))) {
+					} else if ((targetEntity.getDistanceSqToEntity(TameableSlime) > 256.0D) && (teleportTime++ >= 30)
+							&& (TameableSlime.teleportToEntity(targetEntity))) {
 						teleportTime = 0;
 					}
 				}
@@ -881,426 +832,501 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		return flag;
 	}
 
-	static class EntityAICreeperSwell extends EntityAIBase {
-		/** The creeper that is swelling. */
-		TameableCreeper swellingCreeper;
-		/**
-		 * The creeper's attack target. This is used for the changing of the
-		 * creeper's state.
-		 */
-		EntityLivingBase creeperAttackTarget;
+	protected void setSlimeSize(int size) {
+		this.dataManager.set(SLIME_SIZE, Integer.valueOf(size));
+		this.setSize(0.51000005F * (float) size, 0.51000005F * (float) size);
+		this.setPosition(this.posX, this.posY, this.posZ);
+		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue((double) (size * size));
+		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
+				.setBaseValue((double) (0.2F + 0.1F * (float) size));
+		this.setHealth(this.getMaxHealth());
+		this.experienceValue = size;
+	}
 
-		public EntityAICreeperSwell(TameableCreeper TameableCreeperIn) {
-			this.swellingCreeper = TameableCreeperIn;
-			this.setMutexBits(1);
+	/**
+	 * Returns the size of the slime.
+	 */
+	public int getSlimeSize() {
+		return ((Integer) this.dataManager.get(SLIME_SIZE)).intValue();
+	}
+
+	public boolean isSmallSlime() {
+		return this.getSlimeSize() <= 1;
+	}
+
+	protected EnumParticleTypes getParticleType() {
+		return EnumParticleTypes.SLIME;
+	}
+
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	public void onUpdate() {
+		if (!this.worldObj.isRemote && this.worldObj.getDifficulty() == EnumDifficulty.PEACEFUL
+				&& this.getSlimeSize() > 0) {
+			this.isDead = true;
+		}
+
+		this.squishFactor += (this.squishAmount - this.squishFactor) * 0.5F;
+		this.prevSquishFactor = this.squishFactor;
+		super.onUpdate();
+
+		if (this.onGround && !this.wasOnGround) {
+			int i = this.getSlimeSize();
+			if (spawnCustomParticles()) {
+				i = 0;
+			} // don't spawn particles if it's handled by the implementation
+				// itself
+			for (int j = 0; j < i * 8; ++j) {
+				float f = this.rand.nextFloat() * ((float) Math.PI * 2F);
+				float f1 = this.rand.nextFloat() * 0.5F + 0.5F;
+				float f2 = MathHelper.sin(f) * (float) i * 0.5F * f1;
+				float f3 = MathHelper.cos(f) * (float) i * 0.5F * f1;
+				World world = this.worldObj;
+				EnumParticleTypes enumparticletypes = this.getParticleType();
+				double d0 = this.posX + (double) f2;
+				double d1 = this.posZ + (double) f3;
+				world.spawnParticle(enumparticletypes, d0, this.getEntityBoundingBox().minY, d1, 0.0D, 0.0D, 0.0D,
+						new int[0]);
+			}
+
+			this.playSound(this.getSquishSound(), this.getSoundVolume(),
+					((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F) / 0.8F);
+			this.squishAmount = -0.5F;
+		} else if (!this.onGround && this.wasOnGround) {
+			this.squishAmount = 1.0F;
+		}
+
+		this.wasOnGround = this.onGround;
+		this.alterSquishAmount();
+	}
+
+	protected void alterSquishAmount() {
+		this.squishAmount *= 0.6F;
+	}
+
+	/**
+	 * Gets the amount of time the slime needs to wait between jumps.
+	 */
+	protected int getJumpDelay() {
+		return this.rand.nextInt(20) + 10;
+	}
+
+	protected TameableSlime createInstance() {
+		return new TameableSlime(this.worldObj);
+	}
+
+	public void notifyDataManagerChange(DataParameter<?> key) {
+		if (SLIME_SIZE.equals(key)) {
+			int i = this.getSlimeSize();
+			this.setSize(0.51000005F * (float) i, 0.51000005F * (float) i);
+			this.rotationYaw = this.rotationYawHead;
+			this.renderYawOffset = this.rotationYawHead;
+
+			if (this.isInWater() && this.rand.nextInt(20) == 0) {
+				this.resetHeight();
+			}
+		}
+
+		super.notifyDataManagerChange(key);
+	}
+
+	/**
+	 * Will get destroyed next tick.
+	 */
+	public void setDead() {
+		int i = this.getSlimeSize();
+
+		if (!this.worldObj.isRemote && i > 1 && this.getHealth() <= 0.0F) {
+			int j = 2 + this.rand.nextInt(3);
+
+			for (int k = 0; k < j; ++k) {
+				float f = ((float) (k % 2) - 0.5F) * (float) i / 4.0F;
+				float f1 = ((float) (k / 2) - 0.5F) * (float) i / 4.0F;
+				TameableSlime TameableSlime = this.createInstance();
+
+				if (this.hasCustomName()) {
+					TameableSlime.setCustomNameTag(this.getCustomNameTag());
+				}
+
+				if (this.isNoDespawnRequired()) {
+					TameableSlime.enablePersistence();
+				}
+
+				TameableSlime.setSlimeSize(i / 2);
+				TameableSlime.setLocationAndAngles(this.posX + (double) f, this.posY + 0.5D, this.posZ + (double) f1,
+						this.rand.nextFloat() * 360.0F, 0.0F);
+				this.worldObj.spawnEntityInWorld(TameableSlime);
+			}
+		}
+
+		super.setDead();
+	}
+
+	/**
+	 * Applies a velocity to the entities, to push them away from eachother.
+	 */
+	public void applyEntityCollision(Entity entityIn) {
+		super.applyEntityCollision(entityIn);
+
+		if (entityIn instanceof EntityIronGolem && this.canDamagePlayer()) {
+			this.dealDamage((EntityLivingBase) entityIn);
+		}
+	}
+
+	/**
+	 * Called by a player entity when they collide with an entity
+	 */
+	public void onCollideWithPlayer(EntityPlayer entityIn) {
+		if (this.canDamagePlayer()) {
+			this.dealDamage(entityIn);
+		}
+	}
+
+	protected void dealDamage(EntityLivingBase entityIn) {
+		int i = this.getSlimeSize();
+
+		if (this.canEntityBeSeen(entityIn)
+				&& this.getDistanceSqToEntity(entityIn) < 0.6D * (double) i * 0.6D * (double) i
+				&& entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.getAttackStrength())) {
+			this.playSound(SoundEvents.ENTITY_SLIME_ATTACK, 1.0F,
+					(this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+			this.applyEnchantments(this, entityIn);
+		}
+	}
+
+	public float getEyeHeight() {
+		return 0.625F * this.height;
+	}
+
+	/**
+	 * Indicates weather the slime is able to damage the player (based upon the
+	 * slime's size)
+	 */
+	protected boolean canDamagePlayer() {
+		return !this.isSmallSlime();
+	}
+
+	/**
+	 * Gets the amount of damage dealt to the player when "attacked" by the
+	 * slime.
+	 */
+	protected int getAttackStrength() {
+		return this.getSlimeSize();
+	}
+
+	protected SoundEvent getHurtSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_SLIME_HURT : SoundEvents.ENTITY_SLIME_HURT;
+	}
+
+	protected SoundEvent getDeathSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_SLIME_DEATH : SoundEvents.ENTITY_SLIME_DEATH;
+	}
+
+	protected SoundEvent getSquishSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_SLIME_SQUISH : SoundEvents.ENTITY_SLIME_SQUISH;
+	}
+
+	protected Item getDropItem() {
+		return this.getSlimeSize() == 1 ? Items.SLIME_BALL : null;
+	}
+
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return this.getSlimeSize() == 1 ? LootTableList.ENTITIES_SLIME : LootTableList.EMPTY;
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	public boolean getCanSpawnHere() {
+		BlockPos blockpos = new BlockPos(MathHelper.floor_double(this.posX), 0, MathHelper.floor_double(this.posZ));
+		Chunk chunk = this.worldObj.getChunkFromBlockCoords(blockpos);
+
+		if (this.worldObj.getWorldInfo().getTerrainType().handleSlimeSpawnReduction(rand, worldObj)) {
+			return false;
+		} else {
+			if (this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL) {
+				Biome biome = this.worldObj.getBiome(blockpos);
+
+				if (biome == Biomes.SWAMPLAND && this.posY > 50.0D && this.posY < 70.0D && this.rand.nextFloat() < 0.5F
+						&& this.rand.nextFloat() < this.worldObj.getCurrentMoonPhaseFactor()
+						&& this.worldObj.getLightFromNeighbors(new BlockPos(this)) <= this.rand.nextInt(8)) {
+					return super.getCanSpawnHere();
+				}
+
+				if (this.rand.nextInt(10) == 0 && chunk.getRandomWithSeed(987234911L).nextInt(10) == 0
+						&& this.posY < 40.0D) {
+					return super.getCanSpawnHere();
+				}
+			}
+
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the volume for the sounds this mob makes.
+	 */
+	protected float getSoundVolume() {
+		return 0.4F * (float) this.getSlimeSize();
+	}
+
+	/**
+	 * The speed it takes to move the entityliving's rotationPitch through the
+	 * faceEntity method. This is only currently use in wolves.
+	 */
+	public int getVerticalFaceSpeed() {
+		return 0;
+	}
+
+	/**
+	 * Returns true if the slime makes a sound when it jumps (based upon the
+	 * slime's size)
+	 */
+	protected boolean makesSoundOnJump() {
+		return this.getSlimeSize() > 0;
+	}
+
+	/**
+	 * Causes this entity to do an upwards motion (jumping).
+	 */
+	protected void jump() {
+		this.motionY = 0.41999998688697815D;
+		this.isAirBorne = true;
+	}
+
+	/**
+	 * Called only once on an entity when first time spawned, via egg, mob
+	 * spawner, natural spawning etc, but not called when entity is reloaded
+	 * from nbt. Mainly used for initializing attributes and inventory
+	 */
+	@Nullable
+	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+		int i = this.rand.nextInt(3);
+
+		if (i < 2 && this.rand.nextFloat() < 0.5F * difficulty.getClampedAdditionalDifficulty()) {
+			++i;
+		}
+
+		int j = 1 << i;
+		this.setSlimeSize(j);
+		return super.onInitialSpawn(difficulty, livingdata);
+	}
+
+	protected SoundEvent getJumpSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_SLIME_JUMP : SoundEvents.ENTITY_SLIME_JUMP;
+	}
+
+	/*
+	 * ======================================== FORGE START
+	 * =====================================
+	 */
+	/**
+	 * Called when the slime spawns particles on landing, see onUpdate. Return
+	 * true to prevent the spawning of the default particles.
+	 */
+	protected boolean spawnCustomParticles() {
+		return false;
+	}
+	/*
+	 * ======================================== FORGE END
+	 * =====================================
+	 */
+
+	static class AISlimeAttack extends EntityAIBase {
+		private final TameableSlime slime;
+		private int growTieredTimer;
+
+		public AISlimeAttack(TameableSlime slimeIn) {
+			this.slime = slimeIn;
+			this.setMutexBits(2);
 		}
 
 		/**
 		 * Returns whether the EntityAIBase should begin execution.
 		 */
 		public boolean shouldExecute() {
-			EntityLivingBase entitylivingbase = this.swellingCreeper.getAttackTarget();
-			return this.swellingCreeper.getCreeperState() > 0
-					|| entitylivingbase != null && this.swellingCreeper.getDistanceSqToEntity(entitylivingbase) < 9.0D;
+			EntityLivingBase entitylivingbase = this.slime.getAttackTarget();
+			return entitylivingbase == null ? false
+					: (!entitylivingbase.isEntityAlive() ? false
+							: !(entitylivingbase instanceof EntityPlayer)
+									|| !((EntityPlayer) entitylivingbase).capabilities.disableDamage);
 		}
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
 		 */
 		public void startExecuting() {
-			this.swellingCreeper.getNavigator().clearPathEntity();
-			this.creeperAttackTarget = this.swellingCreeper.getAttackTarget();
+			this.growTieredTimer = 300;
+			super.startExecuting();
 		}
 
 		/**
-		 * Resets the task
+		 * Returns whether an in-progress EntityAIBase should continue executing
 		 */
-		public void resetTask() {
-			this.creeperAttackTarget = null;
+		public boolean continueExecuting() {
+			EntityLivingBase entitylivingbase = this.slime.getAttackTarget();
+			return entitylivingbase == null ? false
+					: (!entitylivingbase.isEntityAlive() ? false
+							: (entitylivingbase instanceof EntityPlayer
+									&& ((EntityPlayer) entitylivingbase).capabilities.disableDamage ? false
+											: --this.growTieredTimer > 0));
 		}
 
 		/**
 		 * Updates the task
 		 */
 		public void updateTask() {
-			if (this.creeperAttackTarget == null) {
-				this.swellingCreeper.setCreeperState(-1);
-			} else if (this.swellingCreeper.getDistanceSqToEntity(this.creeperAttackTarget) > 49.0D) {
-				this.swellingCreeper.setCreeperState(-1);
-			} else if (!this.swellingCreeper.getEntitySenses().canSee(this.creeperAttackTarget)) {
-				this.swellingCreeper.setCreeperState(-1);
+			this.slime.faceEntity(this.slime.getAttackTarget(), 10.0F, 10.0F);
+			((TameableSlime.SlimeMoveHelper) this.slime.getMoveHelper()).setDirection(this.slime.rotationYaw,
+					this.slime.canDamagePlayer());
+		}
+	}
+
+	static class AISlimeFaceRandom extends EntityAIBase {
+		private final TameableSlime slime;
+		private float chosenDegrees;
+		private int nextRandomizeTime;
+
+		public AISlimeFaceRandom(TameableSlime slimeIn) {
+			this.slime = slimeIn;
+			this.setMutexBits(2);
+		}
+
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			return this.slime.getAttackTarget() == null && (this.slime.onGround || this.slime.isInWater()
+					|| this.slime.isInLava() || this.slime.isPotionActive(MobEffects.LEVITATION));
+		}
+
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			if (--this.nextRandomizeTime <= 0) {
+				this.nextRandomizeTime = 40 + this.slime.getRNG().nextInt(60);
+				this.chosenDegrees = (float) this.slime.getRNG().nextInt(360);
+			}
+
+			((TameableSlime.SlimeMoveHelper) this.slime.getMoveHelper()).setDirection(this.chosenDegrees, false);
+		}
+	}
+
+	static class AISlimeFloat extends EntityAIBase {
+		private final TameableSlime slime;
+
+		public AISlimeFloat(TameableSlime slimeIn) {
+			this.slime = slimeIn;
+			this.setMutexBits(5);
+			((PathNavigateGround) slimeIn.getNavigator()).setCanSwim(true);
+		}
+
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			return this.slime.isInWater() || this.slime.isInLava();
+		}
+
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			if (this.slime.getRNG().nextFloat() < 0.8F) {
+				this.slime.getJumpHelper().setJumping();
+			}
+
+			((TameableSlime.SlimeMoveHelper) this.slime.getMoveHelper()).setSpeed(1.2D);
+		}
+	}
+
+	static class AISlimeHop extends EntityAIBase {
+		private final TameableSlime slime;
+
+		public AISlimeHop(TameableSlime slimeIn) {
+			this.slime = slimeIn;
+			this.setMutexBits(5);
+		}
+
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			return true;
+		}
+
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			((TameableSlime.SlimeMoveHelper) this.slime.getMoveHelper()).setSpeed(1.0D);
+		}
+	}
+
+	static class SlimeMoveHelper extends EntityMoveHelper {
+		private float yRot;
+		private int jumpDelay;
+		private final TameableSlime slime;
+		private boolean isAggressive;
+
+		public SlimeMoveHelper(TameableSlime slimeIn) {
+			super(slimeIn);
+			this.slime = slimeIn;
+			this.yRot = 180.0F * slimeIn.rotationYaw / (float) Math.PI;
+		}
+
+		public void setDirection(float p_179920_1_, boolean p_179920_2_) {
+			this.yRot = p_179920_1_;
+			this.isAggressive = p_179920_2_;
+		}
+
+		public void setSpeed(double speedIn) {
+			this.speed = speedIn;
+			this.action = EntityMoveHelper.Action.MOVE_TO;
+		}
+
+		public void onUpdateMoveHelper() {
+			this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, this.yRot, 90.0F);
+			this.entity.rotationYawHead = this.entity.rotationYaw;
+			this.entity.renderYawOffset = this.entity.rotationYaw;
+
+			if (this.action != EntityMoveHelper.Action.MOVE_TO) {
+				this.entity.setMoveForward(0.0F);
 			} else {
-				this.swellingCreeper.setCreeperState(1);
-			}
-		}
-	}
+				this.action = EntityMoveHelper.Action.WAIT;
 
-		static class AIMeleeAttack extends EntityAIAttackMelee {
+				if (this.entity.onGround) {
+					this.entity.setAIMoveSpeed((float) (this.speed * this.entity
+							.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
 
-			World worldObj;
-			protected EntityCreature attacker;
-			/**
-			 * An amount of decrementing ticks that allows the entity to attack
-			 * once the tick reaches 0.
-			 */
-			protected int attackTick;
-			/** The speed with which the mob will approach the target */
-			double speedTowardsTarget;
-			/**
-			 * When true, the mob will continue chasing its target, even if it
-			 * can't find a path to them right now.
-			 */
-			boolean longMemory;
-			/** The PathEntity of our entity. */
-			Path entityPathEntity;
-			private int delayCounter;
-			private double targetX;
-			private double targetY;
-			private double targetZ;
-			protected final int attackInterval = 20;
-			private int failedPathFindingPenalty = 0;
-			private boolean canPenalize = false;
+					if (this.jumpDelay-- <= 0) {
+						this.jumpDelay = this.slime.getJumpDelay();
 
-			public AIMeleeAttack(EntityCreature creature, double speedIn, boolean useLongMemory) {
-				super(creature, speedIn, useLongMemory);
-				this.attacker = creature;
-				this.worldObj = creature.worldObj;
-				this.speedTowardsTarget = speedIn;
-				this.longMemory = useLongMemory;
-				this.setMutexBits(3);
+						if (this.isAggressive) {
+							this.jumpDelay /= 3;
+						}
 
-			}
+						this.slime.getJumpHelper().setJumping();
 
-			/**
-			 * Returns whether the EntityAIBase should begin execution.
-			 */
-			public boolean shouldExecute() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-
-				if (entitylivingbase == null) {
-					return false;
-				} else if (!entitylivingbase.isEntityAlive()) {
-					return false;
+						if (this.slime.makesSoundOnJump()) {
+							this.slime.playSound(this.slime.getJumpSound(), this.slime.getSoundVolume(),
+									((this.slime.getRNG().nextFloat() - this.slime.getRNG().nextFloat()) * 0.2F + 1.0F)
+											* 0.8F);
+						}
+					} else {
+						this.slime.moveStrafing = 0.0F;
+						this.slime.moveForward = 0.0F;
+						this.entity.setAIMoveSpeed(0.0F);
+					}
 				} else {
-					if (canPenalize) {
-						if (--this.delayCounter <= 0) {
-							this.entityPathEntity = this.attacker.getNavigator()
-									.getPathToEntityLiving(entitylivingbase);
-							this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
-							return this.entityPathEntity != null;
-						} else {
-							return true;
-						}
-					}
-					this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
-					return this.entityPathEntity != null;
-				}
-			}
-
-			/**
-			 * Returns whether an in-progress EntityAIBase should continue
-			 * executing
-			 */
-			public boolean continueExecuting() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-				return entitylivingbase == null ? false
-						: (!entitylivingbase.isEntityAlive() ? false
-								: (!this.longMemory ? !this.attacker.getNavigator().noPath()
-										: (!this.attacker
-												.isWithinHomeDistanceFromPosition(new BlockPos(entitylivingbase))
-														? false
-														: !(entitylivingbase instanceof EntityPlayer)
-																|| !((EntityPlayer) entitylivingbase).isSpectator()
-																		&& !((EntityPlayer) entitylivingbase)
-																				.isCreative())));
-			}
-
-			/**
-			 * Execute a one shot task or start executing a continuous task
-			 */
-			public void startExecuting() {
-				this.attacker.getNavigator().setPath(this.entityPathEntity, this.speedTowardsTarget);
-				this.delayCounter = 0;
-			}
-
-			/**
-			 * Resets the task
-			 */
-			public void resetTask() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-
-				if (entitylivingbase instanceof EntityPlayer && (((EntityPlayer) entitylivingbase).isSpectator()
-						|| ((EntityPlayer) entitylivingbase).isCreative())) {
-					this.attacker.setAttackTarget((EntityLivingBase) null);
-				}
-
-				this.attacker.getNavigator().clearPathEntity();
-			}
-
-			/**
-			 * Updates the task
-			 */
-			public void updateTask() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-				this.attacker.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
-				double d0 = this.attacker.getDistanceSq(entitylivingbase.posX,
-						entitylivingbase.getEntityBoundingBox().minY, entitylivingbase.posZ);
-				--this.delayCounter;
-
-				if ((this.longMemory || this.attacker.getEntitySenses().canSee(entitylivingbase))
-						&& this.delayCounter <= 0
-						&& (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
-								|| entitylivingbase.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D
-								|| this.attacker.getRNG().nextFloat() < 0.05F)) {
-					this.targetX = entitylivingbase.posX;
-					this.targetY = entitylivingbase.getEntityBoundingBox().minY;
-					this.targetZ = entitylivingbase.posZ;
-					this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
-
-					if (this.canPenalize) {
-						this.delayCounter += failedPathFindingPenalty;
-						if (this.attacker.getNavigator().getPath() != null) {
-							net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath()
-									.getFinalPathPoint();
-							if (finalPathPoint != null && entitylivingbase.getDistanceSq(finalPathPoint.xCoord,
-									finalPathPoint.yCoord, finalPathPoint.zCoord) < 1)
-								failedPathFindingPenalty = 0;
-							else
-								failedPathFindingPenalty += 10;
-						} else {
-							failedPathFindingPenalty += 10;
-						}
-					}
-
-					if (d0 > 1024.0D) {
-						this.delayCounter += 10;
-					} else if (d0 > 256.0D) {
-						this.delayCounter += 5;
-					}
-
-					if (!this.attacker.getNavigator().tryMoveToEntityLiving(entitylivingbase,
-							this.speedTowardsTarget)) {
-						this.delayCounter += 15;
-					}
-				}
-
-				this.attackTick = Math.max(this.attackTick - 1, 0);
-				this.checkAndPerformAttack(entitylivingbase, d0);
-			}
-
-			protected void checkAndPerformAttack(EntityLivingBase p_190102_1_, double p_190102_2_) {
-				double d0 = this.getAttackReachSqr(p_190102_1_);
-
-				if (p_190102_2_ <= d0 && this.attackTick <= 0) {
-					this.attackTick = 20;
-					this.attacker.swingArm(EnumHand.MAIN_HAND);
-					this.attacker.attackEntityAsMob(p_190102_1_);
-				}
-			}
-
-			protected double getAttackReachSqr(EntityLivingBase attackTarget) {
-				return (double) (this.attacker.width * 2.0F * this.attacker.width * 2.0F + attackTarget.width);
-			}
-
-		}
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
-		/**
-		 * The maximum height from where the entity is alowed to jump (used in
-		 * pathfinder)
-		 */
-		public int getMaxFallHeight() {
-			return this.getAttackTarget() == null ? 3 : 3 + (int) (this.getHealth() - 1.0F);
-		}
-
-		public void fall(float distance, float damageMultiplier) {
-			super.fall(distance, damageMultiplier);
-			this.timeSinceIgnited = (int) ((float) this.timeSinceIgnited + distance * 1.5F);
-
-			if (this.timeSinceIgnited > this.fuseTime - 5) {
-				this.timeSinceIgnited = this.fuseTime - 5;
-			}
-		}
-
-		
-
-		public static void registerFixesCreeper(DataFixer fixer) {
-			EntityLiving.registerFixesMob(fixer, "Creeper");
-		}
-
-		
-
-		
-		
-		
-		
-		
-	
-		/**
-		 * Called to update the entity's position/logic.
-		 */
-		@Override
-		public void onUpdate() {
-			if (this.isEntityAlive()) {
-				this.lastActiveTime = this.timeSinceIgnited;
-
-				if (this.hasIgnited()) {
-					this.setCreeperState(1);
-				}
-
-				int i = this.getCreeperState();
-
-				if (i > 0 && this.timeSinceIgnited == 0) {
-					this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-				}
-
-				this.timeSinceIgnited += i;
-
-				if (this.timeSinceIgnited < 0) {
-					this.timeSinceIgnited = 0;
-				}
-
-				if (this.timeSinceIgnited >= this.fuseTime) {
-					this.timeSinceIgnited = this.fuseTime;
-					this.explode();
-				}
-			}
-
-			super.onUpdate();
-		}
-
-		protected SoundEvent getHurtSound() {
-			return SoundEvents.ENTITY_CREEPER_HURT;
-		}
-
-		protected SoundEvent getDeathSound() {
-			return SoundEvents.ENTITY_CREEPER_DEATH;
-		}
-
-		/**
-		 * Called when the mob's health reaches 0.
-		 */
-		public void onDeath(DamageSource cause) {
-			super.onDeath(cause);
-
-			if (this.worldObj.getGameRules().getBoolean("doMobLoot")) {
-				if (cause.getEntity() instanceof EntitySkeleton) {
-					int i = Item.getIdFromItem(Items.RECORD_13);
-					int j = Item.getIdFromItem(Items.RECORD_WAIT);
-					int k = i + this.rand.nextInt(j - i + 1);
-					this.dropItem(Item.getItemById(k), 1);
-				} else if (cause.getEntity() instanceof TameableCreeper && cause.getEntity() != this
-						&& ((TameableCreeper) cause.getEntity()).getPowered()
-						&& ((TameableCreeper) cause.getEntity()).isAIEnabled()) {
-					((TameableCreeper) cause.getEntity()).incrementDroppedSkulls();
-					this.entityDropItem(new ItemStack(Items.SKULL, 1, 4), 0.0F);
+					this.entity.setAIMoveSpeed((float) (this.speed * this.entity
+							.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
 				}
 			}
 		}
-
-		
-
-		/**
-		 * Returns true if the creeper is powered by a lightning bolt.
-		 */
-		public boolean getPowered() {
-			return ((Boolean) this.dataManager.get(POWERED)).booleanValue();
-		}
-
-		/**
-		 * Params: (Float)Render tick. Returns the intensity of the creeper's
-		 * flash when it is ignited.
-		 */
-		@SideOnly(Side.CLIENT)
-		public float getCreeperFlashIntensity(float p_70831_1_) {
-			return ((float) this.lastActiveTime + (float) (this.timeSinceIgnited - this.lastActiveTime) * p_70831_1_)
-					/ (float) (this.fuseTime - 2);
-		}
-
-		@Nullable
-		protected ResourceLocation getLootTable() {
-			return LootTableList.ENTITIES_CREEPER;
-		}
-
-		/**
-		 * Returns the current state of creeper, -1 is idle, 1 is 'in fuse'
-		 */
-		public int getCreeperState() {
-			return ((Integer) this.dataManager.get(STATE)).intValue();
-		}
-
-		/**
-		 * Sets the state of creeper, -1 to idle and 1 to be 'in fuse'
-		 */
-		public void setCreeperState(int state) {
-			this.dataManager.set(STATE, Integer.valueOf(state));
-		}
-
-		/**
-		 * Called when a lightning bolt hits the entity.
-		 */
-		public void onStruckByLightning(EntityLightningBolt lightningBolt) {
-			super.onStruckByLightning(lightningBolt);
-			this.dataManager.set(POWERED, Boolean.valueOf(true));
-		}
-
-		
-		/**
-		 * Creates an explosion as determined by this creeper's power and
-		 * explosion radius.
-		 */
-		private void explode() {
-			if (!this.worldObj.isRemote) {
-				boolean flag = this.worldObj.getGameRules().getBoolean("mobGriefing");
-				float f = this.getPowered() ? 2.0F : 1.0F;
-				this.dead = true;
-				this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, (float) this.explosionRadius * f,
-						flag);
-				this.setDead();
-			}
-		}
-
-		public boolean hasIgnited() {
-			return ((Boolean) this.dataManager.get(IGNITED)).booleanValue();
-		}
-
-		public void ignite() {
-			this.dataManager.set(IGNITED, Boolean.valueOf(true));
-		}
-
-		/**
-		 * Returns true if the newer Entity AI code should be run
-		 */
-		public boolean isAIEnabled() {
-			return this.droppedSkulls < 1 && this.worldObj.getGameRules().getBoolean("doMobLoot");
-		}
-
-		public void incrementDroppedSkulls() {
-			++this.droppedSkulls;
-		}
-		  /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-	    }
 	}
-
+}

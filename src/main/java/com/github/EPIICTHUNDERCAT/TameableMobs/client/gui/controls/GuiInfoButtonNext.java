@@ -17,7 +17,7 @@ public class GuiInfoButtonNext extends GuiButton{
 	private final static int sourceWidth = 12;
 	private final static int sourceHeight = 12;
 
-	private static final ResourceLocation buttonImage = new ResourceLocation(Reference.ID, "textures/guis/ArcaneCompendiumGuiExtras.png");
+	private static final ResourceLocation buttonImage = new ResourceLocation(Reference.ID, "textures/gui/button.png");
 
 	public GuiInfoButtonNext(int id, int xPos, int yPos, boolean isNextPage){
 		super(id, xPos, yPos, sourceWidth, sourceHeight, "");

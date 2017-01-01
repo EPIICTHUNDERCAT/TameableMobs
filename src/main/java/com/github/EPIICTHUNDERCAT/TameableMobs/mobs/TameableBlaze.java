@@ -55,6 +55,7 @@ import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
@@ -1178,5 +1179,11 @@ public class TameableBlaze extends EntityAnimal implements IEntityOwnable {
 
 		return flag;
 	}
-
+	  /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean getCanSpawnHere()
+    {
+        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+    }
 }

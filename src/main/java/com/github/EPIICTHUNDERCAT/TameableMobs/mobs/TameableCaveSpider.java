@@ -188,5 +188,11 @@ public class TameableCaveSpider extends TameableSpider {
 
 		return entityTameableSpider;
 	}
-
+	  /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean getCanSpawnHere()
+    {
+        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+    }
 }

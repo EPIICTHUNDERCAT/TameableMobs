@@ -100,7 +100,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		tasks.addTask(8, new TameableBat.EntityAIBeg(this, 8.0F));
 		// tasks.addTask(8, new EntityAILookIdle(this));
 		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-		//targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
+		// targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(3, new TameableBat.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
@@ -1066,7 +1066,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 						(int) this.posY + this.rand.nextInt(6) - 2,
 						(int) this.posZ + this.rand.nextInt(7) - this.rand.nextInt(7));
 			}
-			// if (!isTamed()){
+			 if (!isSitting()){
 			double d0 = (double) this.spawnPosition.getX() + 0.5D - this.posX;
 			double d1 = (double) this.spawnPosition.getY() + 0.1D - this.posY;
 			double d2 = (double) this.spawnPosition.getZ() + 0.5D - this.posZ;
@@ -1081,11 +1081,12 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 			if (this.rand.nextInt(100) == 0 && this.worldObj.getBlockState(blockpos1).isNormalCube()) {
 				this.setIsBatHanging(true);
 			}
-			// }
-		}
-		// if (isTamed()){
+			 }else
+				 if (isSitting()){
 
-		// }
+			 }
+		}
+		 
 	}
 
 	/**
