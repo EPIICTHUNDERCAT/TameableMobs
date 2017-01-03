@@ -1,6 +1,6 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.gui;
+package com.github.epiicthundercat.tameablemobs.client.gui;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.TameableMobs;
+import com.github.epiicthundercat.tameablemobs.TameableMobs;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

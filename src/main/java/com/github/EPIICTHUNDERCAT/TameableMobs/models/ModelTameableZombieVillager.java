@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;

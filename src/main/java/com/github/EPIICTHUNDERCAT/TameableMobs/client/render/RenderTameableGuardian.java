@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGuardian;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableGuardian;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableGuardian;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableGuardian;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

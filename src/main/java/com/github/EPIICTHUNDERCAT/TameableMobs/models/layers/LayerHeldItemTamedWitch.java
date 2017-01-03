@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
+package com.github.epiicthundercat.tameablemobs.models.layers;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableWitch;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableWitch;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableWitch;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableWitch;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableWitch;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;

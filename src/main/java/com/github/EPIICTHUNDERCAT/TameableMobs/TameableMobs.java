@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs;
+package com.github.epiicthundercat.tameablemobs;
 /*
  * 
  * Thanks to @TheRealP455w0rd for his help on taming code!
@@ -7,7 +7,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs;
 
 
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.proxy.CommonProxy;
+import com.github.epiicthundercat.tameablemobs.proxy.CommonProxy;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;

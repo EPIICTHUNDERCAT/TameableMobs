@@ -1,7 +1,7 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBat;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableChicken;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableBat;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableChicken;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

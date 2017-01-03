@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameablePolarBear;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameablePolarBear;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameablePolarBear;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;

@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
+package com.github.epiicthundercat.tameablemobs.mobs;
 
 import java.util.List;
 import java.util.Random;

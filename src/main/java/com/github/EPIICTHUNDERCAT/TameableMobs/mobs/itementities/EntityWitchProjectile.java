@@ -1,6 +1,6 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities;
+package com.github.epiicthundercat.tameablemobs.mobs.itementities;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableWitch;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

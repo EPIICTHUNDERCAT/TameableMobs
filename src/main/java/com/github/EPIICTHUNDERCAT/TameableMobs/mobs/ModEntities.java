@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
+package com.github.epiicthundercat.tameablemobs.mobs;
 
 /*
  * Thank you TheRealP455w0rd for your help with the biome iterator code!
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.TameableMobs;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
+import com.github.epiicthundercat.tameablemobs.TameableMobs;
+import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityBatPee;
+import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityWitchProjectile;
 
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;

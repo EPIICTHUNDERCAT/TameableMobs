@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableBlaze;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableBlaze;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableBlaze;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableBlaze;
 
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;

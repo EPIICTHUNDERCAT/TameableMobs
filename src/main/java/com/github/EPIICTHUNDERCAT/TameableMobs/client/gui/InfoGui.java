@@ -1,12 +1,12 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.gui;
+package com.github.epiicthundercat.tameablemobs.client.gui;
 
 import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.gui.controls.GuiInfoButtonNext;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.client.gui.controls.GuiInfoButtonNext;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;

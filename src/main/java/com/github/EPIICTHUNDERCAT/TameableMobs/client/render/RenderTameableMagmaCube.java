@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableMagmaCube;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableMagmaCube;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableMagmaCube;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableMagmaCube;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;

@@ -1,9 +1,9 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableIronGolem;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableIronGolem;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedIronGolemFlower;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedIronGolemFlower;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;

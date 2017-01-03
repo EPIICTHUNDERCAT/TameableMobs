@@ -1,7 +1,7 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
+package com.github.epiicthundercat.tameablemobs.models.layers;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableEnderman;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableEnderman;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableEnderman;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

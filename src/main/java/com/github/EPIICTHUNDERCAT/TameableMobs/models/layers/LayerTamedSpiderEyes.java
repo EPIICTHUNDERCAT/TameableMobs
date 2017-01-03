@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
+package com.github.epiicthundercat.tameablemobs.models.layers;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSpider;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSpider;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

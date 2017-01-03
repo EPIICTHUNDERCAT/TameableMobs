@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.item;
+package com.github.epiicthundercat.tameablemobs.item;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.gui.InfoGui;
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.util.TMCreativeTabs;
+import com.github.epiicthundercat.tameablemobs.client.gui.InfoGui;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.util.TMCreativeTabs;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;

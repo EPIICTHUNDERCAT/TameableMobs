@@ -1,6 +1,6 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableEnderman;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;

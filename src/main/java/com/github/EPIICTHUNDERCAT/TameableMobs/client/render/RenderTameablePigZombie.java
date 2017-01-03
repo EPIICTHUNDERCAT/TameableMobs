@@ -1,10 +1,10 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableZombie;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedBipedArmor;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedHeldItem;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameablePigZombie;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableZombie;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedBipedArmor;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedHeldItem;
 
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;

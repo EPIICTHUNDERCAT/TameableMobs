@@ -1,11 +1,11 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.init;
+package com.github.epiicthundercat.tameablemobs.init;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.item.TMInfoBook;
-import com.github.EPIICTHUNDERCAT.TameableMobs.item.TMItem;
+import com.github.epiicthundercat.tameablemobs.item.TMInfoBook;
+import com.github.epiicthundercat.tameablemobs.item.TMItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;

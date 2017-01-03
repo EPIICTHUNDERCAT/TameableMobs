@@ -1,12 +1,12 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
+package com.github.epiicthundercat.tameablemobs.mobs;
 
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityWitchProjectile;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityWitchProjectile;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 

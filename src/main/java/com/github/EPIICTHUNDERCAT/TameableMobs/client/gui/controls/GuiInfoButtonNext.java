@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.gui.controls;
+package com.github.epiicthundercat.tameablemobs.client.gui.controls;
 
 import org.lwjgl.opengl.GL11;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
+import com.github.epiicthundercat.tameablemobs.Reference;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

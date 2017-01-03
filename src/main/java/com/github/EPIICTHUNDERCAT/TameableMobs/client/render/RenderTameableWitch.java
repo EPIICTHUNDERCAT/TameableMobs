@@ -1,9 +1,9 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableWitch;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerHeldItemTamedWitch;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableWitch;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableWitch;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerHeldItemTamedWitch;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;

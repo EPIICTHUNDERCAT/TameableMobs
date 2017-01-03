@@ -1,9 +1,9 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableSpider;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedSpiderEyes;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableSpider;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedSpiderEyes;
 
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;

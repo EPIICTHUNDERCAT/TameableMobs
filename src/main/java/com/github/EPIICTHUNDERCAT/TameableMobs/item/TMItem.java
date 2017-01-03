@@ -1,7 +1,7 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.item;
+package com.github.epiicthundercat.tameablemobs.item;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.util.TMCreativeTabs;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.util.TMCreativeTabs;
 
 import net.minecraft.item.Item;
 

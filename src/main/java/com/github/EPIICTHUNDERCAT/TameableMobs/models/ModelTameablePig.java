@@ -1,6 +1,6 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
+import com.github.epiicthundercat.tameablemobs.mobs.TameablePig;
 
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.entity.EntityLivingBase;

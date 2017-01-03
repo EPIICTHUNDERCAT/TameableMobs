@@ -1,9 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.itementities.EntityBatPee;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityBatPee;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

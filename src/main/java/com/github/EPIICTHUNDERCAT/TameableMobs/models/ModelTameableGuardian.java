@@ -1,6 +1,6 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGuardian;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableGuardian;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;

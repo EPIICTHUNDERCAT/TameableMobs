@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
+package com.github.epiicthundercat.tameablemobs.proxy;
 
 public class ServerProxy extends CommonProxy{
 

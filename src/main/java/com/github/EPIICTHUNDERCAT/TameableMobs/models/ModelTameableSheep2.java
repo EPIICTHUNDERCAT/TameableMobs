@@ -1,7 +1,7 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.epiicthundercat.tameablemobs.models;
 
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSheep;
 
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;

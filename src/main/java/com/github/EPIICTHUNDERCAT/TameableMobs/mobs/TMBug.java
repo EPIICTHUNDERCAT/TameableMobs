@@ -1,10 +1,10 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
+package com.github.epiicthundercat.tameablemobs.mobs;
 
 import java.util.Calendar;
 
 import javax.annotation.Nullable;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
+import com.github.epiicthundercat.tameablemobs.Reference;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

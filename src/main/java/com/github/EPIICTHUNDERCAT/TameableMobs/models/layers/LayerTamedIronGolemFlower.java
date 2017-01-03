@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
+package com.github.epiicthundercat.tameablemobs.models.layers;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableIronGolem;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableIronGolem;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableIronGolem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;

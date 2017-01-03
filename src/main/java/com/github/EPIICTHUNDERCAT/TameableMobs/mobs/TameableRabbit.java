@@ -1,13 +1,13 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
+package com.github.epiicthundercat.tameablemobs.mobs;
 
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableRabbit.EntityAIFollowOwner;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableRabbit.EntityAIOwnerHurtByTarget;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableRabbit.EntityAISit;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit.EntityAIFollowOwner;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit.EntityAIOwnerHurtByTarget;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit.EntityAISit;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 

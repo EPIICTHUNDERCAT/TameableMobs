@@ -1,13 +1,13 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
+package com.github.epiicthundercat.tameablemobs.client.render;
 
 import java.util.List;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableZombie;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableZombie;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableZombieVillager;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedBipedArmor;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedHeldItem;
+import com.github.epiicthundercat.tameablemobs.Reference;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableZombie;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableZombie;
+import com.github.epiicthundercat.tameablemobs.models.ModelTameableZombieVillager;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedBipedArmor;
+import com.github.epiicthundercat.tameablemobs.models.layers.LayerTamedHeldItem;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.model.ModelBiped;

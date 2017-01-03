@@ -1,8 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.proxy;
+package com.github.epiicthundercat.tameablemobs.proxy;
 
-import com.github.EPIICTHUNDERCAT.TameableMobs.init.TMItems;
-import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.ModEntities;
-import com.github.EPIICTHUNDERCAT.TameableMobs.util.TMEventHandler;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.ModEntities;
+import com.github.epiicthundercat.tameablemobs.util.TMEventHandler;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
