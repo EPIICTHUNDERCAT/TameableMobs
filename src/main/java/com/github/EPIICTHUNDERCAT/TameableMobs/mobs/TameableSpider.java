@@ -22,7 +22,6 @@ import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIFollowParent;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -36,6 +35,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,12 +65,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableSpider extends EntityAnimal implements IEntityOwnable{
+public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob{
 	 private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(TameableSpider.class, DataSerializers.BYTE);
 
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
@@ -1101,17 +1102,47 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable{
 	
 	
 	
-	
+	    
+	    protected boolean isValidLightLevel()
+	    {
+	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+
+	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+
+	            if (this.worldObj.isThundering())
+	            {
+	                int j = this.worldObj.getSkylightSubtracted();
+	                this.worldObj.setSkylightSubtracted(10);
+	                i = this.worldObj.getLightFromNeighbors(blockpos);
+	                this.worldObj.setSkylightSubtracted(j);
+	            }
+
+	            return i <= this.rand.nextInt(8);
+	        }
+	    }
+
 	    /**
 	     * Checks if the entity's current position is a valid location to spawn this entity.
 	     */
+	    @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
 	    }
 	
 	
-	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 	
 }
 

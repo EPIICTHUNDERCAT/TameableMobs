@@ -179,4 +179,13 @@ public class TameableMagmaCube extends TameableSlime
     {
         return SoundEvents.ENTITY_MAGMACUBE_JUMP;
     }
+   
+
+
+ @Override
+    protected void despawnEntity() {
+        if (!isTamed()) {
+            super.despawnEntity();
+        }
+    }
 }

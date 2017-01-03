@@ -58,6 +58,7 @@ import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
@@ -1052,18 +1053,6 @@ public class TameableSilverfish extends EntityAnimal implements IEntityOwnable {
 		return true;
 	}
 
-	/**
-	 * Checks if the entity's current position is a valid location to spawn this
-	 * entity.
-	 */
-	public boolean getCanSpawnHere() {
-		if (super.getCanSpawnHere()) {
-			EntityPlayer entityplayer = this.worldObj.getNearestPlayerNotCreative(this, 5.0D);
-			return entityplayer == null;
-		} else {
-			return false;
-		}
-	}
 
 	/**
 	 * Get this Entity's EnumCreatureAttribute
@@ -1200,5 +1189,24 @@ public class TameableSilverfish extends EntityAnimal implements IEntityOwnable {
 			}
 		}
 	}
+	 @Override
+	    public boolean getCanSpawnHere()
+	    {
+		 if (super.getCanSpawnHere()) {
+				EntityPlayer entityplayer = this.worldObj.getNearestPlayerNotCreative(this, 5.0D);
+				return entityplayer == null;
+			} else {
+				return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+				   
+			}
+	         }
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }
 

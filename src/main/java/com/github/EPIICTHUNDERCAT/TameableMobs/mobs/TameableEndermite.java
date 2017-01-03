@@ -917,7 +917,7 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 	public boolean getCanSpawnHere() {
 		if (super.getCanSpawnHere()) {
 			EntityPlayer entityplayer = worldObj.getClosestPlayerToEntity(this, 5.0D);
-			return entityplayer == null;
+			return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && entityplayer == null;
 		} else {
 			return false;
 		}
@@ -930,4 +930,11 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 		return EnumCreatureAttribute.ARTHROPOD;
 	}
 	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }

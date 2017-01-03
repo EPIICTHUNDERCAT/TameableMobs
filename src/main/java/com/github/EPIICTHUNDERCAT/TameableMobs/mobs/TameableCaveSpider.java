@@ -1,78 +1,41 @@
 package com.github.epiicthundercat.tameablemobs.mobs;
 
-import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.epiicthundercat.tameablemobs.init.TMItems;
-import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider.EntityAIFollowOwner;
-import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider.EntityAIOwnerHurtByTarget;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIFollowParent;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMate;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathNavigateClimber;
-import net.minecraft.pathfinding.PathNavigateGround;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableCaveSpider extends TameableSpider {
+public class TameableCaveSpider extends TameableSpider implements IMob {
 	public TameableCaveSpider(World worldIn) {
 		super(worldIn);
 		setTamed(false);
@@ -189,11 +152,44 @@ public class TameableCaveSpider extends TameableSpider {
 
 		return entityTameableSpider;
 	}
-	  /**
-     * Checks if the entity's current position is a valid location to spawn this entity.
-     */
-    public boolean getCanSpawnHere()
-    {
-        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-    }
+	 protected boolean isValidLightLevel()
+	    {
+	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+
+	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+
+	            if (this.worldObj.isThundering())
+	            {
+	                int j = this.worldObj.getSkylightSubtracted();
+	                this.worldObj.setSkylightSubtracted(10);
+	                i = this.worldObj.getLightFromNeighbors(blockpos);
+	                this.worldObj.setSkylightSubtracted(j);
+	            }
+
+	            return i <= this.rand.nextInt(8);
+	        }
+	    }
+
+	    /**
+	     * Checks if the entity's current position is a valid location to spawn this entity.
+	     */
+	 @Override
+	    public boolean getCanSpawnHere()
+	    {
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	    }
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }

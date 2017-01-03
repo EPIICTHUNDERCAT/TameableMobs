@@ -1182,8 +1182,17 @@ public class TameableBlaze extends EntityAnimal implements IEntityOwnable {
 	  /**
      * Checks if the entity's current position is a valid location to spawn this entity.
      */
-    public boolean getCanSpawnHere()
-    {
-        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-    }
+	 @Override
+	    public boolean getCanSpawnHere()
+	    {
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	    }
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }

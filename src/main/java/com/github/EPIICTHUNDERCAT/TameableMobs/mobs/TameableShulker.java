@@ -70,6 +70,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
@@ -1714,11 +1715,43 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 	    {
 	        return false;
 	    }
+	    protected boolean isValidLightLevel()
+	    {
+	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+
+	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+
+	            if (this.worldObj.isThundering())
+	            {
+	                int j = this.worldObj.getSkylightSubtracted();
+	                this.worldObj.setSkylightSubtracted(10);
+	                i = this.worldObj.getLightFromNeighbors(blockpos);
+	                this.worldObj.setSkylightSubtracted(j);
+	            }
+
+	            return i <= this.rand.nextInt(8);
+	        }
+	    }
 	    /**
 	     * Checks if the entity's current position is a valid location to spawn this entity.
 	     */
+	    @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	    }
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
 	    }
 }

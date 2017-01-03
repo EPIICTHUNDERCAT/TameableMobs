@@ -1182,8 +1182,9 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 	 * entity.
 	 */
 	public boolean getCanSpawnHere() {
+		  
 		return (this.rand.nextInt(20) == 0 || !this.worldObj.canBlockSeeSky(new BlockPos(this)))
-				&& super.getCanSpawnHere();
+				&& this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && super.getCanSpawnHere();
 	}
 
 	/**
@@ -1391,5 +1392,14 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 					&& p_apply_1_.getDistanceSqToEntity(this.parentEntity) > 9.0D;
 		}
 	}
+	
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 
 }

@@ -1341,4 +1341,13 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 	protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos) {
 	}
 	 
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
+	 
 }

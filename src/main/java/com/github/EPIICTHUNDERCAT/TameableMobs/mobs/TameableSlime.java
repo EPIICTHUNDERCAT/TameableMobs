@@ -1580,4 +1580,13 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
 	    }
 	}
+	
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }

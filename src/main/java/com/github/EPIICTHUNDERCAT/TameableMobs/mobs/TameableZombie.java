@@ -221,7 +221,7 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.GOLD_INGOT) {
+		} else if (stack != null && stack.getItem() == Items.ROTTEN_FLESH) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
@@ -795,8 +795,17 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	 * Checks if the entity's current position is a valid location to spawn this
 	 * entity.
 	 */
-	public boolean getCanSpawnHere() {
-		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-	}
-
+	  @Override
+	    public boolean getCanSpawnHere()
+	    {
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	    }
+	
+	
+	 @Override
+	    protected void despawnEntity() {
+	        if (!isTamed()) {
+	            super.despawnEntity();
+	        }
+	    }
 }
