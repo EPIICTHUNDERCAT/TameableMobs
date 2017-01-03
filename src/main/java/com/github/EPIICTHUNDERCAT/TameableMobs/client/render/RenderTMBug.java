@@ -21,8 +21,8 @@ public class RenderTMBug extends RenderLiving<TMBug> {
     public RenderTMBug(RenderManager renderManagerIn)
     {
     	
-        super(renderManagerIn, new ModelTMBug(), 0.25F);
-        System.out.println("IsRenderingRenderClass");
+        super(renderManagerIn, new ModelTMBug(), 0.1F);
+        
     }
 
     /**
@@ -39,20 +39,13 @@ public class RenderTMBug extends RenderLiving<TMBug> {
     protected void preRenderCallback(TMBug entitylivingbaseIn, float partialTickTime)
     {
     	
-        GlStateManager.scale(0.35F, 0.35F, 0.35F);
+      //  GlStateManager.scale(0.35F, 0.35F, 0.35F);
      
     }
 
     protected void rotateCorpse(TMBug entityLiving, float p_77043_2_, float p_77043_3_, float partialTicks)
     {
-        if (entityLiving.getIsBugOnGround())
-        {
-            GlStateManager.translate(0.0F, -0.1F, 0.0F);
-        }
-        else
-        {
-            GlStateManager.translate(0.0F, MathHelper.cos(p_77043_2_ * 0.3F) * 0.1F, 0.0F);
-        }
+       
 
         super.rotateCorpse(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
     }

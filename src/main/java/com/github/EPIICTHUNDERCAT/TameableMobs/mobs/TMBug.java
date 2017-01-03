@@ -35,7 +35,7 @@ public class TMBug extends EntityAmbientCreature{
 	 public TMBug(World worldIn)
 	    {
 	        super(worldIn);
-	        this.setSize(0.5F, 0.9F);
+	        this.setSize(0.4F, 0.5F);
 	        
 	    }
 	 protected void entityInit()
@@ -137,7 +137,7 @@ public class TMBug extends EntityAmbientCreature{
 	    {
 	        super.updateAITasks();
 	        BlockPos blockpos = new BlockPos(this);
-	        BlockPos blockpos1 = blockpos.up();
+	        BlockPos blockpos1 = blockpos.down();
 
 	        if (this.getIsBugOnGround())
 	        {
@@ -243,7 +243,7 @@ public class TMBug extends EntityAmbientCreature{
 	    public void readEntityFromNBT(NBTTagCompound compound)
 	    {
 	        super.readEntityFromNBT(compound);
-	        this.dataManager.set(ONGROUND, Byte.valueOf(compound.getByte("BatFlags")));
+	        this.dataManager.set(ONGROUND, Byte.valueOf(compound.getByte("BugFlags")));
 	    }
 
 	    /**
@@ -252,7 +252,7 @@ public class TMBug extends EntityAmbientCreature{
 	    public void writeEntityToNBT(NBTTagCompound compound)
 	    {
 	        super.writeEntityToNBT(compound);
-	        compound.setByte("BatFlags", ((Byte)this.dataManager.get(ONGROUND)).byteValue());
+	        compound.setByte("BugFlags", ((Byte)this.dataManager.get(ONGROUND)).byteValue());
 	    }
 
 	    /**
