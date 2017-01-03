@@ -1,10 +1,17 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
 
+import java.util.UUID;
+
 import javax.annotation.Nullable;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -17,6 +24,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameableMagmaCube extends TameableSlime
 {
+	protected static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableMagmaCube.class,
+			DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableMagmaCube.class,
+			DataSerializers.BOOLEAN);
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableMagmaCube.class,
+			DataSerializers.BYTE);
+	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
+			.<Optional<UUID>>createKey(TameableMagmaCube.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	protected EntityAISit aiSit;
     public TameableMagmaCube(World worldIn)
     {
         super(worldIn);

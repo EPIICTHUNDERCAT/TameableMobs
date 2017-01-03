@@ -64,7 +64,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameableCow extends EntityAnimal implements IEntityOwnable {
 
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableCow.class,
+	protected static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableCow.class,
 			DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableCow.class,
 			DataSerializers.BOOLEAN);
@@ -110,10 +110,10 @@ public class TameableCow extends EntityAnimal implements IEntityOwnable {
 		if (isTamed()) {
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
+			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}
 
@@ -266,7 +266,7 @@ public class TameableCow extends EntityAnimal implements IEntityOwnable {
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
 		}
 		// getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 

@@ -1,0 +1,59 @@
+
+
+item.creeper_tamer.name=Creeper Tamer
+item.creeper_healer.name=Creeper Healer
+item.taming_seed.name=Taming Seeds
+item.ender_tamer.name=Ender Tamer
+item.taming_wheat.name=Taming Wheat
+item.taming_carrot.name=Taming Carrot
+item.spider_tamer.name=Spider Tamer
+item.witch_compound.name=Witch Compound
+item.witch_projectile.name=Witch Projectile
+item.bat_pee.name=Bat Pee
+item.info_book.name=Taming Guid[WIP]
+item.bug.name=Bug
+item.ink_suplement.name=Ink Suplement
+
+
+entity.tameablemobs.bate_pee.name=Bat Pee
+entity.tameablemobs.witch_projectile=Witch Projectile
+
+
+entity.tameablemobs.TameableCreeper.name=Creeper
+entity.tameablemobs.TameableSkeleton.name=Skeleton
+entity.tameablemobs.TameableWitherSkeleton.name=Wither Skeleton
+entity.tameablemobs.TameableStray.name=Stray
+entity.tameablemobs.TameableSpider.name=Spider
+entity.tameablemobs.TameableGiantZombie.name=Giant
+entity.tameablemobs.TameableZombie.name=Zombie
+entity.tameablemobs.TameableHusk.name=Husk
+entity.tameablemobs.TameableSlime.name=Slime
+entity.tameablemobs.TameableGhast.name=Ghast
+entity.tameablemobs.TameablePigZombie.name=Zombie Pigman
+entity.tameablemobs.TameableEnderman.name=Enderman
+entity.tameablemobs.TameableEndermite.name=Endermite
+entity.tameablemobs.TameableSilverfish.name=Silverfish
+entity.tameablemobs.TameableCaveSpider.name=Cave Spider
+entity.tameablemobs.TameableBlaze.name=Blaze
+entity.tameablemobs.TameableMagmaCube.name=Magma Cube
+entity.tameablemobs.TameableMooshroom.name=Mooshroom
+entity.tameablemobs.TameableVillager.name=Villager
+entity.tameablemobs.TameableIronGolem.name=Iron Golem
+entity.tameablemobs.TameableSnowMan.name=Snow Golem
+entity.tameablemobs.TameableEnderDragon.name=Ender Dragon
+entity.tameablemobs.TameableWitherBoss.name=Wither
+entity.tameablemobs.TameableWitch.name=Witch
+entity.tameablemobs.TameableGuardian.name=Guardian
+entity.tameablemobs.TameableShulker.name=Shulker
+entity.tameablemobs.TameablePolarBear.name=Polar Bear
+entity.tameablemobs.bug.name=Bug
+entity.tameablemobs.TameablePig.name=Pig
+entity.tameablemobs.TameableSheep.name=Sheep
+entity.tameablemobs.TameableCow.name=Cow
+entity.tameablemobs.TameableChicken.name=Chicken
+entity.tameablemobs.TameableSquid.name=Squid
+entity.tameablemobs.TameableBat.name=Bat
+entity.tameablemobs.TameableRabbit.name=Rabbit
+entity.tameablemobs.TameableKillerBunny.name=The Killer Bunny
+
+itemGroup.tmtabs=TameableMobs!

@@ -93,14 +93,10 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		tasks.addTask(1, aiSit);
 		tasks.addTask(1, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
 		tasks.addTask(2, new EntityAIAttackRanged(this, 1.0D, 60, 20.0F));
-
-		tasks.addTask(6, new TameableBat.EntityAIMate(this, 1.0D));
-		// tasks.addTask(7, new EntityAIWander(this, 1.0D));
+		tasks.addTask(6, new TameableBat.EntityAIMate(this, 1.0D));		
 		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameableBat.EntityAIBeg(this, 8.0F));
-		// tasks.addTask(8, new EntityAILookIdle(this));
 		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-		// targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(3, new TameableBat.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
@@ -113,9 +109,9 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 		if (isTamed()) {
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(6.0D);
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}
@@ -257,7 +253,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(6.0D);
 		}
 		// getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 

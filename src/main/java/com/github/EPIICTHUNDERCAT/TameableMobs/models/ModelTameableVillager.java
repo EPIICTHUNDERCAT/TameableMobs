@@ -2,6 +2,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.models;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -60,11 +61,27 @@ public class ModelTameableVillager extends ModelBase
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
-        this.villagerHead.render(scale);
-        this.villagerBody.render(scale);
-        this.rightVillagerLeg.render(scale);
-        this.leftVillagerLeg.render(scale);
-        this.villagerArms.render(scale);
+        if (this.isChild) {
+    		float f1 = 2.0F;
+    		
+    		GlStateManager.pushMatrix();
+    		GlStateManager.scale(0.5F, 0.5F, 0.5F);
+    		GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+    		this.leftVillagerLeg.render(scale);
+    		this.rightVillagerLeg.render(scale);
+    		this.villagerHead.render(scale);
+    		this.villagerArms.render(scale);
+    		this.villagerNose.render(scale);
+    		this.villagerBody.render(scale);
+    		GlStateManager.popMatrix();
+    	} else {
+    		this.leftVillagerLeg.render(scale);
+    		this.rightVillagerLeg.render(scale);
+    		this.villagerHead.render(scale);
+    		this.villagerArms.render(scale);
+    		this.villagerNose.render(scale);
+    		this.villagerBody.render(scale);
+         }
     }
 
     /**

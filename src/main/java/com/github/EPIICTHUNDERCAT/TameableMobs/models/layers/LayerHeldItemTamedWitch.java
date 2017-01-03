@@ -1,11 +1,11 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableWitch;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableWitch;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelWitch;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -43,7 +43,7 @@ public class LayerHeldItemTamedWitch implements LayerRenderer<TameableWitch>
                 GlStateManager.scale(0.5F, 0.5F, 0.5F);
             }
 
-            ((ModelWitch)this.witchRenderer.getMainModel()).villagerNose.postRender(0.0625F);
+            ((ModelTameableWitch)this.witchRenderer.getMainModel()).villagerNose.postRender(0.0625F);
             GlStateManager.translate(-0.0625F, 0.53125F, 0.21875F);
             Item item = itemstack.getItem();
             Minecraft minecraft = Minecraft.getMinecraft();

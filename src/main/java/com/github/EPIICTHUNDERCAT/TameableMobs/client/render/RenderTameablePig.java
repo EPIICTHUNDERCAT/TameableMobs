@@ -2,9 +2,9 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerTamedPigSaddle;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableBlaze;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameablePig;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedPigSaddle;
 
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;

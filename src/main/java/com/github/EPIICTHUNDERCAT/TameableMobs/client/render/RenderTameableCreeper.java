@@ -2,8 +2,8 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCreeper;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerTamedCreeperCharge;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableCreeper;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedCreeperCharge;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;

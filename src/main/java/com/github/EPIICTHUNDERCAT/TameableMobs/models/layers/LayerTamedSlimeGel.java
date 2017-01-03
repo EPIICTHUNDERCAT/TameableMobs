@@ -1,7 +1,8 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableSlime;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSlime;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableSlime;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;

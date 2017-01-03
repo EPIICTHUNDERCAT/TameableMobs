@@ -1,6 +1,7 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.models;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,7 +43,7 @@ public class ModelTameableWitch extends ModelTameableVillager
         modelrenderer2.rotateAngleZ = 0.10471976F;
         modelrenderer1.addChild(modelrenderer2);
     }
-
+   
     /**
      * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
@@ -65,5 +66,6 @@ public class ModelTameableWitch extends ModelTameableVillager
             this.villagerNose.offsetZ = -0.09375F;
             this.villagerNose.offsetY = 0.1875F;
         }
+       
     }
 }

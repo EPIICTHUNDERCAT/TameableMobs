@@ -124,7 +124,7 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 		tasks.addTask(8, new EntityAILookIdle(this));
 		
 
-		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.GUNPOWDER, false));
+		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.ENDER_PEARL, false));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.25D));
 		aiSit = new TameableShulker.EntityAISit(this);
 		tasks.addTask(1, aiSit);
@@ -151,9 +151,9 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 		if (isTamed()) {
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
 			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}
@@ -316,7 +316,7 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
 		}
 		// getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 

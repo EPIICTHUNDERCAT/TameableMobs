@@ -4,6 +4,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableShulker;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
@@ -83,7 +84,21 @@ public class ModelTameableShulker extends ModelBase
      */
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        this.base.render(scale);
-        this.lid.render(scale);
+    	if (this.isChild) {
+    		float f = 2.0F;
+    		GlStateManager.pushMatrix();
+    		GlStateManager.translate(0.0F, 10.0F * scale, 2.0F * scale);
+    		GlStateManager.scale(0.6F, 0.6F, 0.6F);
+    		 this.base.render(scale);
+    	        this.lid.render(scale);
+    	     
+    		GlStateManager.popMatrix();
+    		
+    	} else {
+    		
+    		 this.base.render(scale);
+    	        this.lid.render(scale);
+    	}
+       
     }
 }

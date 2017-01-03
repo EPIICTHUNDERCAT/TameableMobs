@@ -2,12 +2,12 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableZombie;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedBipedArmor;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedHeldItem;
 
-import net.minecraft.client.model.ModelZombie;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,12 +18,12 @@ public class RenderTameablePigZombie extends RenderBiped<TameablePigZombie> {
 			"textures/entity/tameablezombie_pigman.png");
 
 	public RenderTameablePigZombie(RenderManager renderManagerIn) {
-		super(renderManagerIn, new ModelZombie(), 0.5F, 1.0F);
-		addLayer(new LayerHeldItem(this));
-		addLayer(new LayerBipedArmor(this) {
+		super(renderManagerIn, new ModelTameableZombie(), 0.5F, 1.0F);
+		addLayer(new LayerTamedHeldItem(this));
+		addLayer(new LayerTamedBipedArmor(this) {
 			protected void initArmor() {
-				modelLeggings = new ModelZombie(0.5F, true);
-				modelArmor = new ModelZombie(1.0F, true);
+				modelLeggings = new ModelTameableZombie(0.5F, true);
+				modelArmor = new ModelTameableZombie(1.0F, true);
 			}
 		});
 	}

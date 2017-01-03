@@ -1,8 +1,9 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameablePig;
 
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;

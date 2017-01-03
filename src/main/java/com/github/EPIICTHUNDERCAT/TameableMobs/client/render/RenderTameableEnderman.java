@@ -4,9 +4,9 @@ import java.util.Random;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerTamedEndermanEye;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerTamedEndermanHeldBlock;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableEnderman;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedEndermanEye;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedEndermanHeldBlock;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.entity.RenderLiving;

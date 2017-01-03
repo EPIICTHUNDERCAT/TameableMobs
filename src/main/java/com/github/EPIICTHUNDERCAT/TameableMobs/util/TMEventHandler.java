@@ -10,16 +10,23 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableCreeper;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEndermite;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGhast;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGiantZombie;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableGuardian;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableIronGolem;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableMagmaCube;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableMooshroom;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePig;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePigZombie;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameablePolarBear;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableRabbit;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableShulker;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSilverfish;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSlime;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSpider;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSquid;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableZombie;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -28,17 +35,24 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityPolarBear;
 import net.minecraft.entity.monster.EntityShulker;
+import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
@@ -465,5 +479,139 @@ public class TMEventHandler {
 				}
 			}
 		}
+		if (entityTarget instanceof EntityGuardian && !(entityTarget instanceof TameableGuardian)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.FISH) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityGuardian) entityTarget).isChild()) {
+
+						TameableGuardian spawnTGuardian = new TameableGuardian(world);
+						spawnTGuardian.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTGuardian);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntityRabbit && !(entityTarget instanceof TameableRabbit)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == TMItems.taming_carrot) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityRabbit) entityTarget).isChild()) {
+
+						TameableRabbit spawnTRabbit = new TameableRabbit(world);
+						spawnTRabbit.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTRabbit);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntityMooshroom && !(entityTarget instanceof TameableMooshroom)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == TMItems.taming_wheat) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityMooshroom) entityTarget).isChild()) {
+
+						TameableMooshroom spawnTMooshroom = new TameableMooshroom(world);
+						spawnTMooshroom.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTMooshroom);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntityZombie && !(entityTarget instanceof TameableZombie)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.ROTTEN_FLESH) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityZombie) entityTarget).isChild()) {
+
+						TameableZombie spawnTZombie = new TameableZombie(world);
+						spawnTZombie.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTZombie);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntityGiantZombie && !(entityTarget instanceof TameableGiantZombie)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.ROTTEN_FLESH) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityGiantZombie) entityTarget).isChild()) {
+
+						TameableGiantZombie spawnTGiantZombie = new TameableGiantZombie(world);
+						spawnTGiantZombie.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTGiantZombie);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntitySilverfish && !(entityTarget instanceof TameableSilverfish)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.IRON_INGOT) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntitySilverfish) entityTarget).isChild()) {
+
+						TameableSilverfish spawnTSilverfish = new TameableSilverfish(world);
+						spawnTSilverfish.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTSilverfish);
+
+						entityTarget.setDead();
+
+					}
+				}
+			}
+		}
+		if (entityTarget instanceof EntityIronGolem && !(entityTarget instanceof TameableIronGolem)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.IRON_INGOT) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityIronGolem) entityTarget).isChild()) {
+
+						TameableIronGolem spawnTIronGolem = new TameableIronGolem(world);
+						spawnTIronGolem.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTIronGolem);
+
+						entityTarget.setDead();
+
+					}
+				}
+		}
+		}
+
 	}
 }

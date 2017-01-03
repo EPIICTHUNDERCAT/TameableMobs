@@ -4,6 +4,7 @@ import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableShulker;
 import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableShulker;
 
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -140,10 +141,16 @@ public class RenderTameableShulker extends RenderLiving<TameableShulker>
     @SideOnly(Side.CLIENT)
     class HeadLayer implements LayerRenderer<TameableShulker>
     {
+    	public boolean isChild = true;
+    	
         private HeadLayer()
         {
         }
-
+        public void setModelAttributes(ModelBase model)
+        {
+           
+            this.isChild = model.isChild;
+        }
         public void doRenderLayer(TameableShulker entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
         {
             GlStateManager.pushMatrix();
@@ -182,8 +189,22 @@ public class RenderTameableShulker extends RenderLiving<TameableShulker>
             ModelRenderer modelrenderer = ((ModelTameableShulker)RenderTameableShulker.this.getMainModel()).head;
             modelrenderer.rotateAngleY = netHeadYaw * 0.017453292F;
             modelrenderer.rotateAngleX = headPitch * 0.017453292F;
-            RenderTameableShulker.this.bindTexture(RenderTameableShulker.TAMEABLESHULKER_ENDERGOLEM_TEXTURE);
-            modelrenderer.render(scale);
+            
+           RenderTameableShulker.this.bindTexture(RenderTameableShulker.TAMEABLESHULKER_ENDERGOLEM_TEXTURE);
+       	if (this.isChild) {
+    		float f = 2.0F;
+    		GlStateManager.pushMatrix();
+    		GlStateManager.translate(0.0F, 10.0F * scale, 2.0F * scale);
+    		GlStateManager.scale(0.6F, 0.6F, 0.6F);
+    		modelrenderer.render(scale);
+    	     
+    		GlStateManager.popMatrix();
+    		
+    	} else {
+    		
+    		modelrenderer.render(scale);
+    	}
+            
             GlStateManager.popMatrix();
         }
 

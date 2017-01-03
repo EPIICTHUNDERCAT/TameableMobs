@@ -2,7 +2,7 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableSheep;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerTamedSheepWool;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerTamedSheepWool;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;

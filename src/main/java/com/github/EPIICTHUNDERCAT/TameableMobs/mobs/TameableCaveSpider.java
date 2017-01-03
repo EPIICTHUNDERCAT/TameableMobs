@@ -75,6 +75,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TameableCaveSpider extends TameableSpider {
 	public TameableCaveSpider(World worldIn) {
 		super(worldIn);
+		setTamed(false);
 		this.setSize(0.7F, 0.5F);
 	}
 
@@ -114,7 +115,7 @@ public class TameableCaveSpider extends TameableSpider {
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}

@@ -1,16 +1,23 @@
 package com.github.EPIICTHUNDERCAT.TameableMobs.mobs;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -27,6 +34,7 @@ import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityIronGolem;
@@ -34,6 +42,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
@@ -47,6 +56,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
@@ -96,8 +106,8 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 		tasks.addTask(2, new TameableSlime.AISlimeAttack(this));
 		tasks.addTask(3, new TameableSlime.AISlimeFaceRandom(this));
 		tasks.addTask(5, new TameableSlime.AISlimeHop(this));
-		targetTasks.addTask(1, new EntityAIFindEntityNearestPlayer(this));
-		targetTasks.addTask(3, new EntityAIFindEntityNearest(this, EntityIronGolem.class));
+		targetTasks.addTask(1, new TameableSlime.EntityAIFindEntityNearestPlayerSlime(this));
+		targetTasks.addTask(3, new TameableSlime.SlimeEntityAIFindEntityNearest(this, EntityIronGolem.class));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.WHEAT, false));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
@@ -1148,12 +1158,14 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 		 * Returns whether the EntityAIBase should begin execution.
 		 */
 		public boolean shouldExecute() {
+			
 			EntityLivingBase entitylivingbase = this.slime.getAttackTarget();
 			return entitylivingbase == null ? false
 					: (!entitylivingbase.isEntityAlive() ? false
 							: !(entitylivingbase instanceof EntityPlayer)
 									|| !((EntityPlayer) entitylivingbase).capabilities.disableDamage);
 		}
+		
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
@@ -1328,5 +1340,244 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 				}
 			}
 		}
+	}
+	public class EntityAIFindEntityNearestPlayerSlime extends EntityAIBase
+	{
+	    
+	    /** The entity that use this AI */
+	    private final EntityLiving entityLiving;
+	    private final Predicate<Entity> predicate;
+	    /** Used to compare two entities */
+	    private final EntityAINearestAttackableTarget.Sorter sorter;
+	    /** The current target */
+	    private EntityLivingBase entityTarget;
+
+	    public EntityAIFindEntityNearestPlayerSlime(EntityLiving entityLivingIn)
+	    {
+	        this.entityLiving = entityLivingIn;
+
+	        
+
+	        this.predicate = new Predicate<Entity>()
+	        {
+	            public boolean apply(@Nullable Entity p_apply_1_)
+	            {
+	                if (!(p_apply_1_ instanceof EntityPlayer))
+	                {
+	                    return false;
+	                }
+	                else if (((EntityPlayer)p_apply_1_).capabilities.disableDamage)
+	                {
+	                    return false;
+	                }
+	                else
+	                {
+	                    double d0 = EntityAIFindEntityNearestPlayerSlime.this.maxTargetRange();
+
+	                    if (p_apply_1_.isSneaking())
+	                    {
+	                        d0 *= 0.800000011920929D;
+	                    }
+
+	                    if (p_apply_1_.isInvisible())
+	                    {
+	                        float f = ((EntityPlayer)p_apply_1_).getArmorVisibility();
+
+	                        if (f < 0.1F)
+	                        {
+	                            f = 0.1F;
+	                        }
+
+	                        d0 *= (double)(0.7F * f);
+	                    }
+
+	                    return (double)p_apply_1_.getDistanceToEntity(EntityAIFindEntityNearestPlayerSlime.this.entityLiving) > d0 ? false : EntityAITarget.isSuitableTarget(EntityAIFindEntityNearestPlayerSlime.this.entityLiving, (EntityLivingBase)p_apply_1_, false, true);
+	                }
+	            }
+	        };
+	        this.sorter = new EntityAINearestAttackableTarget.Sorter(entityLivingIn);
+	    }
+
+	    /**
+	     * Returns whether the EntityAIBase should begin execution.
+	     */
+	    public boolean shouldExecute()
+	    {
+	        double d0 = this.maxTargetRange();
+	        List<EntityPlayer> list = this.entityLiving.worldObj.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.entityLiving.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
+	        Collections.sort(list, this.sorter);
+
+	        if (list.isEmpty())
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            this.entityTarget = (EntityLivingBase)list.get(0);
+	            return true;
+	        }
+	    }
+
+	    /**
+	     * Returns whether an in-progress EntityAIBase should continue executing
+	     */
+	    public boolean continueExecuting()
+	    {
+	        EntityLivingBase entitylivingbase = this.entityLiving.getAttackTarget();
+
+	        if (entitylivingbase == null)
+	        {
+	            return false;
+	        }
+	        else if (!entitylivingbase.isEntityAlive())
+	        {
+	            return false;
+	        }
+	        else if (entitylivingbase instanceof EntityPlayer && ((EntityPlayer)entitylivingbase).capabilities.disableDamage)
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            Team team = this.entityLiving.getTeam();
+	            Team team1 = entitylivingbase.getTeam();
+
+	            if (team != null && team1 == team)
+	            {
+	                return false;
+	            }
+	            else
+	            {
+	                double d0 = this.maxTargetRange();
+	                return this.entityLiving.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false : !(entitylivingbase instanceof EntityPlayerMP) || !((EntityPlayerMP)entitylivingbase).interactionManager.isCreative();
+	            }
+	        }
+	    }
+
+	    /**
+	     * Execute a one shot task or start executing a continuous task
+	     */
+	    public void startExecuting()
+	    {
+	        this.entityLiving.setAttackTarget(this.entityTarget);
+	        super.startExecuting();
+	    }
+
+	    /**
+	     * Resets the task
+	     */
+	    public void resetTask()
+	    {
+	        this.entityLiving.setAttackTarget((EntityLivingBase)null);
+	        super.startExecuting();
+	    }
+
+	    /**
+	     * Return the max target range of the entiity (16 by default)
+	     */
+	    protected double maxTargetRange()
+	    {
+	        IAttributeInstance iattributeinstance = this.entityLiving.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+	    }
+	}
+	public class SlimeEntityAIFindEntityNearest extends EntityAIBase
+	{
+	    
+	    private final EntityLiving mob;
+	    private final Predicate<EntityLivingBase> predicate;
+	    private final EntityAINearestAttackableTarget.Sorter sorter;
+	    private EntityLivingBase target;
+	    private final Class <? extends EntityLivingBase > classToCheck;
+
+	    public SlimeEntityAIFindEntityNearest(EntityLiving mobIn, Class <? extends EntityLivingBase > p_i45884_2_)
+	    {
+	        this.mob = mobIn;
+	        this.classToCheck = p_i45884_2_;
+
+	        
+
+	        this.predicate = new Predicate<EntityLivingBase>()
+	        {
+	            public boolean apply(@Nullable EntityLivingBase p_apply_1_)
+	            {
+	                double d0 = SlimeEntityAIFindEntityNearest.this.getFollowRange();
+
+	                if (p_apply_1_.isSneaking())
+	                {
+	                    d0 *= 0.800000011920929D;
+	                }
+
+	                return p_apply_1_.isInvisible() ? false : ((double)p_apply_1_.getDistanceToEntity(SlimeEntityAIFindEntityNearest.this.mob) > d0 ? false : EntityAITarget.isSuitableTarget(SlimeEntityAIFindEntityNearest.this.mob, p_apply_1_, false, true));
+	            }
+	        };
+	        this.sorter = new EntityAINearestAttackableTarget.Sorter(mobIn);
+	    }
+
+	    /**
+	     * Returns whether the EntityAIBase should begin execution.
+	     */
+	    public boolean shouldExecute()
+	    {
+	        double d0 = this.getFollowRange();
+	        List<EntityLivingBase> list = this.mob.worldObj.<EntityLivingBase>getEntitiesWithinAABB(this.classToCheck, this.mob.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
+	        Collections.sort(list, this.sorter);
+
+	        if (list.isEmpty())
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            this.target = (EntityLivingBase)list.get(0);
+	            return true;
+	        }
+	    }
+
+	    /**
+	     * Returns whether an in-progress EntityAIBase should continue executing
+	     */
+	    public boolean continueExecuting()
+	    {
+	        EntityLivingBase entitylivingbase = this.mob.getAttackTarget();
+
+	        if (entitylivingbase == null)
+	        {
+	            return false;
+	        }
+	        else if (!entitylivingbase.isEntityAlive())
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            double d0 = this.getFollowRange();
+	            return this.mob.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false : !(entitylivingbase instanceof EntityPlayerMP) || !((EntityPlayerMP)entitylivingbase).interactionManager.isCreative();
+	        }
+	    }
+
+	    /**
+	     * Execute a one shot task or start executing a continuous task
+	     */
+	    public void startExecuting()
+	    {
+	        this.mob.setAttackTarget(this.target);
+	        super.startExecuting();
+	    }
+
+	    /**
+	     * Resets the task
+	     */
+	    public void resetTask()
+	    {
+	        this.mob.setAttackTarget((EntityLivingBase)null);
+	        super.startExecuting();
+	    }
+
+	    protected double getFollowRange()
+	    {
+	        IAttributeInstance iattributeinstance = this.mob.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+	    }
 	}
 }

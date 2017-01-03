@@ -1,4 +1,4 @@
-package com.github.EPIICTHUNDERCAT.TameableMobs.models;
+package com.github.EPIICTHUNDERCAT.TameableMobs.models.layers;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.client.render.RenderTameableEnderman;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableEnderman;

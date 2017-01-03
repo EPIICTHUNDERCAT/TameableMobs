@@ -2,9 +2,9 @@ package com.github.EPIICTHUNDERCAT.TameableMobs.client.render;
 
 import com.github.EPIICTHUNDERCAT.TameableMobs.Reference;
 import com.github.EPIICTHUNDERCAT.TameableMobs.mobs.TameableWitch;
-import com.github.EPIICTHUNDERCAT.TameableMobs.models.LayerHeldItemTamedWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.ModelTameableWitch;
+import com.github.EPIICTHUNDERCAT.TameableMobs.models.layers.LayerHeldItemTamedWitch;
 
-import net.minecraft.client.model.ModelWitch;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -19,7 +19,7 @@ public class RenderTameableWitch extends RenderLiving<TameableWitch>
 
     public RenderTameableWitch(RenderManager renderManagerIn)
     {
-        super(renderManagerIn, new ModelWitch(0.0F), 0.5F);
+        super(renderManagerIn, new ModelTameableWitch(0.0F), 0.5F);
         this.addLayer(new LayerHeldItemTamedWitch(this));
     }
 
@@ -28,7 +28,7 @@ public class RenderTameableWitch extends RenderLiving<TameableWitch>
      */
     public void doRender(TameableWitch entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        ((ModelWitch)this.mainModel).holdingItem = entity.getHeldItemMainhand() != null;
+        ((ModelTameableWitch)this.mainModel).holdingItem = entity.getHeldItemMainhand() != null;
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 
