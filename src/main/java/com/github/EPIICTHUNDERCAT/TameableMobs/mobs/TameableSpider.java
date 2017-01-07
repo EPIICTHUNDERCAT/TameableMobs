@@ -1133,7 +1133,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 	    @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
 	    }
 	
 	

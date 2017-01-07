@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import com.github.epiicthundercat.tameablemobs.init.TMItems;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman.EntityAIFollowOwner;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman.EntityAIOwnerHurtByTarget;
-import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem.EntityAISit;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman.EntityAISit;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -45,6 +45,7 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -71,15 +72,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameableSnowman extends TameableEntityGolem implements IRangedAttackMob, IEntityOwnable
 {
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableIronGolem.class,
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableSnowman.class,
 		
 		DataSerializers.FLOAT);
-private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableIronGolem.class,
+private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableSnowman.class,
 		DataSerializers.BOOLEAN);
-protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableIronGolem.class,
+protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableSnowman.class,
 		DataSerializers.BYTE);
 protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-		.<Optional<UUID>>createKey(TameableIronGolem.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+		.<Optional<UUID>>createKey(TameableSnowman.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
 protected EntityAISit aiSit;
 	
@@ -200,8 +201,11 @@ protected EntityAISit aiSit;
 		return isTamed() && isOwner(player);
 	}
 
+	private boolean isSnowmanBreedingItem(Item itemIn) {
+		return  itemIn == Item.getItemFromBlock(Blocks.PUMPKIN);
+	}
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.PUMPKIN_SEEDS;
+		return stack != null && this.isSnowmanBreedingItem(stack.getItem());
 	}
 
 	@Override

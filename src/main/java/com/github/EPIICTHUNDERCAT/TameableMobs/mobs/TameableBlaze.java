@@ -1185,7 +1185,7 @@ public class TameableBlaze extends EntityAnimal implements IEntityOwnable {
 	 @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
 	    }
 	
 	

@@ -22,9 +22,12 @@ import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSheep;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableShulker;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSilverfish;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSkeleton;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSlime;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSquid;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableVillager;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableWitch;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableZombie;
 
@@ -43,7 +46,9 @@ import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityPolarBear;
 import net.minecraft.entity.monster.EntityShulker;
 import net.minecraft.entity.monster.EntitySilverfish;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
@@ -55,6 +60,7 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -605,6 +611,63 @@ public class TMEventHandler {
 						spawnTIronGolem.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
 								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
 						world.spawnEntityInWorld(spawnTIronGolem);
+
+						entityTarget.setDead();
+
+					}
+				}
+		}
+		}
+		if (entityTarget instanceof EntitySkeleton && !(entityTarget instanceof TameableSkeleton)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.BONE) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntitySkeleton) entityTarget).isChild()) {
+
+						TameableSkeleton spawnTSkeleton = new TameableSkeleton(world);
+						spawnTSkeleton.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTSkeleton);
+
+						entityTarget.setDead();
+
+					}
+				}
+		}
+		}
+		if (entityTarget instanceof EntityVillager && !(entityTarget instanceof TameableVillager)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.EMERALD) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntityVillager) entityTarget).isChild()) {
+
+						TameableVillager spawnTVillager = new TameableVillager(world);
+						spawnTVillager.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTVillager);
+
+						entityTarget.setDead();
+
+					}
+				}
+		}
+		}
+		if (entityTarget instanceof EntitySnowman && !(entityTarget instanceof TameableSnowman)) {
+			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if (correspondingItem != null) {
+				if (correspondingItem.getItem() == Items.SNOWBALL) {
+					EntityPlayer player = event.getEntityPlayer();
+
+					if (!((EntitySnowman) entityTarget).isChild()) {
+
+						TameableSnowman spawnTSnowman = new TameableSnowman(world);
+						spawnTSnowman.setLocationAndAngles(entityTarget.posX, entityTarget.posY, entityTarget.posZ,
+								MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+						world.spawnEntityInWorld(spawnTSnowman);
 
 						entityTarget.setDead();
 

@@ -302,7 +302,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
 		}
 		// getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 
@@ -1201,7 +1201,8 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 	 @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
+	        
 	    }
 	
 	

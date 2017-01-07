@@ -16,10 +16,10 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.monster.ZombieType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.village.Village;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
-import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
 import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
 
 public class TamedVillagerRegistry {
 	
-	    public static final ResourceLocation PROFESSIONS = new ResourceLocation("minecraft:TamedVillagerProfessions");
+	    public static final ResourceLocation PROFESSIONS = new ResourceLocation("tameablemobs:TamedVillagerProfessions");
 	    private static final TamedVillagerRegistry INSTANCE = new TamedVillagerRegistry();
 
 	    private Map<Class<?>, IVillageCreationHandler> villageCreationHandlers = Maps.newHashMap();
@@ -38,7 +38,7 @@ public class TamedVillagerRegistry {
 	    }
 
 	    /**
-	     * Allow access to the {@link net.minecraft.world.gen.structure.StructureVillagePieces} array controlling new village
+	     * Allow access to the {@link net.tameablemobs.world.gen.structure.StructureVillagePieces} array controlling new village
 	     * creation so you can insert your own new village pieces
 	     *
 	     * @author cpw
@@ -46,7 +46,7 @@ public class TamedVillagerRegistry {
 	    public interface IVillageCreationHandler
 	    {
 	        /**
-	         * Called when {@link net.minecraft.world.gen.structure.MapGenVillage} is creating a new village
+	         * Called when {@link net.tameablemobs.world.gen.structure.MapGenVillage} is creating a new village
 	         *
 	         * @param random
 	         * @param i
@@ -60,7 +60,7 @@ public class TamedVillagerRegistry {
 
 
 	        /**
-	         * Build an instance of the village component {@link net.minecraft.world.gen.structure.StructureVillagePieces}
+	         * Build an instance of the village component {@link net.tameablemobs.world.gen.structure.StructureVillagePieces}
 	         *
 	         * @param villagePiece
 	         * @param startPiece
@@ -128,9 +128,9 @@ public class TamedVillagerRegistry {
 	            return;
 	        }
 
-	        TamedVillagerProfession prof = new TamedVillagerProfession("minecraft:farmer",
-	                "minecraft:textures/entity/villager/farmer.png",
-	                "minecraft:textures/entity/zombie_villager/zombie_farmer.png");
+	        TamedVillagerProfession prof = new TamedVillagerProfession("tameablemobs:farmer",
+	                "tameablemobs:textures/entity/tameablevillager/tameablefarmer.png",
+	                "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_farmer.png");
 	        {
 	            register(prof, 0);
 	            (new TamedVillagerCareer(prof, "farmer")).init(VanillaTrades.trades[0][0]);
@@ -138,32 +138,32 @@ public class TamedVillagerRegistry {
 	            (new TamedVillagerCareer(prof, "shepherd")).init(VanillaTrades.trades[0][2]);
 	            (new TamedVillagerCareer(prof, "fletcher")).init(VanillaTrades.trades[0][3]);
 	        }
-	        prof = new TamedVillagerProfession("minecraft:librarian",
-	                "minecraft:textures/entity/villager/librarian.png",
-	                "minecraft:textures/entity/zombie_villager/zombie_librarian.png");
+	        prof = new TamedVillagerProfession("tameablemobs:librarian",
+	                "tameablemobs:textures/entity/tameablevillager/tameablelibrarian.png",
+	                "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_librarian.png");
 	        {
 	            register(prof, 1);
 	            (new TamedVillagerCareer(prof, "librarian")).init(VanillaTrades.trades[1][0]);
 	        }
-	        prof = new TamedVillagerProfession("minecraft:priest",
-	                "minecraft:textures/entity/villager/priest.png",
-	                "minecraft:textures/entity/zombie_villager/zombie_priest.png");
+	        prof = new TamedVillagerProfession("tameablemobs:priest",
+	                "tameablemobs:textures/entity/tameablevillager/tameablepriest.png",
+	                "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_priest.png");
 	        {
 	            register(prof, 2);
 	            (new TamedVillagerCareer(prof, "cleric")).init(VanillaTrades.trades[2][0]);
 	        }
-	        prof = new TamedVillagerProfession("minecraft:smith",
-	                "minecraft:textures/entity/villager/smith.png",
-	                "minecraft:textures/entity/zombie_villager/zombie_smith.png");
+	        prof = new TamedVillagerProfession("tameablemobs:smith",
+	                "tameablemobs:textures/entity/tameablevillager/tameablesmith.png",
+	                "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_smith.png");
 	        {
 	            register(prof, 3);
 	            (new TamedVillagerCareer(prof, "armor")).init(VanillaTrades.trades[3][0]);
 	            (new TamedVillagerCareer(prof, "weapon")).init(VanillaTrades.trades[3][1]);
 	            (new TamedVillagerCareer(prof, "tool")).init(VanillaTrades.trades[3][2]);
 	        }
-	        prof = new TamedVillagerProfession("minecraft:butcher",
-	                "minecraft:textures/entity/villager/butcher.png",
-	                "minecraft:textures/entity/zombie_villager/zombie_butcher.png");
+	        prof = new TamedVillagerProfession("tameablemobs:butcher",
+	                "tameablemobs:textures/entity/tameablevillager/tameablebutcher.png",
+	                "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_butcher.png");
 	        {
 	            register(prof, 4);
 	            (new TamedVillagerCareer(prof, "butcher")).init(VanillaTrades.trades[4][0]);
@@ -181,7 +181,7 @@ public class TamedVillagerRegistry {
 	        @Deprecated //Use Zombie texture
 	        public TamedVillagerProfession(String name, String texture)
 	        {
-	            this (name, texture, "minecraft:textures/entity/zombie_villager/zombie_villager.png");
+	            this (name, texture, "tameablemobs:textures/entity/tameablezombie_villager/tameablezombie_villager.png");
 	        }
 	        public TamedVillagerProfession(String name, String texture, String zombie)
 	        {

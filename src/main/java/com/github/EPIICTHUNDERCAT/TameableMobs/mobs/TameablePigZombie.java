@@ -131,7 +131,7 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 	}
 
 
-	public static void registerFixesSheep(DataFixer fixer) {
+	public static void registerFixesTameablePigZombie(DataFixer fixer) {
 		EntityLiving.registerFixesMob(fixer, "TameablePigZombie");
 	}
 
@@ -208,7 +208,7 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.ROTTEN_FLESH) {
+				if (stack.getItem() == Items.GOLD_NUGGET) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;

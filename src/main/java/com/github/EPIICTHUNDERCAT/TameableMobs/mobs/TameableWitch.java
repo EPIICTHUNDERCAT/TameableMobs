@@ -1055,7 +1055,7 @@ public class TameableWitch extends EntityAnimal implements IEntityOwnable, IRang
 	 @Override
 	    public boolean getCanSpawnHere()
 	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
+	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
 	    }
 	
 	

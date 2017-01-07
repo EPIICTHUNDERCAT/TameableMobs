@@ -1322,10 +1322,18 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		     * Checks if the entity's current position is a valid location to spawn this entity.
 		     */
 		 @Override
-		    public boolean getCanSpawnHere()
+		 public boolean getCanSpawnHere() {
+				if (super.getCanSpawnHere()) {
+					
+					return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+				} else {
+					return false;
+				}
+			}
+		 /*   public boolean getCanSpawnHere()
 		    {
-		        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
-		    }
+		        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
+		    }*/
 		
 		
 		 @Override

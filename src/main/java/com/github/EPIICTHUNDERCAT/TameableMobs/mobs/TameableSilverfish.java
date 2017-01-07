@@ -221,7 +221,7 @@ public class TameableSilverfish extends EntityAnimal implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == TMItems.taming_carrot) {
+		} else if (stack != null && stack.getItem() == Items.IRON_INGOT) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}

@@ -71,7 +71,7 @@ public class ModelTameableVillager extends ModelBase
     		this.rightVillagerLeg.render(scale);
     		this.villagerHead.render(scale);
     		this.villagerArms.render(scale);
-    		this.villagerNose.render(scale);
+    		//this.villagerNose.render(scale);
     		this.villagerBody.render(scale);
     		GlStateManager.popMatrix();
     	} else {
@@ -79,7 +79,7 @@ public class ModelTameableVillager extends ModelBase
     		this.rightVillagerLeg.render(scale);
     		this.villagerHead.render(scale);
     		this.villagerArms.render(scale);
-    		this.villagerNose.render(scale);
+    		//this.villagerNose.render(scale);
     		this.villagerBody.render(scale);
          }
     }
