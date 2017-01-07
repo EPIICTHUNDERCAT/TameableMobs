@@ -4,35 +4,45 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.epiicthundercat.tameablemobs.mobs.villager.TamedVillagerRegistry;
-import com.github.epiicthundercat.tameablemobs.mobs.villager.TamedVillagerRegistry.TamedVillagerProfession;
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman.EntityAIFollowOwner;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman.EntityAIOwnerHurtByTarget;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem.EntityAISit;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.entity.ai.EntityAIAttackRanged;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIFollowParent;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMate;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIPanic;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.ai.EntityAIZombieAttack;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.RangedAttribute;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -40,6 +50,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
@@ -47,80 +58,81 @@ import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableZombie extends EntityZombie implements IEntityOwnable {
+public class TameableSnowman extends TameableEntityGolem implements IRangedAttackMob, IEntityOwnable
+{
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableIronGolem.class,
+		
+		DataSerializers.FLOAT);
+private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableIronGolem.class,
+		DataSerializers.BOOLEAN);
+protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableIronGolem.class,
+		DataSerializers.BYTE);
+protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
+		.<Optional<UUID>>createKey(TameableIronGolem.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
-    /** The attribute which determines the chance that this mob will spawn reinforcements */
-    protected static final IAttribute SPAWN_REINFORCEMENTS_CHANCE = (new RangedAttribute((IAttribute)null, "zombie.spawnReinforcements", 0.0D, 0.0D, 1.0D)).setDescription("Spawn Reinforcements Chance");
-    private static final UUID BABY_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.5D, 1);
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> VILLAGER_TYPE = EntityDataManager.<Integer>createKey(TameableZombie.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> CONVERTING = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String>  VILLAGER_TYPE_STR = EntityDataManager.<String>createKey(TameableZombie.class, DataSerializers.STRING);
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableZombie.class,
-			DataSerializers.FLOAT);
-	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableZombie.class,
-			DataSerializers.BOOLEAN);
-	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableZombie.class,
-			DataSerializers.BYTE);
-	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-			.<Optional<UUID>>createKey(TameableZombie.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-
-	protected EntityAISit aiSit;
-
-	public TameableZombie(World worldIn) {
-		super(worldIn);
-		setTamed(false);
+protected EntityAISit aiSit;
 	
+    private static final DataParameter<Byte> PUMPKIN_EQUIPPED = EntityDataManager.<Byte>createKey(TameableSnowman.class, DataSerializers.BYTE);
 
-	}
+    public TameableSnowman(World worldIn)
+    {
+        super(worldIn);
+        setTamed(false);
+        this.setSize(0.7F, 1.9F);
+    }
+
+    public static void registerFixesTameableSnowman(DataFixer fixer)
+    {
+        EntityLiving.registerFixesMob(fixer, "TameableSnowMan");
+    }
+
 
 	@Override
 	protected void initEntityAI() {
-		tasks.addTask(2, new EntityAIZombieAttack(this, 1.0D, false));
-		tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
-		tasks.addTask(0, new EntityAISwimming(this));
-		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.ROTTEN_FLESH, false));
-		aiSit = new TameableZombie.EntityAISit(this);
+		this.tasks.addTask(1, new EntityAIAttackRanged(this, 1.25D, 20, 10.0F));
+        this.tasks.addTask(2, new EntityAIWander(this, 1.0D));
+        this.tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(4, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityLiving.class, 10, true, false, IMob.MOB_SELECTOR));
+   
+		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.WHEAT, false));
+		tasks.addTask(4, new EntityAIFollowParent(this, 1.25D));
+		aiSit = new TameableSnowman.EntityAISit(this);
 		tasks.addTask(1, aiSit);
-
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-		tasks.addTask(7, new EntityAIWander(this, 1.0D));
-		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-		tasks.addTask(8, new TameableZombie.EntityAIBeg(this, 8.0F));
-		targetTasks.addTask(1, new TameableZombie.EntityAIOwnerHurtByTarget(this));
-
-		targetTasks.addTask(3, new TameableZombie.AIFindPlayer(this));
+		tasks.addTask(2, new TameableSnowman.AIMeleeAttack(this, 1.0D, false));
+		tasks.addTask(6, new EntityAIMate(this, 1.0D));
+		tasks.addTask(8, new TameableSnowman.EntityAIBeg(this, 8.0F));
+		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
+		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
+		targetTasks.addTask(3, new TameableSnowman.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
 	}
 
-
-
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		// this.getAttributeMap().registerAttribute(SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(this.rand.nextDouble() * net.minecraftforge.common.ForgeModContainer.zombieSummonBaseChance);
-
+		getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 		if (isTamed()) {
-			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
-			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
+			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
+			this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 		}
 
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
@@ -129,20 +141,12 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		  this.getDataManager().register(IS_CHILD, Boolean.valueOf(false));
-	        this.getDataManager().register(VILLAGER_TYPE, Integer.valueOf(0));
-	        this.getDataManager().register(VILLAGER_TYPE_STR, "");
-	        this.getDataManager().register(CONVERTING, Boolean.valueOf(false));
-	        this.getDataManager().register(ARMS_RAISED, Boolean.valueOf(false));
+		this.dataManager.register(PUMPKIN_EQUIPPED, Byte.valueOf((byte)0));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
 		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
 		dataManager.register(BEGGING, Boolean.valueOf(false));
 
-	}
-
-	public static void registerFixesTameableZombie(DataFixer fixer) {
-		EntityLiving.registerFixesMob(fixer, "TameableZombie");
 	}
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
@@ -196,12 +200,21 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		return isTamed() && isOwner(player);
 	}
 
+	public boolean isBreedingItem(@Nullable ItemStack stack) {
+		return stack == null ? false : stack.getItem() == Items.PUMPKIN_SEEDS;
+	}
+
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
+		if (stack != null && stack.getItem() == Items.SHEARS && !this.isPumpkinEquipped() && !this.worldObj.isRemote)
+        {
+            this.setPumpkinEquipped(true);
+            stack.damageItem(1, player);
+        }
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.ROTTEN_FLESH) {
-					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
+				if (stack.getItem() == Items.SNOWBALL) {
+					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
 						}
@@ -224,18 +237,18 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 					setAttackTarget((EntityLivingBase) null);
 				}
 			}
-		} else if (stack != null && stack.getItem() == Items.ROTTEN_FLESH) {
+		} else if (stack != null && stack.getItem() == Items.SNOWBALL) {
 			if (!player.capabilities.isCreativeMode) {
 				--stack.stackSize;
 			}
 
 			if (!worldObj.isRemote) {
-				if (rand.nextInt(10) == 0) {
+				if (rand.nextInt(5) == 0) {
 					setTamed(true);
 					navigator.clearPathEntity();
 					setAttackTarget((EntityLivingBase) null);
 					// aiSit.setSitting(true);
-					setHealth(30.0F);
+					setHealth(60.0F);
 					setOwnerId(player.getUniqueID());
 					playTameEffect(true);
 					worldObj.setEntityState(this, (byte) 7);
@@ -264,14 +277,10 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
 		} else {
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
 		}
-		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
+		// getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 
-	}
-
-	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.ROTTEN_FLESH;
 	}
 
 	public boolean isSitting() {
@@ -299,6 +308,20 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	@Override
 	public int getMaxSpawnedInChunk() {
 		return 8;
+	}
+
+	public boolean canMateWith(EntityAnimal otherAnimal) {
+		if (otherAnimal == this) {
+			return false;
+		} else if (!this.isTamed()) {
+			return false;
+		} else if (!(otherAnimal instanceof TameableSnowman)) {
+			return false;
+		} else {
+			TameableSnowman entityTameableSnowman = (TameableSnowman) otherAnimal;
+			return !entityTameableSnowman.isTamed() ? false
+					: (entityTameableSnowman.isSitting() ? false : this.isInLove() && entityTameableSnowman.isInLove());
+		}
 	}
 
 	@Override
@@ -350,18 +373,19 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void handleStatusUpdate(byte id) {
-
 		if (id == 7) {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		} else {
+			super.handleStatusUpdate(id);
 		}
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
-		if (!(p_142018_1_ instanceof TameableZombie) && !(p_142018_1_ instanceof EntityGhast)) {
-			if (p_142018_1_ instanceof TameableZombie) {
-				TameableZombie entityChicken = (TameableZombie) p_142018_1_;
+		if (!(p_142018_1_ instanceof EntityCreeper) && !(p_142018_1_ instanceof EntityGhast)) {
+			if (p_142018_1_ instanceof TameableSnowman) {
+				TameableSnowman entityChicken = (TameableSnowman) p_142018_1_;
 
 				if (entityChicken.isTamed() && entityChicken.getOwner() == p_142018_2_) {
 					return false;
@@ -377,13 +401,13 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	}
 
 	static class EntityAIBeg extends EntityAIBase {
-		private final TameableZombie theBat;
+		private final TameableSnowman theBat;
 		private EntityPlayer thePlayer;
 		private final World worldObject;
 		private final float minPlayerDistance;
 		private int timeoutCounter;
 
-		public EntityAIBeg(TameableZombie blaze, float minDistance) {
+		public EntityAIBeg(TameableSnowman blaze, float minDistance) {
 			theBat = blaze;
 			worldObject = blaze.worldObj;
 			minPlayerDistance = minDistance;
@@ -464,13 +488,13 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	}
 
 	static class EntityAISit extends EntityAIBase {
-		private final TameableZombie theEntity;
+		private final TameableSnowman theEntity;
 
 		/** If the EntityTameable is sitting. */
 
 		private boolean isSitting;
 
-		public EntityAISit(TameableZombie entityIn) {
+		public EntityAISit(TameableSnowman entityIn) {
 			theEntity = entityIn;
 			setMutexBits(5);
 		}
@@ -519,8 +543,21 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		}
 	}
 
+	@Override
+	public TameableSnowman createChild(EntityAgeable ageable) {
+		TameableSnowman entityTameableSnowman = new TameableSnowman(this.worldObj);
+		UUID uuid = this.getOwnerId();
+
+		if (uuid != null) {
+			entityTameableSnowman.setOwnerId(uuid);
+			entityTameableSnowman.setTamed(true);
+		}
+
+		return entityTameableSnowman;
+	}
+
 	static class EntityAIFollowOwner extends EntityAIBase {
-		private final TameableZombie thePet;
+		private final TameableSnowman thePet;
 		private EntityLivingBase theOwner;
 		World theWorld;
 		private final double followSpeed;
@@ -530,7 +567,7 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		float minDist;
 		private float oldWaterCost;
 
-		public EntityAIFollowOwner(TameableZombie thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
+		public EntityAIFollowOwner(TameableSnowman thePetIn, double followSpeedIn, float minDistIn, float maxDistIn) {
 			thePet = thePetIn;
 			theWorld = thePetIn.worldObj;
 			followSpeed = followSpeedIn;
@@ -640,11 +677,11 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	}
 
 	static class EntityAIOwnerHurtByTarget extends EntityAITarget {
-		TameableZombie theDefendingTameable;
+		TameableSnowman theDefendingTameable;
 		EntityLivingBase theOwnerAttacker;
 		private int timestamp;
 
-		public EntityAIOwnerHurtByTarget(TameableZombie theDefendingTameableIn) {
+		public EntityAIOwnerHurtByTarget(TameableSnowman theDefendingTameableIn) {
 			super(theDefendingTameableIn, false);
 			theDefendingTameable = theDefendingTameableIn;
 			setMutexBits(1);
@@ -688,22 +725,22 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	}
 
 	static class AIFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer> {
-		private final TameableZombie TameableZombie;
+		private final TameableSnowman TameableSnowman;
 		private EntityPlayer player;
 		private int aggroTime;
 		private int teleportTime;
 
-		public AIFindPlayer(TameableZombie p_i45842_1_) {
+		public AIFindPlayer(TameableSnowman p_i45842_1_) {
 			super(p_i45842_1_, EntityPlayer.class, false);
-			TameableZombie = p_i45842_1_;
+			TameableSnowman = p_i45842_1_;
 		}
 
 		@Override
 		public boolean shouldExecute() {
 			double d0 = getTargetDistance();
-			player = TameableZombie.worldObj.getNearestAttackablePlayer(TameableZombie.posX, TameableZombie.posY,
-					TameableZombie.posZ, d0, d0, (Function) null,
-					(@Nullable EntityPlayer player) -> (player != null) && (TameableZombie.shouldAttackPlayer(player)));
+			player = TameableSnowman.worldObj.getNearestAttackablePlayer(TameableSnowman.posX, TameableSnowman.posY,
+					TameableSnowman.posZ, d0, d0, (Function) null,
+					(@Nullable EntityPlayer player) -> (player != null) && (TameableSnowman.shouldAttackPlayer(player)));
 			return player != null;
 		}
 
@@ -722,10 +759,10 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		@Override
 		public boolean continueExecuting() {
 			if (player != null) {
-				if (!TameableZombie.shouldAttackPlayer(player)) {
+				if (!TameableSnowman.shouldAttackPlayer(player)) {
 					return false;
 				}
-				TameableZombie.faceEntity(player, 10.0F, 10.0F);
+				TameableSnowman.faceEntity(player, 10.0F, 10.0F);
 				return true;
 			}
 			return (targetEntity != null) && (targetEntity.isEntityAlive()) ? true : super.continueExecuting();
@@ -741,12 +778,12 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 				}
 			} else {
 				if (targetEntity != null) {
-					if (TameableZombie.shouldAttackPlayer(targetEntity)) {
-						if (targetEntity.getDistanceSqToEntity(TameableZombie) < 16.0D) {
+					if (TameableSnowman.shouldAttackPlayer(targetEntity)) {
+						if (targetEntity.getDistanceSqToEntity(TameableSnowman) < 16.0D) {
 						}
 						teleportTime = 0;
-					} else if ((targetEntity.getDistanceSqToEntity(TameableZombie) > 256.0D) && (teleportTime++ >= 30)
-							&& (TameableZombie.teleportToEntity(targetEntity))) {
+					} else if ((targetEntity.getDistanceSqToEntity(TameableSnowman) > 256.0D) && (teleportTime++ >= 30)
+							&& (TameableSnowman.teleportToEntity(targetEntity))) {
 						teleportTime = 0;
 					}
 				}
@@ -794,46 +831,295 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		return flag;
 	}
 
-	/**
-	 * Checks if the entity's current position is a valid location to spawn this
-	 * entity.
-	 */
-	  @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+	static class AIMeleeAttack extends EntityAIAttackMelee {
 
-	 /**
-     * Return whether this zombie is a villager.
+		World worldObj;
+		protected EntityCreature attacker;
+		/**
+		 * An amount of decrementing ticks that allows the entity to attack once
+		 * the tick reaches 0.
+		 */
+		protected int attackTick;
+		/** The speed with which the mob will approach the target */
+		double speedTowardsTarget;
+		/**
+		 * When true, the mob will continue chasing its target, even if it can't
+		 * find a path to them right now.
+		 */
+		boolean longMemory;
+		/** The PathEntity of our entity. */
+		Path entityPathEntity;
+		private int delayCounter;
+		private double targetX;
+		private double targetY;
+		private double targetZ;
+		protected final int attackInterval = 20;
+		private int failedPathFindingPenalty = 0;
+		private boolean canPenalize = false;
+
+		public AIMeleeAttack(EntityCreature creature, double speedIn, boolean useLongMemory) {
+			super(creature, speedIn, useLongMemory);
+			this.attacker = creature;
+			this.worldObj = creature.worldObj;
+			this.speedTowardsTarget = speedIn;
+			this.longMemory = useLongMemory;
+			this.setMutexBits(3);
+
+		}
+
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+
+			if (entitylivingbase == null) {
+				return false;
+			} else if (!entitylivingbase.isEntityAlive()) {
+				return false;
+			} else {
+				if (canPenalize) {
+					if (--this.delayCounter <= 0) {
+						this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
+						this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+						return this.entityPathEntity != null;
+					} else {
+						return true;
+					}
+				}
+				this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
+				return this.entityPathEntity != null;
+			}
+		}
+
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+			return entitylivingbase == null ? false
+					: (!entitylivingbase.isEntityAlive() ? false
+							: (!this.longMemory ? !this.attacker.getNavigator().noPath()
+									: (!this.attacker.isWithinHomeDistanceFromPosition(new BlockPos(entitylivingbase))
+											? false
+											: !(entitylivingbase instanceof EntityPlayer)
+													|| !((EntityPlayer) entitylivingbase).isSpectator()
+															&& !((EntityPlayer) entitylivingbase).isCreative())));
+		}
+
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.attacker.getNavigator().setPath(this.entityPathEntity, this.speedTowardsTarget);
+			this.delayCounter = 0;
+		}
+
+		/**
+		 * Resets the task
+		 */
+		public void resetTask() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+
+			if (entitylivingbase instanceof EntityPlayer && (((EntityPlayer) entitylivingbase).isSpectator()
+					|| ((EntityPlayer) entitylivingbase).isCreative())) {
+				this.attacker.setAttackTarget((EntityLivingBase) null);
+			}
+
+			this.attacker.getNavigator().clearPathEntity();
+		}
+
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+			this.attacker.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
+			double d0 = this.attacker.getDistanceSq(entitylivingbase.posX, entitylivingbase.getEntityBoundingBox().minY,
+					entitylivingbase.posZ);
+			--this.delayCounter;
+
+			if ((this.longMemory || this.attacker.getEntitySenses().canSee(entitylivingbase)) && this.delayCounter <= 0
+					&& (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
+							|| entitylivingbase.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D
+							|| this.attacker.getRNG().nextFloat() < 0.05F)) {
+				this.targetX = entitylivingbase.posX;
+				this.targetY = entitylivingbase.getEntityBoundingBox().minY;
+				this.targetZ = entitylivingbase.posZ;
+				this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+
+				if (this.canPenalize) {
+					this.delayCounter += failedPathFindingPenalty;
+					if (this.attacker.getNavigator().getPath() != null) {
+						net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath()
+								.getFinalPathPoint();
+						if (finalPathPoint != null && entitylivingbase.getDistanceSq(finalPathPoint.xCoord,
+								finalPathPoint.yCoord, finalPathPoint.zCoord) < 1)
+							failedPathFindingPenalty = 0;
+						else
+							failedPathFindingPenalty += 10;
+					} else {
+						failedPathFindingPenalty += 10;
+					}
+				}
+
+				if (d0 > 1024.0D) {
+					this.delayCounter += 10;
+				} else if (d0 > 256.0D) {
+					this.delayCounter += 5;
+				}
+
+				if (!this.attacker.getNavigator().tryMoveToEntityLiving(entitylivingbase, this.speedTowardsTarget)) {
+					this.delayCounter += 15;
+				}
+			}
+
+			this.attackTick = Math.max(this.attackTick - 1, 0);
+			this.checkAndPerformAttack(entitylivingbase, d0);
+		}
+
+		protected void checkAndPerformAttack(EntityLivingBase p_190102_1_, double p_190102_2_) {
+			double d0 = this.getAttackReachSqr(p_190102_1_);
+
+			if (p_190102_2_ <= d0 && this.attackTick <= 0) {
+				this.attackTick = 20;
+				this.attacker.swingArm(EnumHand.MAIN_HAND);
+				this.attacker.attackEntityAsMob(p_190102_1_);
+			}
+		}
+
+		protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+			return (double) (this.attacker.width * 2.0F * this.attacker.width * 2.0F + attackTarget.width);
+		}
+
+	}
+
+	
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    /**
+     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
+     * use this to react to sunlight and start to burn.
      */
-	 @Override
-    public boolean isVillager()
+    public void onLivingUpdate()
     {
-        return getTheVillagerTypeForge() != null;
+        super.onLivingUpdate();
+
+        if (!this.worldObj.isRemote)
+        {
+            int i = MathHelper.floor_double(this.posX);
+            int j = MathHelper.floor_double(this.posY);
+            int k = MathHelper.floor_double(this.posZ);
+
+            if (this.isWet())
+            {
+                this.attackEntityFrom(DamageSource.drown, 1.0F);
+            }
+
+            if (this.worldObj.getBiome(new BlockPos(i, 0, k)).getFloatTemperature(new BlockPos(i, j, k)) > 1.0F)
+            {
+                this.attackEntityFrom(DamageSource.onFire, 1.0F);
+            }
+
+            if (!this.worldObj.getGameRules().getBoolean("mobGriefing"))
+            {
+                return;
+            }
+
+            for (int l = 0; l < 4; ++l)
+            {
+                i = MathHelper.floor_double(this.posX + (double)((float)(l % 2 * 2 - 1) * 0.25F));
+                j = MathHelper.floor_double(this.posY);
+                k = MathHelper.floor_double(this.posZ + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
+                BlockPos blockpos = new BlockPos(i, j, k);
+
+                if (this.worldObj.getBlockState(blockpos).getMaterial() == Material.AIR && this.worldObj.getBiome(new BlockPos(i, 0, k)).getFloatTemperature(blockpos) < 0.8F && Blocks.SNOW_LAYER.canPlaceBlockAt(this.worldObj, blockpos))
+                {
+                    this.worldObj.setBlockState(blockpos, Blocks.SNOW_LAYER.getDefaultState());
+                }
+            }
+        }
     }
 
-   
-    private TamedVillagerProfession prof;
     @Nullable
-    public TamedVillagerProfession getTheVillagerTypeForge()
+    protected ResourceLocation getLootTable()
     {
-        return this.prof;
+        return LootTableList.ENTITIES_SNOWMAN;
     }
-   
-    public void setTheVillagerType(@Nullable TamedVillagerProfession type)
+
+    /**
+     * Attack the specified entity using a ranged attack.
+     *  
+     * @param distanceFactor How far the target is, normalized and clamped between 0.1 and 1.0
+     */
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor)
     {
-    	
-        this.prof = type;
-        this.getDataManager().set(VILLAGER_TYPE_STR, type == null ? "" : type.getRegistryName().toString());
-        TamedVillagerRegistry.onSetProfession(this, type);
+        EntitySnowball entitysnowball = new EntitySnowball(this.worldObj, this);
+        double d0 = target.posY + (double)target.getEyeHeight() - 1.100000023841858D;
+        double d1 = target.posX - this.posX;
+        double d2 = d0 - entitysnowball.posY;
+        double d3 = target.posZ - this.posZ;
+        float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3) * 0.2F;
+        entitysnowball.setThrowableHeading(d1, d2 + (double)f, d3, 1.6F, 12.0F);
+        this.playSound(SoundEvents.ENTITY_SNOWMAN_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+        this.worldObj.spawnEntityInWorld(entitysnowball);
+    }
+
+    public float getEyeHeight()
+    {
+        return 1.7F;
+    }
+
+    
+
+    public boolean isPumpkinEquipped()
+    {
+        return (((Byte)this.dataManager.get(PUMPKIN_EQUIPPED)).byteValue() & 16) != 0;
+    }
+
+    public void setPumpkinEquipped(boolean pumpkinEquipped)
+    {
+        byte b0 = ((Byte)this.dataManager.get(PUMPKIN_EQUIPPED)).byteValue();
+
+        if (pumpkinEquipped)
+        {
+            this.dataManager.set(PUMPKIN_EQUIPPED, Byte.valueOf((byte)(b0 | 16)));
+        }
+        else
+        {
+            this.dataManager.set(PUMPKIN_EQUIPPED, Byte.valueOf((byte)(b0 & -17)));
+        }
+    }
+
+    @Nullable
+    protected SoundEvent getAmbientSound()
+    {
+        return SoundEvents.ENTITY_SNOWMAN_AMBIENT;
+    }
+
+    @Nullable
+    protected SoundEvent getHurtSound()
+    {
+        return SoundEvents.ENTITY_SNOWMAN_HURT;
+    }
+
+    @Nullable
+    protected SoundEvent getDeathSound()
+    {
+        return SoundEvents.ENTITY_SNOWMAN_DEATH;
     }
 }

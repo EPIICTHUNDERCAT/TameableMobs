@@ -71,7 +71,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameableIronGolem extends TameableEntityGolem implements IEntityOwnable
-{private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableIronGolem.class,
+{
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableIronGolem.class,
 		DataSerializers.FLOAT);
 private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableIronGolem.class,
 		DataSerializers.BOOLEAN);

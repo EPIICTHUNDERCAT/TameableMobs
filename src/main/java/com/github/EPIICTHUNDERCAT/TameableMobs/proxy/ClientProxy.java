@@ -23,9 +23,12 @@ import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableRabbi
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSheep;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableShulker;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSilverfish;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSkeleton;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSlime;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSnowman;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSpider;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableSquid;
+import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableVillager;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableWitch;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableZombie;
 import com.github.epiicthundercat.tameablemobs.client.render.RenderWitchProjectile;
@@ -52,9 +55,12 @@ import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSheep;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableShulker;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSilverfish;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSkeleton;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSlime;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableSnowman;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSpider;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableSquid;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableVillager;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableWitch;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableZombie;
 import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityBatPee;
@@ -111,9 +117,9 @@ public class ClientProxy extends CommonProxy {
 		rm.entityRenderMap.put(TameableZombie.class, new RenderTameableZombie(rm));
 		rm.entityRenderMap.put(TameableIronGolem.class, new RenderTameableIronGolem(rm));
 		rm.entityRenderMap.put(TMBug.class, new RenderTMBug(rm));
-		
-		
-		  
+		rm.entityRenderMap.put(TameableSkeleton.class, new RenderTameableSkeleton(rm));
+		rm.entityRenderMap.put(TameableVillager.class, new RenderTameableVillager(rm));
+		rm.entityRenderMap.put(TameableSnowman.class, new RenderTameableSnowman(rm));
 
 	}
 	

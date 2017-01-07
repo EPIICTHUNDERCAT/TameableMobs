@@ -25,6 +25,7 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
@@ -33,33 +34,33 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class ModEntities {
 	public static void init() {
-		int tameablepolarbearColor = new Color(254, 85, 176).getRGB();
-		int tameablechickenColor = new Color(254, 85, 176).getRGB();
-		int tameableblazeColor = new Color(254, 85, 176).getRGB();
-		int tameablebatColor = new Color(254, 85, 176).getRGB();
-		int tameablesheepColor = new Color(254, 85, 176).getRGB();
-		int tameablepigColor = new Color(254, 85, 176).getRGB();
-		int tameablecowColor = new Color(254, 85, 176).getRGB();
-		int tameablecreeperColor = new Color(254, 85, 176).getRGB();
-		int tameablezombieColor = new Color(254, 85, 176).getRGB();
-		int tameableendermiteColor = new Color(254, 85, 176).getRGB();
-		int tameableendermanColor = new Color(254, 85, 176).getRGB();
-		int tameablevillagerColor = new Color(254, 85, 176).getRGB();
-		int tameablesnowgolemColor = new Color(254, 85, 176).getRGB();
-		int tameableirongolemColor = new Color(254, 85, 176).getRGB();
-		int tameablemooshroomColor = new Color(254, 85, 176).getRGB();
-		int tameablesquidColor = new Color(254, 85, 176).getRGB();
-		int tameablespiderColor = new Color(254, 85, 176).getRGB();
-		int tameablecavespiderColor = new Color(254, 85, 176).getRGB();
-		int tameableghastColor = new Color(254, 85, 176).getRGB();
-		int tameablegiantzombieColor = new Color(254, 85, 176).getRGB();
-		int tameableguardianColor = new Color(254, 85, 176).getRGB();
-		int tameablemagmacubeColor = new Color(254, 85, 176).getRGB();
-		int tameablepigzombieColor = new Color(254, 85, 176).getRGB();
+		int tameablePolarBearColor = new Color(102, 15921906, 9803152).getRGB();
+		int tameableChickenColor = new Color(254, 85, 176).getRGB();
+		int tameableBlazeColor = new Color(254, 85, 176).getRGB();
+		int tameableBatColor = new Color(254, 85, 176).getRGB();
+		int tameableSheepColor = new Color(254, 85, 176).getRGB();
+		int tameablePigColor = new Color(254, 85, 176).getRGB();
+		int tameableCowColor = new Color(254, 85, 176).getRGB();
+		int tameableCreeperColor = new Color(50, 894731, 0).getRGB();
+		int tameableZombieColor = new Color(54, 44975, 7969893).getRGB();
+		int tameableEndermiteColor = new Color(254, 85, 176).getRGB();
+		int tameableEndermanColor = new Color(254, 85, 176).getRGB();
+		int tameableVillagerColor = new Color(254, 85, 176).getRGB();
+		int TameableSnowmanColor = new Color(254, 85, 176).getRGB();
+		int tameableIronGolemColor = new Color(254, 85, 176).getRGB();
+		int tameableMooshroomColor = new Color(254, 85, 176).getRGB();
+		int tameableSquidColor = new Color(254, 85, 176).getRGB();
+		int tameableSpiderColor = new Color(52, 3419431, 11013646).getRGB();
+		int tameableCaveSpiderColor = new Color(254, 85, 176).getRGB();
+		int tameableGhastColor = new Color(57, 15373203, 5009705).getRGB();
+		int tameableGiantZombieColor = new Color(54, 44975, 79693).getRGB();
+		int tameableGuardianColor = new Color(254, 85, 176).getRGB();
+		int tameableMagmaCubeColor = new Color(254, 85, 176).getRGB();
+		int tameablePigZombieColor = new Color(254, 85, 176).getRGB();
 		int tameableshulkerColor = new Color(254, 85, 176).getRGB();
-		int tameablesilverfishColor = new Color(254, 85, 176).getRGB();
-		int tameableskeletonColor = new Color(254, 85, 176).getRGB();
-		int tameableslimeColor = new Color(254, 85, 176).getRGB();
+		int tameableSilverfishColor = new Color(254, 85, 176).getRGB();
+		int tameableSkeletonColor = new Color(51, 12698049, 4802889).getRGB();
+		int tameableSlimeColor = new Color(55, 5349438, 8306542).getRGB();
 		int tameablewitchColor = new Color(254, 85, 176).getRGB();
 		int tameablerabbitColor = new Color(254, 85, 176).getRGB();
 
@@ -67,97 +68,94 @@ public class ModEntities {
 
 		// TameablePolarBear
 		EntityRegistry.registerModEntity(TameablePolarBear.class, "TameablePolarBear", 0, TameableMobs.instance, 80, 3,
-				false, 0, tameablepolarbearColor);
+				false, 0, tameablePolarBearColor);
 
 		// TameableChicken
 		EntityRegistry.registerModEntity(TameableChicken.class, "TameableChicken", 1, TameableMobs.instance, 80, 3,
-				false, 0, tameablechickenColor);
+				false, 0, tameableChickenColor);
 
 		// TameableBlaze
 		EntityRegistry.registerModEntity(TameableBlaze.class, "TameableBlaze", 2, TameableMobs.instance, 80, 3, false,
-				0, tameableblazeColor);
+				0, tameableBlazeColor);
 		// TameableBat
 		EntityRegistry.registerModEntity(TameableBat.class, "TameableBat", 3, TameableMobs.instance, 80, 3, false, 0,
-				tameablebatColor);
+				tameableBatColor);
 
 		// TameableSheep
 		EntityRegistry.registerModEntity(TameableSheep.class, "TameableSheep", 4, TameableMobs.instance, 80, 3, false,
-				0, tameablesheepColor);
+				0, tameableSheepColor);
 		// TameablePig
 		EntityRegistry.registerModEntity(TameablePig.class, "TameablePig", 5, TameableMobs.instance, 80, 3, false, 0,
-				tameablepigColor);
+				tameablePigColor);
 		// TameableCow
 		EntityRegistry.registerModEntity(TameableCow.class, "TameableCow", 6, TameableMobs.instance, 80, 3, false, 0,
-				tameablecowColor);
+				tameableCowColor);
 		// TameableCreeper
 		EntityRegistry.registerModEntity(TameableCreeper.class, "TameableCreeper", 7, TameableMobs.instance, 80, 3,
-				false, 0, tameablecreeperColor);
+				false, 0, tameableCreeperColor);
 		// TameableZombie
 		EntityRegistry.registerModEntity(TameableZombie.class, "TameableZombie", 8, TameableMobs.instance, 80, 3, false,
-				0, tameablezombieColor);
+				0, tameableZombieColor);
 		// TameableEndermite
 		EntityRegistry.registerModEntity(TameableEndermite.class, "TameableEndermite", 9, TameableMobs.instance, 80, 3,
-				false, 0, tameableendermiteColor);
+				false, 0, tameableEndermiteColor);
 		// TameableEnderman
 		EntityRegistry.registerModEntity(TameableEnderman.class, "TameableEnderman", 10, TameableMobs.instance, 80, 3,
-				false, 0, tameableendermanColor);
+				false, 0, tameableEndermanColor);
 
 		// TameableVillager
-		// EntityRegistry.registerModEntity(TameableVillager.class,
-		// "TameableVillager", 11, TameableMobs.instance, 80, 3, false, 0,
-		// tameablevillagerColor);
+		EntityRegistry.registerModEntity(TameableVillager.class, "TameableVillager", 11, TameableMobs.instance, 80, 3,
+				false, 0, tameableVillagerColor);
 
-		// TameableSnowGolem
-		// EntityRegistry.registerModEntity(TameableSnowGolem.class,
-		// "TameableSnowGolem", 12, TameableMobs.instance, 80, 3, false, 0,
-		// tameablesnowgolemColor);
+		// TameableSnowman
+		EntityRegistry.registerModEntity(TameableSnowman.class, "TameableSnowman", 12, TameableMobs.instance, 80, 3,
+				false, 0, TameableSnowmanColor);
 
 		// TameableIronGolem
 		EntityRegistry.registerModEntity(TameableIronGolem.class, "TameableIronGolem", 13, TameableMobs.instance, 80, 3,
-				false, 0, tameableirongolemColor);
+				false, 0, tameableIronGolemColor);
 
 		// TameableMooshroom
 		EntityRegistry.registerModEntity(TameableMooshroom.class, "TameableMooshroom", 14, TameableMobs.instance, 80, 3,
-				false, 0, tameablemooshroomColor);
+				false, 0, tameableMooshroomColor);
 		// TameableSquid
 		EntityRegistry.registerModEntity(TameableSquid.class, "TameableSquid", 15, TameableMobs.instance, 80, 3, false,
-				0, tameablesquidColor);
+				0, tameableSquidColor);
 
 		// TameableSpider
 		EntityRegistry.registerModEntity(TameableSpider.class, "TameableSpider", 16, TameableMobs.instance, 80, 3,
-				false, 0, tameablespiderColor);
+				false, 0, tameableSpiderColor);
 
 		// TameableCaveSpider
 		EntityRegistry.registerModEntity(TameableCaveSpider.class, "TameableCaveSpider", 17, TameableMobs.instance, 80,
-				3, false, 0, tameablecavespiderColor);
+				3, false, 0, tameableCaveSpiderColor);
 		// TameableGhast
 		EntityRegistry.registerModEntity(TameableGhast.class, "TameableGhast", 18, TameableMobs.instance, 80, 3, false,
-				0, tameableghastColor);
+				0, tameableGhastColor);
 		// TameableGiantZombie
 		EntityRegistry.registerModEntity(TameableGiantZombie.class, "TameableGiantZombie", 19, TameableMobs.instance,
-				80, 3, false, 0, tameablegiantzombieColor);
+				80, 3, false, 0, tameableGiantZombieColor);
 		// TameableGuardian
 		EntityRegistry.registerModEntity(TameableGuardian.class, "TameableGuardian", 20, TameableMobs.instance, 80, 3,
-				false, 0, tameableguardianColor);
+				false, 0, tameableGuardianColor);
 		// TameableMagmaCube
 		EntityRegistry.registerModEntity(TameableMagmaCube.class, "TameableMagmaCube", 21, TameableMobs.instance, 80, 3,
-				false, 0, tameablemagmacubeColor);
+				false, 0, tameableMagmaCubeColor);
 		// TameablePigZombie
 		EntityRegistry.registerModEntity(TameablePigZombie.class, "TameablePigZombie", 23, TameableMobs.instance, 80, 3,
-				false, 0, tameablepigzombieColor);
+				false, 0, tameablePigZombieColor);
 		// TameableShulker
 		EntityRegistry.registerModEntity(TameableShulker.class, "TameableShulker", 24, TameableMobs.instance, 80, 3,
 				false, 0, tameableshulkerColor);
 		// TameableSilverfish
 		EntityRegistry.registerModEntity(TameableSilverfish.class, "TameableSilverfish", 25, TameableMobs.instance, 80,
-				3, false, 0, tameablesilverfishColor);
+				3, false, 0, tameableSilverfishColor);
 		// TameableSkeleton
-		// EntityRegistry.registerModEntity(TameableSkeleton.class,
-		// "TameableSkeleton", 26, TameableMobs.instance, 80, 3, false, 0,
-		// tameableskeletonColor);
+		EntityRegistry.registerModEntity(TameableSkeleton.class, "TameableSkeleton", 26, TameableMobs.instance, 80, 3,
+				false, 0, tameableSkeletonColor);
 		// TameableSlime
 		EntityRegistry.registerModEntity(TameableSlime.class, "TameableSlime", 27, TameableMobs.instance, 80, 3, false,
-				0, tameableslimeColor);
+				0, tameableSlimeColor);
 		// TameableWitch
 		EntityRegistry.registerModEntity(TameableWitch.class, "TameableWitch", 28, TameableMobs.instance, 80, 3, false,
 				0, tameablewitchColor);
@@ -165,8 +163,8 @@ public class ModEntities {
 		EntityRegistry.registerModEntity(TameableRabbit.class, "TameableRabbit", 30, TameableMobs.instance, 80, 3,
 				false, 0, tameablerabbitColor);
 		// Bug
-				EntityRegistry.registerModEntity(TMBug.class, "Bug", 31, TameableMobs.instance, 80, 3,
-						false, 0, tameablerabbitColor);
+		EntityRegistry.registerModEntity(TMBug.class, "Bug", 31, TameableMobs.instance, 80, 3, false, 0,
+				tameablerabbitColor);
 
 		// WitchProjectile
 		EntityRegistry.registerModEntity(EntityWitchProjectile.class, "WitchProjectile", 29, TameableMobs.instance, 64,
@@ -230,8 +228,7 @@ public class ModEntities {
 		// TameableGuardian
 		EntityRegistry.addSpawn(TameableGuardian.class, 1, 3, 8, EnumCreatureType.MONSTER, getGuardianBiomeList());
 		// TameableSilverfish
-		EntityRegistry.addSpawn(TameableSilverfish.class, 1, 3, 8, EnumCreatureType.MONSTER,
-				getSilverfishBiomeList());
+		EntityRegistry.addSpawn(TameableSilverfish.class, 1, 3, 8, EnumCreatureType.MONSTER, getSilverfishBiomeList());
 		// TameableGiantZombie
 		EntityRegistry.addSpawn(TameableGiantZombie.class, 1, 3, 8, EnumCreatureType.MONSTER, getMobBiomeList());
 		// TameableZombie
@@ -239,17 +236,17 @@ public class ModEntities {
 
 		// TameableIronGolem
 		EntityRegistry.addSpawn(TameableIronGolem.class, 1, 3, 8, EnumCreatureType.MONSTER, getIronGolemBiomeList());
-		//Bug
+		// Bug
 		EntityRegistry.addSpawn(TMBug.class, 2, 5, 10, EnumCreatureType.AMBIENT, getBugBiomeList());
-		/*
-		 * // TameableVillager EntityRegistry.addSpawn(TameableVillager.class,
-		 * 1, 3, 8, EnumCreatureType.CREATURE, getBiomeList()); //
-		 * TameableSnowGolem EntityRegistry.addSpawn(TameableSnowGolem.class,
-		 * 1, 3, 8, EnumCreatureType.MONSTER, getBiomeList());
-		 * 
-		 * // TameableSkeleton EntityRegistry.addSpawn(TameableSkeleton.class,
-		 * 1, 3, 8, EnumCreatureType.MONSTER, getBiomeList());
-		 */
+		// TameableSkeleton
+		EntityRegistry.addSpawn(TameableSkeleton.class, 1, 3, 8, EnumCreatureType.MONSTER, getMobBiomeList());
+		// TameableVillager
+		EntityRegistry.addSpawn(TameableVillager.class, 1, 3, 8, EnumCreatureType.CREATURE, getVillagerBiomeList());
+
+		// TameableSnowman
+		EntityRegistry.addSpawn(TameableSnowman.class, 1, 3, 8, EnumCreatureType.MONSTER, Biomes.ICE_MOUNTAINS,
+				Biomes.ICE_PLAINS, Biomes.MUTATED_ICE_FLATS, Biomes.COLD_TAIGA, Biomes.COLD_TAIGA_HILLS,
+				Biomes.MUTATED_TAIGA_COLD);
 
 		/*
 		 * Mob Placement
@@ -291,12 +288,10 @@ public class ModEntities {
 		EntitySpawnPlacementRegistry.setPlacementType(TameableEnderman.class, SpawnPlacementType.ON_GROUND);
 
 		// TameableVillager
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableVillager.class,
-		// SpawnPlacementType.ON_GROUND);
+		EntitySpawnPlacementRegistry.setPlacementType(TameableVillager.class, SpawnPlacementType.ON_GROUND);
 
-		// TameableSnowGolem
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableSnowGolem.class,
-		// SpawnPlacementType.ON_GROUND);
+		// TameableSnowman
+		EntitySpawnPlacementRegistry.setPlacementType(TameableSnowman.class, SpawnPlacementType.ON_GROUND);
 
 		// TameableIronGolem
 		EntitySpawnPlacementRegistry.setPlacementType(TameableIronGolem.class, SpawnPlacementType.ON_GROUND);
@@ -335,8 +330,7 @@ public class ModEntities {
 		EntitySpawnPlacementRegistry.setPlacementType(TameableSilverfish.class, SpawnPlacementType.ON_GROUND);
 
 		// TameableSkeleton
-		// EntitySpawnPlacementRegistry.setPlacementType(TameableSkeleton.class,
-		// SpawnPlacementType.ON_GROUND);
+		EntitySpawnPlacementRegistry.setPlacementType(TameableSkeleton.class, SpawnPlacementType.ON_GROUND);
 
 		// TameableSlime
 		EntitySpawnPlacementRegistry.setPlacementType(TameableSlime.class, SpawnPlacementType.ON_GROUND);
@@ -344,9 +338,9 @@ public class ModEntities {
 		// TameableWitch
 		EntitySpawnPlacementRegistry.setPlacementType(TameableWitch.class, SpawnPlacementType.ON_GROUND);
 
-		//Bug
+		// Bug
 		EntitySpawnPlacementRegistry.setPlacementType(TMBug.class, SpawnPlacementType.ON_GROUND);
-		
+
 		/*
 		 * This is the loot table for our mob
 		 */
@@ -355,7 +349,7 @@ public class ModEntities {
 		LootTableList.register(TameablePolarBear.LOOT_POLARBEAR);
 
 		// BUG
-		 LootTableList.register(TMBug.LOOT_BUG);
+		LootTableList.register(TMBug.LOOT_BUG);
 
 	}
 
@@ -516,6 +510,21 @@ public class ModEntities {
 			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.AMBIENT);
 			for (SpawnListEntry spawnEntry : spawnList) {
 				if (spawnEntry.entityClass == EntityChicken.class) {
+					biomes.add(currentBiome);
+				}
+			}
+		}
+		return biomes.toArray(new Biome[biomes.size()]);
+	}
+
+	private static Biome[] getVillagerBiomeList() {
+		List<Biome> biomes = new ArrayList<Biome>();
+		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+		while (biomeList.hasNext()) {
+			Biome currentBiome = biomeList.next();
+			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
+			for (SpawnListEntry spawnEntry : spawnList) {
+				if (spawnEntry.entityClass == EntityVillager.class) {
 					biomes.add(currentBiome);
 				}
 			}

@@ -227,7 +227,7 @@ public class TameableSquid extends EntityAnimal implements IEntityOwnable {
 		}
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == TMItems.ink_suplement) {
+				if (stack.getItem() == TMItems.ink_supplement) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;

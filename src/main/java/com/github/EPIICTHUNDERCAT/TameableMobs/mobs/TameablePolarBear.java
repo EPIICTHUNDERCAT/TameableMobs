@@ -73,6 +73,7 @@ public class TameablePolarBear extends EntityPolarBear implements IEntityOwnable
 			DataSerializers.BYTE);
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
 			.<Optional<UUID>>createKey(TameablePolarBear.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	
 	private float headRotationCourse;
 	private float headRotationCourseOld;
 

@@ -32,7 +32,7 @@ public class TMItems {
 		public static Item bat_pee = new TMItem("bat_pee");
 		public static Item info_book = new TMInfoBook("info_book");
 		public static Item bug = new TMItem("bug");
-		public static Item ink_suplement = new TMItem("ink_suplement");
+		public static Item ink_supplement = new TMItem("ink_supplement");
 		
 		
 		
