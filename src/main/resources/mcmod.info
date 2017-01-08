@@ -5,11 +5,11 @@
   "description": "Making Everything Tameable!",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
+  "url": "https://minecraft.curseforge.com/projects/tameable-mobs",
+  "updateUrl": "https://minecraft.curseforge.com/projects/tameable-mobs",
   "authorList": ["EPIIC_THUNDERCAT"],
   "credits": "TheRealP455w0rd- Helping with taming code and anything else!",
-  "logoFile": "",
+  "logoFile": "icon.png",
   "screenshots": [],
   "dependencies": []
 }

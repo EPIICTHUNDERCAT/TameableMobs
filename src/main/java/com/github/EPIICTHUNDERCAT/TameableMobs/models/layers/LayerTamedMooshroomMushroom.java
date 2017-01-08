@@ -2,6 +2,7 @@ package com.github.epiicthundercat.tameablemobs.models.layers;
 
 import com.github.epiicthundercat.tameablemobs.client.render.RenderTameableMooshroom;
 import com.github.epiicthundercat.tameablemobs.mobs.TameableMooshroom;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableMooshroom;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelQuadruped;
@@ -57,6 +58,27 @@ public class LayerTamedMooshroomMushroom implements LayerRenderer<TameableMooshr
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);
             GlStateManager.disableCull();
         }
+TameableMooshroom TameableMooshroom = (TameableMooshroom) entitylivingbaseIn;
+		
+		if (TameableMooshroom.isSitting()) {
+			
+			 GlStateManager.pushMatrix();
+			 GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+	           this.mooshroomRenderer.getMainModel();
+	         GlStateManager.popMatrix();
+			
+			
+		} else {
+			
+		
+			 GlStateManager.pushMatrix();
+			 GlStateManager.translate(0.5F, 0.5F, 0.5F);
+			 this.mooshroomRenderer.getMainModel();
+	            
+	      
+	         GlStateManager.popMatrix();
+		}
+        
     }
 
     public boolean shouldCombineTextures()

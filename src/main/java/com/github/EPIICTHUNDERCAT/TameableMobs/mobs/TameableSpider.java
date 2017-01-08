@@ -71,8 +71,9 @@ import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob{
-	 private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(TameableSpider.class, DataSerializers.BYTE);
+public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob {
+	private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(TameableSpider.class,
+			DataSerializers.BYTE);
 
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
 			.<Float>createKey(TameablePigZombie.class, DataSerializers.FLOAT);
@@ -84,40 +85,38 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 			.<Optional<UUID>>createKey(TameablePigZombie.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
 	protected EntityAISit aiSit;
-	
 
 	public TameableSpider(World worldIn) {
 		super(worldIn);
 		setTamed(false);
 		setSize(1.4F, 0.9F);
-		
+
 	}
 
 	@Override
 	protected void initEntityAI() {
-		  
-	        tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
-	        tasks.addTask(4, new TameableSpider.AISpiderAttack(this));
-	        tasks.addTask(5, new EntityAIWander(this, 0.8D));
-		
+
+		tasks.addTask(3, new EntityAILeapAtTarget(this, 0.4F));
+		tasks.addTask(4, new TameableSpider.AISpiderAttack(this));
+		tasks.addTask(5, new EntityAIWander(this, 0.8D));
+
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.STRING, false));
-		
+
 		aiSit = new TameableSpider.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-	
+
 		tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameableSpider.EntityAIBeg(this, 8.0F));
 		tasks.addTask(6, new EntityAILookIdle(this));
 		targetTasks.addTask(2, new TameableSpider.AISpiderTarget(this, EntityPlayer.class));
-        targetTasks.addTask(3, new TameableSpider.AISpiderTarget(this, EntityIronGolem.class));
+		targetTasks.addTask(3, new TameableSpider.AISpiderTarget(this, EntityIronGolem.class));
 		targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
 		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(3, new TameableSpider.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
-		
 
 	}
 
@@ -141,7 +140,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		dataManager.register(CLIMBING, Byte.valueOf((byte)0));
+		dataManager.register(CLIMBING, Byte.valueOf((byte) 0));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
 		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
@@ -157,7 +156,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 	@Override
 	public void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
-		
+
 		if (getOwnerId() == null) {
 			compound.setString("OwnerUUID", "");
 		} else {
@@ -170,7 +169,7 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
-	
+
 		String s;
 
 		if (compound.hasKey("OwnerUUID", 8)) {
@@ -731,8 +730,8 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 		public boolean shouldExecute() {
 			double d0 = getTargetDistance();
 			player = TameableSpider.worldObj.getNearestAttackablePlayer(TameableSpider.posX, TameableSpider.posY,
-					TameableSpider.posZ, d0, d0, (Function) null, (@Nullable EntityPlayer player) -> (player != null)
-							&& (TameableSpider.shouldAttackPlayer(player)));
+					TameableSpider.posZ, d0, d0, (Function) null,
+					(@Nullable EntityPlayer player) -> (player != null) && (TameableSpider.shouldAttackPlayer(player)));
 			return player != null;
 		}
 
@@ -821,328 +820,243 @@ public class TameableSpider extends EntityAnimal implements IEntityOwnable, IMob
 
 		return flag;
 	}
+
 	private boolean shouldAttackPlayer(EntityPlayer player) {
-		
-			return false;
-	
+
+		return false;
+
+	}
+
+	public static void registerFixesTameableSpider(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "TameableSpider");
+	}
+
+	/**
+	 * Returns the Y offset from the entity's position for any entity riding
+	 * this one.
+	 */
+	public double getMountedYOffset() {
+		return (double) (this.height * 0.5F);
+	}
+
+	/**
+	 * Returns new PathNavigateGround instance
+	 */
+	protected PathNavigate getNewNavigator(World worldIn) {
+		return new PathNavigateClimber(this, worldIn);
+	}
+
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	public void onUpdate() {
+		super.onUpdate();
+
+		if (!this.worldObj.isRemote) {
+			this.setBesideClimbableBlock(this.isCollidedHorizontally);
 		}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	  
-	  
-	    public static void registerFixesTameableSpider(DataFixer fixer)
-	    {
-	        EntityLiving.registerFixesMob(fixer, "TameableSpider");
-	    }
+	}
 
-	 
-	    /**
-	     * Returns the Y offset from the entity's position for any entity riding this one.
-	     */
-	    public double getMountedYOffset()
-	    {
-	        return (double)(this.height * 0.5F);
-	    }
+	protected SoundEvent getAmbientSound() {
+		return SoundEvents.ENTITY_SPIDER_AMBIENT;
+	}
 
-	    /**
-	     * Returns new PathNavigateGround instance
-	     */
-	    protected PathNavigate getNewNavigator(World worldIn)
-	    {
-	        return new PathNavigateClimber(this, worldIn);
-	    }
+	protected SoundEvent getHurtSound() {
+		return SoundEvents.ENTITY_SPIDER_HURT;
+	}
 
-	 
+	protected SoundEvent getDeathSound() {
+		return SoundEvents.ENTITY_SPIDER_DEATH;
+	}
 
-	    /**
-	     * Called to update the entity's position/logic.
-	     */
-	    public void onUpdate()
-	    {
-	        super.onUpdate();
+	protected void playStepSound(BlockPos pos, Block blockIn) {
+		this.playSound(SoundEvents.ENTITY_SPIDER_STEP, 0.15F, 1.0F);
+	}
 
-	        if (!this.worldObj.isRemote)
-	        {
-	            this.setBesideClimbableBlock(this.isCollidedHorizontally);
-	        }
-	    }
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return LootTableList.ENTITIES_SPIDER;
+	}
 
-	  
-	    protected SoundEvent getAmbientSound()
-	    {
-	        return SoundEvents.ENTITY_SPIDER_AMBIENT;
-	    }
+	/**
+	 * returns true if this entity is by a ladder, false otherwise
+	 */
+	public boolean isOnLadder() {
+		return this.isBesideClimbableBlock();
+	}
 
-	    protected SoundEvent getHurtSound()
-	    {
-	        return SoundEvents.ENTITY_SPIDER_HURT;
-	    }
+	/**
+	 * Sets the Entity inside a web block.
+	 */
+	public void setInWeb() {
+	}
 
-	    protected SoundEvent getDeathSound()
-	    {
-	        return SoundEvents.ENTITY_SPIDER_DEATH;
-	    }
+	/**
+	 * Get this Entity's EnumCreatureAttribute
+	 */
+	public EnumCreatureAttribute getCreatureAttribute() {
+		return EnumCreatureAttribute.ARTHROPOD;
+	}
 
-	    protected void playStepSound(BlockPos pos, Block blockIn)
-	    {
-	        this.playSound(SoundEvents.ENTITY_SPIDER_STEP, 0.15F, 1.0F);
-	    }
+	public boolean isPotionApplicable(PotionEffect potioneffectIn) {
+		return potioneffectIn.getPotion() == MobEffects.POISON ? false : super.isPotionApplicable(potioneffectIn);
+	}
 
-	    @Nullable
-	    protected ResourceLocation getLootTable()
-	    {
-	        return LootTableList.ENTITIES_SPIDER;
-	    }
+	/**
+	 * Returns true if the WatchableObject (Byte) is 0x01 otherwise returns
+	 * false. The WatchableObject is updated using setBesideClimableBlock.
+	 */
+	public boolean isBesideClimbableBlock() {
+		return (((Byte) this.dataManager.get(CLIMBING)).byteValue() & 1) != 0;
+	}
 
-	    /**
-	     * returns true if this entity is by a ladder, false otherwise
-	     */
-	    public boolean isOnLadder()
-	    {
-	        return this.isBesideClimbableBlock();
-	    }
+	/**
+	 * Updates the WatchableObject (Byte) created in entityInit(), setting it to
+	 * 0x01 if par1 is true or 0x00 if it is false.
+	 */
+	public void setBesideClimbableBlock(boolean climbing) {
+		byte b0 = ((Byte) this.dataManager.get(CLIMBING)).byteValue();
 
-	    /**
-	     * Sets the Entity inside a web block.
-	     */
-	    public void setInWeb()
-	    {
-	    }
+		if (climbing) {
+			b0 = (byte) (b0 | 1);
+		} else {
+			b0 = (byte) (b0 & -2);
+		}
 
-	    /**
-	     * Get this Entity's EnumCreatureAttribute
-	     */
-	    public EnumCreatureAttribute getCreatureAttribute()
-	    {
-	        return EnumCreatureAttribute.ARTHROPOD;
-	    }
+		this.dataManager.set(CLIMBING, Byte.valueOf(b0));
+	}
 
-	    public boolean isPotionApplicable(PotionEffect potioneffectIn)
-	    {
-	        return potioneffectIn.getPotion() == MobEffects.POISON ? false : super.isPotionApplicable(potioneffectIn);
-	    }
+	/**
+	 * Called only once on an entity when first time spawned, via egg, mob
+	 * spawner, natural spawning etc, but not called when entity is reloaded
+	 * from nbt. Mainly used for initializing attributes and inventory
+	 */
+	@Nullable
+	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+		livingdata = super.onInitialSpawn(difficulty, livingdata);
 
-	    /**
-	     * Returns true if the WatchableObject (Byte) is 0x01 otherwise returns false. The WatchableObject is updated using
-	     * setBesideClimableBlock.
-	     */
-	    public boolean isBesideClimbableBlock()
-	    {
-	        return (((Byte)this.dataManager.get(CLIMBING)).byteValue() & 1) != 0;
-	    }
+		if (this.worldObj.rand.nextInt(100) == 0) {
+			EntitySkeleton entityskeleton = new EntitySkeleton(this.worldObj);
+			entityskeleton.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+			entityskeleton.onInitialSpawn(difficulty, (IEntityLivingData) null);
+			this.worldObj.spawnEntityInWorld(entityskeleton);
+			entityskeleton.startRiding(this);
+		}
 
-	    /**
-	     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
-	     * false.
-	     */
-	    public void setBesideClimbableBlock(boolean climbing)
-	    {
-	        byte b0 = ((Byte)this.dataManager.get(CLIMBING)).byteValue();
+		if (livingdata == null) {
+			livingdata = new TameableSpider.GroupData();
 
-	        if (climbing)
-	        {
-	            b0 = (byte)(b0 | 1);
-	        }
-	        else
-	        {
-	            b0 = (byte)(b0 & -2);
-	        }
+			if (this.worldObj.getDifficulty() == EnumDifficulty.HARD
+					&& this.worldObj.rand.nextFloat() < 0.1F * difficulty.getClampedAdditionalDifficulty()) {
+				((TameableSpider.GroupData) livingdata).setRandomEffect(this.worldObj.rand);
+			}
+		}
 
-	        this.dataManager.set(CLIMBING, Byte.valueOf(b0));
-	    }
+		if (livingdata instanceof TameableSpider.GroupData) {
+			Potion potion = ((TameableSpider.GroupData) livingdata).effect;
 
-	    /**
-	     * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
-	     * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
-	     */
-	    @Nullable
-	    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
-	    {
-	        livingdata = super.onInitialSpawn(difficulty, livingdata);
+			if (potion != null) {
+				this.addPotionEffect(new PotionEffect(potion, Integer.MAX_VALUE));
+			}
+		}
 
-	        if (this.worldObj.rand.nextInt(100) == 0)
-	        {
-	            EntitySkeleton entityskeleton = new EntitySkeleton(this.worldObj);
-	            entityskeleton.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-	            entityskeleton.onInitialSpawn(difficulty, (IEntityLivingData)null);
-	            this.worldObj.spawnEntityInWorld(entityskeleton);
-	            entityskeleton.startRiding(this);
-	        }
+		return livingdata;
+	}
 
-	        if (livingdata == null)
-	        {
-	            livingdata = new TameableSpider.GroupData();
+	public float getEyeHeight() {
+		return 0.65F;
+	}
 
-	            if (this.worldObj.getDifficulty() == EnumDifficulty.HARD && this.worldObj.rand.nextFloat() < 0.1F * difficulty.getClampedAdditionalDifficulty())
-	            {
-	                ((TameableSpider.GroupData)livingdata).setRandomEffect(this.worldObj.rand);
-	            }
-	        }
+	static class AISpiderAttack extends EntityAIAttackMelee {
+		public AISpiderAttack(TameableSpider spider) {
+			super(spider, 1.0D, true);
+		}
 
-	        if (livingdata instanceof TameableSpider.GroupData)
-	        {
-	            Potion potion = ((TameableSpider.GroupData)livingdata).effect;
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			float f = this.attacker.getBrightness(1.0F);
 
-	            if (potion != null)
-	            {
-	                this.addPotionEffect(new PotionEffect(potion, Integer.MAX_VALUE));
-	            }
-	        }
+			if (f >= 0.5F && this.attacker.getRNG().nextInt(100) == 0) {
+				this.attacker.setAttackTarget((EntityLivingBase) null);
+				return false;
+			} else {
+				return super.continueExecuting();
+			}
+		}
 
-	        return livingdata;
-	    }
+		protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+			return (double) (4.0F + attackTarget.width);
+		}
+	}
 
-	    public float getEyeHeight()
-	    {
-	        return 0.65F;
-	    }
+	static class AISpiderTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T> {
+		public AISpiderTarget(TameableSpider spider, Class<T> classTarget) {
+			super(spider, classTarget, true);
+		}
 
-	    static class AISpiderAttack extends EntityAIAttackMelee
-	        {
-	            public AISpiderAttack(TameableSpider spider)
-	            {
-	                super(spider, 1.0D, true);
-	            }
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			float f = this.taskOwner.getBrightness(1.0F);
+			return f >= 0.5F ? false : super.shouldExecute();
+		}
+	}
 
-	            /**
-	             * Returns whether an in-progress EntityAIBase should continue executing
-	             */
-	            public boolean continueExecuting()
-	            {
-	                float f = this.attacker.getBrightness(1.0F);
+	public static class GroupData implements IEntityLivingData {
+		public Potion effect;
 
-	                if (f >= 0.5F && this.attacker.getRNG().nextInt(100) == 0)
-	                {
-	                    this.attacker.setAttackTarget((EntityLivingBase)null);
-	                    return false;
-	                }
-	                else
-	                {
-	                    return super.continueExecuting();
-	                }
-	            }
+		public void setRandomEffect(Random rand) {
+			int i = rand.nextInt(5);
 
-	            protected double getAttackReachSqr(EntityLivingBase attackTarget)
-	            {
-	                return (double)(4.0F + attackTarget.width);
-	            }
-	        }
+			if (i <= 1) {
+				this.effect = MobEffects.SPEED;
+			} else if (i <= 2) {
+				this.effect = MobEffects.STRENGTH;
+			} else if (i <= 3) {
+				this.effect = MobEffects.REGENERATION;
+			} else if (i <= 4) {
+				this.effect = MobEffects.INVISIBILITY;
+			}
+		}
+	}
 
-	    static class AISpiderTarget<T extends EntityLivingBase> extends EntityAINearestAttackableTarget<T>
-	        {
-	            public AISpiderTarget(TameableSpider spider, Class<T> classTarget)
-	            {
-	                super(spider, classTarget, true);
-	            }
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	            /**
-	             * Returns whether the EntityAIBase should begin execution.
-	             */
-	            public boolean shouldExecute()
-	            {
-	                float f = this.taskOwner.getBrightness(1.0F);
-	                return f >= 0.5F ? false : super.shouldExecute();
-	            }
-	        }
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
 
-	    public static class GroupData implements IEntityLivingData
-	        {
-	            public Potion effect;
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
 
-	            public void setRandomEffect(Random rand)
-	            {
-	                int i = rand.nextInt(5);
+			return i <= this.rand.nextInt(8);
+		}
+	}
 
-	                if (i <= 1)
-	                {
-	                    this.effect = MobEffects.SPEED;
-	                }
-	                else if (i <= 2)
-	                {
-	                    this.effect = MobEffects.STRENGTH;
-	                }
-	                else if (i <= 3)
-	                {
-	                    this.effect = MobEffects.REGENERATION;
-	                }
-	                else if (i <= 4)
-	                {
-	                    this.effect = MobEffects.INVISIBILITY;
-	                }
-	            }
-	        }
-	
-	
-	
-	
-	
-	    
-	    protected boolean isValidLightLevel()
-	    {
-	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
 
-	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 
-	            if (this.worldObj.isThundering())
-	            {
-	                int j = this.worldObj.getSkylightSubtracted();
-	                this.worldObj.setSkylightSubtracted(10);
-	                i = this.worldObj.getLightFromNeighbors(blockpos);
-	                this.worldObj.setSkylightSubtracted(j);
-	            }
-
-	            return i <= this.rand.nextInt(8);
-	        }
-	    }
-
-	    /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	    @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
-	
 }
-

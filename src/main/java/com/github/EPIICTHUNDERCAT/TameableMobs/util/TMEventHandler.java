@@ -72,6 +72,13 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class TMEventHandler {
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 * @SubscribeEvent public void onMobRighClick(EntityInteract event) { World
 	 * world = event.getWorld(); if (world.isRemote) {
@@ -616,7 +623,7 @@ public class TMEventHandler {
 
 					}
 				}
-		}
+			}
 		}
 		if (entityTarget instanceof EntitySkeleton && !(entityTarget instanceof TameableSkeleton)) {
 			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
@@ -635,7 +642,7 @@ public class TMEventHandler {
 
 					}
 				}
-		}
+			}
 		}
 		if (entityTarget instanceof EntityVillager && !(entityTarget instanceof TameableVillager)) {
 			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
@@ -654,7 +661,7 @@ public class TMEventHandler {
 
 					}
 				}
-		}
+			}
 		}
 		if (entityTarget instanceof EntitySnowman && !(entityTarget instanceof TameableSnowman)) {
 			ItemStack correspondingItem = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
@@ -673,8 +680,25 @@ public class TMEventHandler {
 
 					}
 				}
+			}
 		}
-		}
+		
 
+		
 	}
+	
+
+	
+	
+	
+	/*
+	
+	private static final Predicate<Entity> NOT_UNDEAD = new Predicate<Entity>();
+
+    {
+        public boolean apply(@Nullable Entity p_apply_1_)
+        {
+            return p_apply_1_ instanceof EntityLivingBase && ((EntityLivingBase)p_apply_1_).getCreatureAttribute() != EnumCreatureAttribute.UNDEAD;
+        }
+    };*/
 }

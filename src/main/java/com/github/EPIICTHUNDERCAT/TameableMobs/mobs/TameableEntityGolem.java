@@ -12,7 +12,7 @@ public class TameableEntityGolem extends EntityAnimal implements IAnimals
 {
 	public TameableEntityGolem(World worldIn)
     {
-        super(worldIn);
+		super(worldIn);
     }
 
     public void fall(float distance, float damageMultiplier)

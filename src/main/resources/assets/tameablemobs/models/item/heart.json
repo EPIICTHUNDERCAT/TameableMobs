@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "tameablemobs:items/ink_suplement"
+        "layer0": "tameablemobs:items/heart"
     }
 }

@@ -70,59 +70,56 @@ import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableIronGolem extends TameableEntityGolem implements IEntityOwnable
-{
-	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableIronGolem.class,
-		DataSerializers.FLOAT);
-private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableIronGolem.class,
-		DataSerializers.BOOLEAN);
-protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableIronGolem.class,
-		DataSerializers.BYTE);
-protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-		.<Optional<UUID>>createKey(TameableIronGolem.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+public class TameableIronGolem extends TameableEntityGolem implements IEntityOwnable {
+	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
+			.<Float>createKey(TameableIronGolem.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableIronGolem.class,
+			DataSerializers.BOOLEAN);
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableIronGolem.class,
+			DataSerializers.BYTE);
+	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
+			.<Optional<UUID>>createKey(TameableIronGolem.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
-protected EntityAISit aiSit;
-	protected static final DataParameter<Byte> PLAYER_CREATED = EntityDataManager.<Byte>createKey(TameableIronGolem.class, DataSerializers.BYTE);
-    /** deincrements, and a distance-to-home check is done at 0 */
-    private int homeCheckTimer;
-    Village villageObj;
-    private int attackTimer;
-    private int holdRoseTick;
+	protected EntityAISit aiSit;
+	protected static final DataParameter<Byte> PLAYER_CREATED = EntityDataManager
+			.<Byte>createKey(TameableIronGolem.class, DataSerializers.BYTE);
+	/** deincrements, and a distance-to-home check is done at 0 */
+	private int homeCheckTimer;
+	Village villageObj;
+	private int attackTimer;
+	private int holdRoseTick;
 
-    public TameableIronGolem(World worldIn)
-    {
-        super(worldIn);
-       setTamed(false);
-        this.setSize(1.4F, 2.7F);
-    }
-    
-   
+	public TameableIronGolem(World worldIn) {
+		super(worldIn);
+		setTamed(false);
+		this.setSize(1.4F, 2.7F);
+	}
 
 	@Override
 	protected void initEntityAI() {
-		 this.tasks.addTask(1, new EntityAIAttackMelee(this, 1.0D, true));
-	        this.tasks.addTask(2, new EntityAIMoveTowardsTarget(this, 0.9D, 32.0F));
-	        this.tasks.addTask(3, new EntityAIMoveThroughVillage(this, 0.6D, true));
-	        this.tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 1.0D));
-	        this.tasks.addTask(5, new TameableIronGolem.TamedEntityAILookAtVillager(this));
-	        this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
-	        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-	        this.tasks.addTask(8, new EntityAILookIdle(this));
-	        this.targetTasks.addTask(1, new TameableIronGolem.TameEntityAIDefendVillage(this));
-	        this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false, new Class[0]));
-	        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLiving.class, 10, false, true, new Predicate<EntityLiving>()
-	        {
-	            public boolean apply(@Nullable EntityLiving p_apply_1_)
-	            {
-	                return p_apply_1_ != null && IMob.VISIBLE_MOB_SELECTOR.apply(p_apply_1_) && !(p_apply_1_ instanceof EntityCreeper);
-	            }
-	        }));
-		
+		this.tasks.addTask(1, new EntityAIAttackMelee(this, 1.0D, true));
+		this.tasks.addTask(2, new EntityAIMoveTowardsTarget(this, 0.9D, 32.0F));
+		this.tasks.addTask(3, new EntityAIMoveThroughVillage(this, 0.6D, true));
+		this.tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 1.0D));
+		this.tasks.addTask(5, new TameableIronGolem.TamedEntityAILookAtVillager(this));
+		this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
+		this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+		this.tasks.addTask(8, new EntityAILookIdle(this));
+		this.targetTasks.addTask(1, new TameableIronGolem.TameEntityAIDefendVillage(this));
+		this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false, new Class[0]));
+		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLiving.class, 10, false, true,
+				new Predicate<EntityLiving>() {
+					public boolean apply(@Nullable EntityLiving p_apply_1_) {
+						return p_apply_1_ != null && IMob.VISIBLE_MOB_SELECTOR.apply(p_apply_1_)
+								&& !(p_apply_1_ instanceof EntityCreeper);
+					}
+				}));
+
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.IRON_INGOT, false));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
 		aiSit = new TameableIronGolem.EntityAISit(this);
-		tasks.addTask(1, aiSit);	
+		tasks.addTask(1, aiSit);
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
 		tasks.addTask(2, new TameableIronGolem.AIMeleeAttack(this, 1.0D, false));
 		tasks.addTask(8, new TameableIronGolem.EntityAIBeg(this, 8.0F));
@@ -132,19 +129,18 @@ protected EntityAISit aiSit;
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
 
 	}
-	  
 
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
 		getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 		if (isTamed()) {
-			 getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10.0D);
+			getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10.0D);
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(40.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100.0D);
 		} else {
-			 getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+			getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100.0D);
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
@@ -156,7 +152,7 @@ protected EntityAISit aiSit;
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		  this.dataManager.register(PLAYER_CREATED, Byte.valueOf((byte)0));
+		this.dataManager.register(PLAYER_CREATED, Byte.valueOf((byte) 0));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
 		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
@@ -164,15 +160,11 @@ protected EntityAISit aiSit;
 
 	}
 
-
-
-
-	
 	@Override
-	 public boolean isBreedingItem(@Nullable ItemStack stack)
-	    {
+	public boolean isBreedingItem(@Nullable ItemStack stack) {
 		return stack == null ? false : stack.getItem() == Items.IRON_INGOT;
-	    }
+	}
+
 	public static void registerFixesSheep(DataFixer fixer) {
 		EntityLiving.registerFixesMob(fixer, "TameableIronGolem");
 	}
@@ -197,7 +189,7 @@ protected EntityAISit aiSit;
 	@Override
 	public void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
-		 this.setPlayerCreated(compound.getBoolean("PlayerCreated"));
+		this.setPlayerCreated(compound.getBoolean("PlayerCreated"));
 		String s;
 
 		if (compound.hasKey("OwnerUUID", 8)) {
@@ -282,8 +274,6 @@ protected EntityAISit aiSit;
 			return true;
 		}
 
-		
-
 		return super.processInteract(player, hand, stack);
 
 	}
@@ -343,7 +333,8 @@ protected EntityAISit aiSit;
 		} else {
 			TameableIronGolem entityTameableIronGolem = (TameableIronGolem) otherAnimal;
 			return !entityTameableIronGolem.isTamed() ? false
-					: (entityTameableIronGolem.isSitting() ? false : this.isInLove() && entityTameableIronGolem.isInLove());
+					: (entityTameableIronGolem.isSitting() ? false
+							: this.isInLove() && entityTameableIronGolem.isInLove());
 		}
 	}
 
@@ -402,20 +393,15 @@ protected EntityAISit aiSit;
 		} else if (id == 6) {
 			playTameEffect(false);
 		} else {
-			if (id == 4)
-        {
-            this.attackTimer = 10;
-            this.playSound(SoundEvents.ENTITY_IRONGOLEM_ATTACK, 1.0F, 1.0F);
-        }
-        else if (id == 11)
-        {
-            this.holdRoseTick = 400;
-        }
-        else
-        {
-            super.handleStatusUpdate(id);
-        }
-			
+			if (id == 4) {
+				this.attackTimer = 10;
+				this.playSound(SoundEvents.ENTITY_IRONGOLEM_ATTACK, 1.0F, 1.0F);
+			} else if (id == 11) {
+				this.holdRoseTick = 400;
+			} else {
+				super.handleStatusUpdate(id);
+			}
+
 		}
 	}
 
@@ -775,9 +761,10 @@ protected EntityAISit aiSit;
 		@Override
 		public boolean shouldExecute() {
 			double d0 = getTargetDistance();
-			player = TameableIronGolem.worldObj.getNearestAttackablePlayer(TameableIronGolem.posX, TameableIronGolem.posY,
-					TameableIronGolem.posZ, d0, d0, (Function) null,
-					(@Nullable EntityPlayer player) -> (player != null) && (TameableIronGolem.shouldAttackPlayer(player)));
+			player = TameableIronGolem.worldObj.getNearestAttackablePlayer(TameableIronGolem.posX,
+					TameableIronGolem.posY, TameableIronGolem.posZ, d0, d0, (Function) null,
+					(@Nullable EntityPlayer player) -> (player != null)
+							&& (TameableIronGolem.shouldAttackPlayer(player)));
 			return player != null;
 		}
 
@@ -819,8 +806,8 @@ protected EntityAISit aiSit;
 						if (targetEntity.getDistanceSqToEntity(TameableIronGolem) < 16.0D) {
 						}
 						teleportTime = 0;
-					} else if ((targetEntity.getDistanceSqToEntity(TameableIronGolem) > 256.0D) && (teleportTime++ >= 30)
-							&& (TameableIronGolem.teleportToEntity(targetEntity))) {
+					} else if ((targetEntity.getDistanceSqToEntity(TameableIronGolem) > 256.0D)
+							&& (teleportTime++ >= 30) && (TameableIronGolem.teleportToEntity(targetEntity))) {
 						teleportTime = 0;
 					}
 				}
@@ -858,18 +845,18 @@ protected EntityAISit aiSit;
 	}
 
 	public boolean attackEntityAsMob(Entity entityIn) {
-		  this.attackTimer = 10;
-	        this.worldObj.setEntityState(this, (byte)4);
-	        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)(7 + this.rand.nextInt(15)));
+		this.attackTimer = 10;
+		this.worldObj.setEntityState(this, (byte) 4);
+		boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this),
+				(float) (7 + this.rand.nextInt(15)));
 
-	        if (flag)
-	        {
-	            entityIn.motionY += 0.4000000059604645D;
-	            this.applyEnchantments(this, entityIn);
-	        }
+		if (flag) {
+			entityIn.motionY += 0.4000000059604645D;
+			this.applyEnchantments(this, entityIn);
+		}
 
-	        this.playSound(SoundEvents.ENTITY_IRONGOLEM_ATTACK, 1.0F, 1.0F);
-	        return flag;
+		this.playSound(SoundEvents.ENTITY_IRONGOLEM_ATTACK, 1.0F, 1.0F);
+		return flag;
 	}
 
 	static class AIMeleeAttack extends EntityAIAttackMelee {
@@ -1035,303 +1022,245 @@ protected EntityAISit aiSit;
 
 	}
 
-	
-	
-	
-    
-    
-    
-    
-    
-    
+	protected void updateAITasks() {
+		if (--this.homeCheckTimer <= 0) {
+			this.homeCheckTimer = 70 + this.rand.nextInt(50);
+			this.villageObj = this.worldObj.getVillageCollection().getNearestVillage(new BlockPos(this), 32);
 
+			if (this.villageObj == null) {
+				this.detachHome();
+			} else {
+				BlockPos blockpos = this.villageObj.getCenter();
+				this.setHomePosAndDistance(blockpos, (int) ((float) this.villageObj.getVillageRadius() * 0.6F));
+			}
+		}
 
-    protected void updateAITasks()
-    {
-        if (--this.homeCheckTimer <= 0)
-        {
-            this.homeCheckTimer = 70 + this.rand.nextInt(50);
-            this.villageObj = this.worldObj.getVillageCollection().getNearestVillage(new BlockPos(this), 32);
+		super.updateAITasks();
+	}
 
-            if (this.villageObj == null)
-            {
-                this.detachHome();
-            }
-            else
-            {
-                BlockPos blockpos = this.villageObj.getCenter();
-                this.setHomePosAndDistance(blockpos, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
-            }
-        }
+	/**
+	 * Decrements the entity's air supply when underwater
+	 */
+	protected int decreaseAirSupply(int air) {
+		return air;
+	}
 
-        super.updateAITasks();
-    }
+	protected void collideWithEntity(Entity entityIn) {
+		if (entityIn instanceof IMob && !(entityIn instanceof EntityCreeper) && this.getRNG().nextInt(20) == 0) {
+			this.setAttackTarget((EntityLivingBase) entityIn);
+		}
 
-  
+		super.collideWithEntity(entityIn);
+	}
 
-    /**
-     * Decrements the entity's air supply when underwater
-     */
-    protected int decreaseAirSupply(int air)
-    {
-        return air;
-    }
+	/**
+	 * Called frequently so the entity can update its state every tick as
+	 * required. For example, zombies and skeletons use this to react to
+	 * sunlight and start to burn.
+	 */
+	public void onLivingUpdate() {
+		super.onLivingUpdate();
 
-    protected void collideWithEntity(Entity entityIn)
-    {
-        if (entityIn instanceof IMob && !(entityIn instanceof EntityCreeper) && this.getRNG().nextInt(20) == 0)
-        {
-            this.setAttackTarget((EntityLivingBase)entityIn);
-        }
+		if (this.attackTimer > 0) {
+			--this.attackTimer;
+		}
 
-        super.collideWithEntity(entityIn);
-    }
+		if (this.holdRoseTick > 0) {
+			--this.holdRoseTick;
+		}
 
-    /**
-     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
-     * use this to react to sunlight and start to burn.
-     */
-    public void onLivingUpdate()
-    {
-        super.onLivingUpdate();
+		if (this.motionX * this.motionX + this.motionZ * this.motionZ > 2.500000277905201E-7D
+				&& this.rand.nextInt(5) == 0) {
+			int i = MathHelper.floor_double(this.posX);
+			int j = MathHelper.floor_double(this.posY - 0.20000000298023224D);
+			int k = MathHelper.floor_double(this.posZ);
+			IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(i, j, k));
 
-        if (this.attackTimer > 0)
-        {
-            --this.attackTimer;
-        }
+			if (iblockstate.getMaterial() != Material.AIR) {
+				this.worldObj.spawnParticle(EnumParticleTypes.BLOCK_CRACK,
+						this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width,
+						this.getEntityBoundingBox().minY + 0.1D,
+						this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width,
+						4.0D * ((double) this.rand.nextFloat() - 0.5D), 0.5D,
+						((double) this.rand.nextFloat() - 0.5D) * 4.0D, new int[] { Block.getStateId(iblockstate) });
+			}
+		}
+	}
 
-        if (this.holdRoseTick > 0)
-        {
-            --this.holdRoseTick;
-        }
+	/**
+	 * Returns true if this entity can attack entities of the specified class.
+	 */
+	public boolean canAttackClass(Class<? extends EntityLivingBase> cls) {
+		return this.isPlayerCreated() && EntityPlayer.class.isAssignableFrom(cls) ? false
+				: (cls == EntityCreeper.class ? false : super.canAttackClass(cls));
+	}
 
-        if (this.motionX * this.motionX + this.motionZ * this.motionZ > 2.500000277905201E-7D && this.rand.nextInt(5) == 0)
-        {
-            int i = MathHelper.floor_double(this.posX);
-            int j = MathHelper.floor_double(this.posY - 0.20000000298023224D);
-            int k = MathHelper.floor_double(this.posZ);
-            IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(i, j, k));
+	public static void registerFixesIronGolem(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "VillagerGolem");
+	}
 
-            if (iblockstate.getMaterial() != Material.AIR)
-            {
-                this.worldObj.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, 4.0D * ((double)this.rand.nextFloat() - 0.5D), 0.5D, ((double)this.rand.nextFloat() - 0.5D) * 4.0D, new int[] {Block.getStateId(iblockstate)});
-            }
-        }
-    }
+	public Village getVillage() {
+		return this.villageObj;
+	}
 
-    /**
-     * Returns true if this entity can attack entities of the specified class.
-     */
-    public boolean canAttackClass(Class <? extends EntityLivingBase > cls)
-    {
-        return this.isPlayerCreated() && EntityPlayer.class.isAssignableFrom(cls) ? false : (cls == EntityCreeper.class ? false : super.canAttackClass(cls));
-    }
+	@SideOnly(Side.CLIENT)
+	public int getAttackTimer() {
+		return this.attackTimer;
+	}
 
-    public static void registerFixesIronGolem(DataFixer fixer)
-    {
-        EntityLiving.registerFixesMob(fixer, "VillagerGolem");
-    }
+	public void setHoldingRose(boolean p_70851_1_) {
+		this.holdRoseTick = p_70851_1_ ? 400 : 0;
+		this.worldObj.setEntityState(this, (byte) 11);
+	}
 
-   
- 
-  
+	protected SoundEvent getHurtSound() {
+		return SoundEvents.ENTITY_IRONGOLEM_HURT;
+	}
 
-    public Village getVillage()
-    {
-        return this.villageObj;
-    }
+	protected SoundEvent getDeathSound() {
+		return SoundEvents.ENTITY_IRONGOLEM_DEATH;
+	}
 
-    @SideOnly(Side.CLIENT)
-    public int getAttackTimer()
-    {
-        return this.attackTimer;
-    }
+	protected void playStepSound(BlockPos pos, Block blockIn) {
+		this.playSound(SoundEvents.ENTITY_IRONGOLEM_STEP, 1.0F, 1.0F);
+	}
 
-    public void setHoldingRose(boolean p_70851_1_)
-    {
-        this.holdRoseTick = p_70851_1_ ? 400 : 0;
-        this.worldObj.setEntityState(this, (byte)11);
-    }
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return LootTableList.ENTITIES_IRON_GOLEM;
+	}
 
-    protected SoundEvent getHurtSound()
-    {
-        return SoundEvents.ENTITY_IRONGOLEM_HURT;
-    }
+	public int getHoldRoseTick() {
+		return this.holdRoseTick;
+	}
 
-    protected SoundEvent getDeathSound()
-    {
-        return SoundEvents.ENTITY_IRONGOLEM_DEATH;
-    }
+	public boolean isPlayerCreated() {
+		return (((Byte) this.dataManager.get(PLAYER_CREATED)).byteValue() & 1) != 0;
+	}
 
-    protected void playStepSound(BlockPos pos, Block blockIn)
-    {
-        this.playSound(SoundEvents.ENTITY_IRONGOLEM_STEP, 1.0F, 1.0F);
-    }
+	public void setPlayerCreated(boolean playerCreated) {
+		byte b0 = ((Byte) this.dataManager.get(PLAYER_CREATED)).byteValue();
 
-    @Nullable
-    protected ResourceLocation getLootTable()
-    {
-        return LootTableList.ENTITIES_IRON_GOLEM;
-    }
+		if (playerCreated) {
+			this.dataManager.set(PLAYER_CREATED, Byte.valueOf((byte) (b0 | 1)));
+		} else {
+			this.dataManager.set(PLAYER_CREATED, Byte.valueOf((byte) (b0 & -2)));
+		}
+	}
 
-    public int getHoldRoseTick()
-    {
-        return this.holdRoseTick;
-    }
+	/**
+	 * Called when the mob's health reaches 0.
+	 */
+	public void onDeath(DamageSource cause) {
+		if (!this.isPlayerCreated() && this.attackingPlayer != null && this.villageObj != null) {
+			this.villageObj.modifyPlayerReputation(this.attackingPlayer.getName(), -5);
+		}
 
-    public boolean isPlayerCreated()
-    {
-        return (((Byte)this.dataManager.get(PLAYER_CREATED)).byteValue() & 1) != 0;
-    }
+		super.onDeath(cause);
+	}
 
-    public void setPlayerCreated(boolean playerCreated)
-    {
-        byte b0 = ((Byte)this.dataManager.get(PLAYER_CREATED)).byteValue();
+	static class TamedEntityAILookAtVillager extends EntityAIBase {
+		private final TameableIronGolem theGolem;
+		private EntityVillager theVillager;
+		private int lookTime;
 
-        if (playerCreated)
-        {
-            this.dataManager.set(PLAYER_CREATED, Byte.valueOf((byte)(b0 | 1)));
-        }
-        else
-        {
-            this.dataManager.set(PLAYER_CREATED, Byte.valueOf((byte)(b0 & -2)));
-        }
-    }
+		public TamedEntityAILookAtVillager(TameableIronGolem theGolemIn) {
+			this.theGolem = theGolemIn;
+			this.setMutexBits(3);
+		}
 
-    /**
-     * Called when the mob's health reaches 0.
-     */
-    public void onDeath(DamageSource cause)
-    {
-        if (!this.isPlayerCreated() && this.attackingPlayer != null && this.villageObj != null)
-        {
-            this.villageObj.modifyPlayerReputation(this.attackingPlayer.getName(), -5);
-        }
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			if (!this.theGolem.worldObj.isDaytime()) {
+				return false;
+			} else if (this.theGolem.getRNG().nextInt(8000) != 0) {
+				return false;
+			} else {
+				this.theVillager = (EntityVillager) this.theGolem.worldObj.findNearestEntityWithinAABB(
+						EntityVillager.class, this.theGolem.getEntityBoundingBox().expand(6.0D, 2.0D, 6.0D),
+						this.theGolem);
+				return this.theVillager != null;
+			}
+		}
 
-        super.onDeath(cause);
-    }
-static class TamedEntityAILookAtVillager extends EntityAIBase
-{
-    private final TameableIronGolem theGolem;
-    private EntityVillager theVillager;
-    private int lookTime;
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			return this.lookTime > 0;
+		}
 
-    public TamedEntityAILookAtVillager(TameableIronGolem theGolemIn)
-    {
-        this.theGolem = theGolemIn;
-        this.setMutexBits(3);
-    }
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.lookTime = 400;
+			this.theGolem.setHoldingRose(true);
+		}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (!this.theGolem.worldObj.isDaytime())
-        {
-            return false;
-        }
-        else if (this.theGolem.getRNG().nextInt(8000) != 0)
-        {
-            return false;
-        }
-        else
-        {
-            this.theVillager = (EntityVillager)this.theGolem.worldObj.findNearestEntityWithinAABB(EntityVillager.class, this.theGolem.getEntityBoundingBox().expand(6.0D, 2.0D, 6.0D), this.theGolem);
-            return this.theVillager != null;
-        }
-    }
+		/**
+		 * Resets the task
+		 */
+		public void resetTask() {
+			this.theGolem.setHoldingRose(false);
+			this.theVillager = null;
+		}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return this.lookTime > 0;
-    }
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			this.theGolem.getLookHelper().setLookPositionWithEntity(this.theVillager, 30.0F, 30.0F);
+			--this.lookTime;
+		}
+	}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.lookTime = 400;
-        this.theGolem.setHoldingRose(true);
-    }
+	static class TameEntityAIDefendVillage extends EntityAITarget {
+		TameableIronGolem irongolem;
+		/**
+		 * The aggressor of the iron golem's village which is now the golem's
+		 * attack target.
+		 */
+		EntityLivingBase villageAgressorTarget;
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.theGolem.setHoldingRose(false);
-        this.theVillager = null;
-    }
+		public TameEntityAIDefendVillage(TameableIronGolem ironGolemIn) {
+			super(ironGolemIn, false, true);
+			this.irongolem = ironGolemIn;
+			this.setMutexBits(1);
+		}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        this.theGolem.getLookHelper().setLookPositionWithEntity(this.theVillager, 30.0F, 30.0F);
-        --this.lookTime;
-    }
-}
-static class TameEntityAIDefendVillage extends EntityAITarget
-{
-    TameableIronGolem irongolem;
-    /** The aggressor of the iron golem's village which is now the golem's attack target. */
-    EntityLivingBase villageAgressorTarget;
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			Village village = this.irongolem.getVillage();
 
-    public TameEntityAIDefendVillage(TameableIronGolem ironGolemIn)
-    {
-        super(ironGolemIn, false, true);
-        this.irongolem = ironGolemIn;
-        this.setMutexBits(1);
-    }
+			if (village == null) {
+				return false;
+			} else {
+				this.villageAgressorTarget = village.findNearestVillageAggressor(this.irongolem);
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        Village village = this.irongolem.getVillage();
+				if (this.villageAgressorTarget instanceof EntityCreeper) {
+					return false;
+				} else if (this.isSuitableTarget(this.villageAgressorTarget, false)) {
+					return true;
+				} else if (this.taskOwner.getRNG().nextInt(20) == 0) {
+					this.villageAgressorTarget = village.getNearestTargetPlayer(this.irongolem);
+					return this.isSuitableTarget(this.villageAgressorTarget, false);
+				} else {
+					return false;
+				}
+			}
+		}
 
-        if (village == null)
-        {
-            return false;
-        }
-        else
-        {
-            this.villageAgressorTarget = village.findNearestVillageAggressor(this.irongolem);
-
-            if (this.villageAgressorTarget instanceof EntityCreeper)
-            {
-                return false;
-            }
-            else if (this.isSuitableTarget(this.villageAgressorTarget, false))
-            {
-                return true;
-            }
-            else if (this.taskOwner.getRNG().nextInt(20) == 0)
-            {
-                this.villageAgressorTarget = village.getNearestTargetPlayer(this.irongolem);
-                return this.isSuitableTarget(this.villageAgressorTarget, false);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.irongolem.setAttackTarget(this.villageAgressorTarget);
-        super.startExecuting();
-    }
-}
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.irongolem.setAttackTarget(this.villageAgressorTarget);
+			super.startExecuting();
+		}
+	}
 }

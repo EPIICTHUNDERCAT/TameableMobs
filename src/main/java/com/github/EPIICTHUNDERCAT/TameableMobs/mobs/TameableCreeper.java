@@ -112,15 +112,15 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		this.tasks.addTask(2, new EntityAICreeperSwell(this));
 		this.tasks.addTask(3, new EntityAIAvoidEntity(this, EntityOcelot.class, 6.0F, 1.0D, 1.2D));
 		tasks.addTask(0, new EntityAISwimming(this));
-		tasks.addTask(1, new EntityAIPanic(this, 1.25D));
+		
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.WHEAT, false));
-		
+
 		aiSit = new TameableCreeper.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
-		
+
 		tasks.addTask(2, new TameableCreeper.AIMeleeAttack(this, 1.0D, false));
 		tasks.addTask(7, new EntityAIWander(this, 1.0D));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
@@ -164,9 +164,6 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 
 	}
 
-	
-
-	
 	@Override
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
 		return stack == null ? false : stack.getItem() == Items.GUNPOWDER;
@@ -428,7 +425,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
-		} 
+		}
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
@@ -934,413 +931,364 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		}
 	}
 
-		static class AIMeleeAttack extends EntityAIAttackMelee {
+	static class AIMeleeAttack extends EntityAIAttackMelee {
 
-			World worldObj;
-			protected EntityCreature attacker;
-			/**
-			 * An amount of decrementing ticks that allows the entity to attack
-			 * once the tick reaches 0.
-			 */
-			protected int attackTick;
-			/** The speed with which the mob will approach the target */
-			double speedTowardsTarget;
-			/**
-			 * When true, the mob will continue chasing its target, even if it
-			 * can't find a path to them right now.
-			 */
-			boolean longMemory;
-			/** The PathEntity of our entity. */
-			Path entityPathEntity;
-			private int delayCounter;
-			private double targetX;
-			private double targetY;
-			private double targetZ;
-			protected final int attackInterval = 20;
-			private int failedPathFindingPenalty = 0;
-			private boolean canPenalize = false;
+		World worldObj;
+		protected EntityCreature attacker;
+		/**
+		 * An amount of decrementing ticks that allows the entity to attack once
+		 * the tick reaches 0.
+		 */
+		protected int attackTick;
+		/** The speed with which the mob will approach the target */
+		double speedTowardsTarget;
+		/**
+		 * When true, the mob will continue chasing its target, even if it can't
+		 * find a path to them right now.
+		 */
+		boolean longMemory;
+		/** The PathEntity of our entity. */
+		Path entityPathEntity;
+		private int delayCounter;
+		private double targetX;
+		private double targetY;
+		private double targetZ;
+		protected final int attackInterval = 20;
+		private int failedPathFindingPenalty = 0;
+		private boolean canPenalize = false;
 
-			public AIMeleeAttack(EntityCreature creature, double speedIn, boolean useLongMemory) {
-				super(creature, speedIn, useLongMemory);
-				this.attacker = creature;
-				this.worldObj = creature.worldObj;
-				this.speedTowardsTarget = speedIn;
-				this.longMemory = useLongMemory;
-				this.setMutexBits(3);
+		public AIMeleeAttack(EntityCreature creature, double speedIn, boolean useLongMemory) {
+			super(creature, speedIn, useLongMemory);
+			this.attacker = creature;
+			this.worldObj = creature.worldObj;
+			this.speedTowardsTarget = speedIn;
+			this.longMemory = useLongMemory;
+			this.setMutexBits(3);
 
-			}
+		}
 
-			/**
-			 * Returns whether the EntityAIBase should begin execution.
-			 */
-			public boolean shouldExecute() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
 
-				if (entitylivingbase == null) {
-					return false;
-				} else if (!entitylivingbase.isEntityAlive()) {
-					return false;
-				} else {
-					if (canPenalize) {
-						if (--this.delayCounter <= 0) {
-							this.entityPathEntity = this.attacker.getNavigator()
-									.getPathToEntityLiving(entitylivingbase);
-							this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
-							return this.entityPathEntity != null;
-						} else {
-							return true;
-						}
+			if (entitylivingbase == null) {
+				return false;
+			} else if (!entitylivingbase.isEntityAlive()) {
+				return false;
+			} else {
+				if (canPenalize) {
+					if (--this.delayCounter <= 0) {
+						this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
+						this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+						return this.entityPathEntity != null;
+					} else {
+						return true;
 					}
-					this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
-					return this.entityPathEntity != null;
 				}
+				this.entityPathEntity = this.attacker.getNavigator().getPathToEntityLiving(entitylivingbase);
+				return this.entityPathEntity != null;
+			}
+		}
+
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+			return entitylivingbase == null ? false
+					: (!entitylivingbase.isEntityAlive() ? false
+							: (!this.longMemory ? !this.attacker.getNavigator().noPath()
+									: (!this.attacker.isWithinHomeDistanceFromPosition(new BlockPos(entitylivingbase))
+											? false
+											: !(entitylivingbase instanceof EntityPlayer)
+													|| !((EntityPlayer) entitylivingbase).isSpectator()
+															&& !((EntityPlayer) entitylivingbase).isCreative())));
+		}
+
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.attacker.getNavigator().setPath(this.entityPathEntity, this.speedTowardsTarget);
+			this.delayCounter = 0;
+		}
+
+		/**
+		 * Resets the task
+		 */
+		public void resetTask() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+
+			if (entitylivingbase instanceof EntityPlayer && (((EntityPlayer) entitylivingbase).isSpectator()
+					|| ((EntityPlayer) entitylivingbase).isCreative())) {
+				this.attacker.setAttackTarget((EntityLivingBase) null);
 			}
 
-			/**
-			 * Returns whether an in-progress EntityAIBase should continue
-			 * executing
-			 */
-			public boolean continueExecuting() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-				return entitylivingbase == null ? false
-						: (!entitylivingbase.isEntityAlive() ? false
-								: (!this.longMemory ? !this.attacker.getNavigator().noPath()
-										: (!this.attacker
-												.isWithinHomeDistanceFromPosition(new BlockPos(entitylivingbase))
-														? false
-														: !(entitylivingbase instanceof EntityPlayer)
-																|| !((EntityPlayer) entitylivingbase).isSpectator()
-																		&& !((EntityPlayer) entitylivingbase)
-																				.isCreative())));
-			}
+			this.attacker.getNavigator().clearPathEntity();
+		}
 
-			/**
-			 * Execute a one shot task or start executing a continuous task
-			 */
-			public void startExecuting() {
-				this.attacker.getNavigator().setPath(this.entityPathEntity, this.speedTowardsTarget);
-				this.delayCounter = 0;
-			}
+		/**
+		 * Updates the task
+		 */
+		public void updateTask() {
+			EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+			this.attacker.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
+			double d0 = this.attacker.getDistanceSq(entitylivingbase.posX, entitylivingbase.getEntityBoundingBox().minY,
+					entitylivingbase.posZ);
+			--this.delayCounter;
 
-			/**
-			 * Resets the task
-			 */
-			public void resetTask() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
+			if ((this.longMemory || this.attacker.getEntitySenses().canSee(entitylivingbase)) && this.delayCounter <= 0
+					&& (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
+							|| entitylivingbase.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D
+							|| this.attacker.getRNG().nextFloat() < 0.05F)) {
+				this.targetX = entitylivingbase.posX;
+				this.targetY = entitylivingbase.getEntityBoundingBox().minY;
+				this.targetZ = entitylivingbase.posZ;
+				this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 
-				if (entitylivingbase instanceof EntityPlayer && (((EntityPlayer) entitylivingbase).isSpectator()
-						|| ((EntityPlayer) entitylivingbase).isCreative())) {
-					this.attacker.setAttackTarget((EntityLivingBase) null);
-				}
-
-				this.attacker.getNavigator().clearPathEntity();
-			}
-
-			/**
-			 * Updates the task
-			 */
-			public void updateTask() {
-				EntityLivingBase entitylivingbase = this.attacker.getAttackTarget();
-				this.attacker.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
-				double d0 = this.attacker.getDistanceSq(entitylivingbase.posX,
-						entitylivingbase.getEntityBoundingBox().minY, entitylivingbase.posZ);
-				--this.delayCounter;
-
-				if ((this.longMemory || this.attacker.getEntitySenses().canSee(entitylivingbase))
-						&& this.delayCounter <= 0
-						&& (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
-								|| entitylivingbase.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D
-								|| this.attacker.getRNG().nextFloat() < 0.05F)) {
-					this.targetX = entitylivingbase.posX;
-					this.targetY = entitylivingbase.getEntityBoundingBox().minY;
-					this.targetZ = entitylivingbase.posZ;
-					this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
-
-					if (this.canPenalize) {
-						this.delayCounter += failedPathFindingPenalty;
-						if (this.attacker.getNavigator().getPath() != null) {
-							net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath()
-									.getFinalPathPoint();
-							if (finalPathPoint != null && entitylivingbase.getDistanceSq(finalPathPoint.xCoord,
-									finalPathPoint.yCoord, finalPathPoint.zCoord) < 1)
-								failedPathFindingPenalty = 0;
-							else
-								failedPathFindingPenalty += 10;
-						} else {
+				if (this.canPenalize) {
+					this.delayCounter += failedPathFindingPenalty;
+					if (this.attacker.getNavigator().getPath() != null) {
+						net.minecraft.pathfinding.PathPoint finalPathPoint = this.attacker.getNavigator().getPath()
+								.getFinalPathPoint();
+						if (finalPathPoint != null && entitylivingbase.getDistanceSq(finalPathPoint.xCoord,
+								finalPathPoint.yCoord, finalPathPoint.zCoord) < 1)
+							failedPathFindingPenalty = 0;
+						else
 							failedPathFindingPenalty += 10;
-						}
-					}
-
-					if (d0 > 1024.0D) {
-						this.delayCounter += 10;
-					} else if (d0 > 256.0D) {
-						this.delayCounter += 5;
-					}
-
-					if (!this.attacker.getNavigator().tryMoveToEntityLiving(entitylivingbase,
-							this.speedTowardsTarget)) {
-						this.delayCounter += 15;
+					} else {
+						failedPathFindingPenalty += 10;
 					}
 				}
 
-				this.attackTick = Math.max(this.attackTick - 1, 0);
-				this.checkAndPerformAttack(entitylivingbase, d0);
-			}
+				if (d0 > 1024.0D) {
+					this.delayCounter += 10;
+				} else if (d0 > 256.0D) {
+					this.delayCounter += 5;
+				}
 
-			protected void checkAndPerformAttack(EntityLivingBase p_190102_1_, double p_190102_2_) {
-				double d0 = this.getAttackReachSqr(p_190102_1_);
-
-				if (p_190102_2_ <= d0 && this.attackTick <= 0) {
-					this.attackTick = 20;
-					this.attacker.swingArm(EnumHand.MAIN_HAND);
-					this.attacker.attackEntityAsMob(p_190102_1_);
+				if (!this.attacker.getNavigator().tryMoveToEntityLiving(entitylivingbase, this.speedTowardsTarget)) {
+					this.delayCounter += 15;
 				}
 			}
 
-			protected double getAttackReachSqr(EntityLivingBase attackTarget) {
-				return (double) (this.attacker.width * 2.0F * this.attacker.width * 2.0F + attackTarget.width);
-			}
-
+			this.attackTick = Math.max(this.attackTick - 1, 0);
+			this.checkAndPerformAttack(entitylivingbase, d0);
 		}
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		protected void checkAndPerformAttack(EntityLivingBase p_190102_1_, double p_190102_2_) {
+			double d0 = this.getAttackReachSqr(p_190102_1_);
 
-		/**
-		 * The maximum height from where the entity is alowed to jump (used in
-		 * pathfinder)
-		 */
-		public int getMaxFallHeight() {
-			return this.getAttackTarget() == null ? 3 : 3 + (int) (this.getHealth() - 1.0F);
-		}
-
-		public void fall(float distance, float damageMultiplier) {
-			super.fall(distance, damageMultiplier);
-			this.timeSinceIgnited = (int) ((float) this.timeSinceIgnited + distance * 1.5F);
-
-			if (this.timeSinceIgnited > this.fuseTime - 5) {
-				this.timeSinceIgnited = this.fuseTime - 5;
+			if (p_190102_2_ <= d0 && this.attackTick <= 0) {
+				this.attackTick = 20;
+				this.attacker.swingArm(EnumHand.MAIN_HAND);
+				this.attacker.attackEntityAsMob(p_190102_1_);
 			}
 		}
 
-		
-
-		public static void registerFixesCreeper(DataFixer fixer) {
-			EntityLiving.registerFixesMob(fixer, "Creeper");
+		protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+			return (double) (this.attacker.width * 2.0F * this.attacker.width * 2.0F + attackTarget.width);
 		}
 
-		
-
-		
-		
-		
-		
-		
-	
-		/**
-		 * Called to update the entity's position/logic.
-		 */
-		@Override
-		public void onUpdate() {
-			if (this.isEntityAlive()) {
-				this.lastActiveTime = this.timeSinceIgnited;
-
-				if (this.hasIgnited()) {
-					this.setCreeperState(1);
-				}
-
-				int i = this.getCreeperState();
-
-				if (i > 0 && this.timeSinceIgnited == 0) {
-					this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-				}
-
-				this.timeSinceIgnited += i;
-
-				if (this.timeSinceIgnited < 0) {
-					this.timeSinceIgnited = 0;
-				}
-
-				if (this.timeSinceIgnited >= this.fuseTime) {
-					this.timeSinceIgnited = this.fuseTime;
-					this.explode();
-				}
-			}
-
-			super.onUpdate();
-		}
-
-		protected SoundEvent getHurtSound() {
-			return SoundEvents.ENTITY_CREEPER_HURT;
-		}
-
-		protected SoundEvent getDeathSound() {
-			return SoundEvents.ENTITY_CREEPER_DEATH;
-		}
-
-		/**
-		 * Called when the mob's health reaches 0.
-		 */
-		public void onDeath(DamageSource cause) {
-			super.onDeath(cause);
-
-			if (this.worldObj.getGameRules().getBoolean("doMobLoot")) {
-				if (cause.getEntity() instanceof EntitySkeleton) {
-					int i = Item.getIdFromItem(Items.RECORD_13);
-					int j = Item.getIdFromItem(Items.RECORD_WAIT);
-					int k = i + this.rand.nextInt(j - i + 1);
-					this.dropItem(Item.getItemById(k), 1);
-				} else if (cause.getEntity() instanceof TameableCreeper && cause.getEntity() != this
-						&& ((TameableCreeper) cause.getEntity()).getPowered()
-						&& ((TameableCreeper) cause.getEntity()).isAIEnabled()) {
-					((TameableCreeper) cause.getEntity()).incrementDroppedSkulls();
-					this.entityDropItem(new ItemStack(Items.SKULL, 1, 4), 0.0F);
-				}
-			}
-		}
-
-		
-
-		/**
-		 * Returns true if the creeper is powered by a lightning bolt.
-		 */
-		public boolean getPowered() {
-			return ((Boolean) this.dataManager.get(POWERED)).booleanValue();
-		}
-
-		/**
-		 * Params: (Float)Render tick. Returns the intensity of the creeper's
-		 * flash when it is ignited.
-		 */
-		@SideOnly(Side.CLIENT)
-		public float getCreeperFlashIntensity(float p_70831_1_) {
-			return ((float) this.lastActiveTime + (float) (this.timeSinceIgnited - this.lastActiveTime) * p_70831_1_)
-					/ (float) (this.fuseTime - 2);
-		}
-
-		@Nullable
-		protected ResourceLocation getLootTable() {
-			return LootTableList.ENTITIES_CREEPER;
-		}
-
-		/**
-		 * Returns the current state of creeper, -1 is idle, 1 is 'in fuse'
-		 */
-		public int getCreeperState() {
-			return ((Integer) this.dataManager.get(STATE)).intValue();
-		}
-
-		/**
-		 * Sets the state of creeper, -1 to idle and 1 to be 'in fuse'
-		 */
-		public void setCreeperState(int state) {
-			this.dataManager.set(STATE, Integer.valueOf(state));
-		}
-
-		/**
-		 * Called when a lightning bolt hits the entity.
-		 */
-		public void onStruckByLightning(EntityLightningBolt lightningBolt) {
-			super.onStruckByLightning(lightningBolt);
-			this.dataManager.set(POWERED, Boolean.valueOf(true));
-		}
-
-		
-		/**
-		 * Creates an explosion as determined by this creeper's power and
-		 * explosion radius.
-		 */
-		private void explode() {
-			if (!this.worldObj.isRemote) {
-				boolean flag = this.worldObj.getGameRules().getBoolean("mobGriefing");
-				float f = this.getPowered() ? 2.0F : 1.0F;
-				this.dead = true;
-				this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, (float) this.explosionRadius * f,
-						flag);
-				this.setDead();
-			}
-		}
-
-		public boolean hasIgnited() {
-			return ((Boolean) this.dataManager.get(IGNITED)).booleanValue();
-		}
-
-		public void ignite() {
-			this.dataManager.set(IGNITED, Boolean.valueOf(true));
-		}
-
-		/**
-		 * Returns true if the newer Entity AI code should be run
-		 */
-		public boolean isAIEnabled() {
-			return this.droppedSkulls < 1 && this.worldObj.getGameRules().getBoolean("doMobLoot");
-		}
-
-		public void incrementDroppedSkulls() {
-			++this.droppedSkulls;
-		}
-		 protected boolean isValidLightLevel()
-		    {
-		        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
-
-		        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-		        {
-		            return false;
-		        }
-		        else
-		        {
-		            int i = this.worldObj.getLightFromNeighbors(blockpos);
-
-		            if (this.worldObj.isThundering())
-		            {
-		                int j = this.worldObj.getSkylightSubtracted();
-		                this.worldObj.setSkylightSubtracted(10);
-		                i = this.worldObj.getLightFromNeighbors(blockpos);
-		                this.worldObj.setSkylightSubtracted(j);
-		            }
-
-		            return i <= this.rand.nextInt(8);
-		        }
-		    }
-
-		    /**
-		     * Checks if the entity's current position is a valid location to spawn this entity.
-		     */
-		 @Override
-		 public boolean getCanSpawnHere() {
-				if (super.getCanSpawnHere()) {
-					
-					return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-				} else {
-					return false;
-				}
-			}
-		 /*   public boolean getCanSpawnHere()
-		    {
-		        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
-		    }*/
-		
-		
-		 @Override
-		    protected void despawnEntity() {
-		        if (!isTamed()) {
-		            super.despawnEntity();
-		        }
-		    }
 	}
 
+	/**
+	 * The maximum height from where the entity is alowed to jump (used in
+	 * pathfinder)
+	 */
+	public int getMaxFallHeight() {
+		return this.getAttackTarget() == null ? 3 : 3 + (int) (this.getHealth() - 1.0F);
+	}
+
+	public void fall(float distance, float damageMultiplier) {
+		super.fall(distance, damageMultiplier);
+		this.timeSinceIgnited = (int) ((float) this.timeSinceIgnited + distance * 1.5F);
+
+		if (this.timeSinceIgnited > this.fuseTime - 5) {
+			this.timeSinceIgnited = this.fuseTime - 5;
+		}
+	}
+
+	public static void registerFixesCreeper(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "Creeper");
+	}
+
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	@Override
+	public void onUpdate() {
+		if (this.isEntityAlive()) {
+			this.lastActiveTime = this.timeSinceIgnited;
+
+			if (this.hasIgnited()) {
+				this.setCreeperState(1);
+			}
+
+			int i = this.getCreeperState();
+
+			if (i > 0 && this.timeSinceIgnited == 0) {
+				this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
+			}
+
+			this.timeSinceIgnited += i;
+
+			if (this.timeSinceIgnited < 0) {
+				this.timeSinceIgnited = 0;
+			}
+
+			if (this.timeSinceIgnited >= this.fuseTime) {
+				this.timeSinceIgnited = this.fuseTime;
+				this.explode();
+			}
+		}
+
+		super.onUpdate();
+	}
+
+	protected SoundEvent getHurtSound() {
+		return SoundEvents.ENTITY_CREEPER_HURT;
+	}
+
+	protected SoundEvent getDeathSound() {
+		return SoundEvents.ENTITY_CREEPER_DEATH;
+	}
+
+	/**
+	 * Called when the mob's health reaches 0.
+	 */
+	public void onDeath(DamageSource cause) {
+		super.onDeath(cause);
+
+		if (this.worldObj.getGameRules().getBoolean("doMobLoot")) {
+			if (cause.getEntity() instanceof EntitySkeleton) {
+				int i = Item.getIdFromItem(Items.RECORD_13);
+				int j = Item.getIdFromItem(Items.RECORD_WAIT);
+				int k = i + this.rand.nextInt(j - i + 1);
+				this.dropItem(Item.getItemById(k), 1);
+			} else if (cause.getEntity() instanceof TameableCreeper && cause.getEntity() != this
+					&& ((TameableCreeper) cause.getEntity()).getPowered()
+					&& ((TameableCreeper) cause.getEntity()).isAIEnabled()) {
+				((TameableCreeper) cause.getEntity()).incrementDroppedSkulls();
+				this.entityDropItem(new ItemStack(Items.SKULL, 1, 4), 0.0F);
+			}
+		}
+	}
+
+	/**
+	 * Returns true if the creeper is powered by a lightning bolt.
+	 */
+	public boolean getPowered() {
+		return ((Boolean) this.dataManager.get(POWERED)).booleanValue();
+	}
+
+	/**
+	 * Params: (Float)Render tick. Returns the intensity of the creeper's flash
+	 * when it is ignited.
+	 */
+	@SideOnly(Side.CLIENT)
+	public float getCreeperFlashIntensity(float p_70831_1_) {
+		return ((float) this.lastActiveTime + (float) (this.timeSinceIgnited - this.lastActiveTime) * p_70831_1_)
+				/ (float) (this.fuseTime - 2);
+	}
+
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return LootTableList.ENTITIES_CREEPER;
+	}
+
+	/**
+	 * Returns the current state of creeper, -1 is idle, 1 is 'in fuse'
+	 */
+	public int getCreeperState() {
+		return ((Integer) this.dataManager.get(STATE)).intValue();
+	}
+
+	/**
+	 * Sets the state of creeper, -1 to idle and 1 to be 'in fuse'
+	 */
+	public void setCreeperState(int state) {
+		this.dataManager.set(STATE, Integer.valueOf(state));
+	}
+
+	/**
+	 * Called when a lightning bolt hits the entity.
+	 */
+	public void onStruckByLightning(EntityLightningBolt lightningBolt) {
+		super.onStruckByLightning(lightningBolt);
+		this.dataManager.set(POWERED, Boolean.valueOf(true));
+	}
+
+	/**
+	 * Creates an explosion as determined by this creeper's power and explosion
+	 * radius.
+	 */
+	private void explode() {
+		if (!this.worldObj.isRemote) {
+			boolean flag = this.worldObj.getGameRules().getBoolean("mobGriefing");
+			float f = this.getPowered() ? 2.0F : 1.0F;
+			this.dead = true;
+			this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, (float) this.explosionRadius * f,
+					flag);
+			this.setDead();
+		}
+	}
+
+	public boolean hasIgnited() {
+		return ((Boolean) this.dataManager.get(IGNITED)).booleanValue();
+	}
+
+	public void ignite() {
+		this.dataManager.set(IGNITED, Boolean.valueOf(true));
+	}
+
+	/**
+	 * Returns true if the newer Entity AI code should be run
+	 */
+	public boolean isAIEnabled() {
+		return this.droppedSkulls < 1 && this.worldObj.getGameRules().getBoolean("doMobLoot");
+	}
+
+	public void incrementDroppedSkulls() {
+		++this.droppedSkulls;
+	}
+
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
+
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
+
+			return i <= this.rand.nextInt(8);
+		}
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
+}

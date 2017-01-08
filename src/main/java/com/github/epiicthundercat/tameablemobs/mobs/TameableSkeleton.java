@@ -105,7 +105,7 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 		public void resetTask() {
 			super.resetTask();
 			TameableSkeleton.this.setSwingingArms(false);
-		
+
 		}
 
 		/**
@@ -357,6 +357,7 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 					: (entityTameableSkeleton.isSitting() ? false : isInLove() && entityTameableSkeleton.isInLove());
 		}
 	}
+
 	@Override
 	@Nullable
 	public UUID getOwnerId() {
@@ -366,6 +367,7 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 	public void setOwnerId(@Nullable UUID p_184754_1_) {
 		dataManager.set(OWNER_UNIQUE_ID, Optional.fromNullable(p_184754_1_));
 	}
+
 	@Override
 	@Nullable
 	public EntityLivingBase getOwner() {
@@ -862,8 +864,6 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 		}
 	}
 
-	
-
 	protected SoundEvent getAmbientSound() {
 		return getSkeletonType().getAmbientSound();
 	}
@@ -880,8 +880,6 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 		SoundEvent soundevent = getSkeletonType().getStepSound();
 		playSound(soundevent, 0.15F, 1.0F);
 	}
-
-	
 
 	/**
 	 * Get this Entity's EnumCreatureAttribute
@@ -1114,8 +1112,6 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 		EntityLiving.registerFixesMob(fixer, "Skeleton");
 	}
 
-
-
 	public void setItemStackToSlot(EntityEquipmentSlot slotIn, @Nullable ItemStack stack) {
 		super.setItemStackToSlot(slotIn, stack);
 
@@ -1140,7 +1136,7 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 		return ((Boolean) dataManager.get(SWINGING_ARMS)).booleanValue();
 	}
 
-	public  void setSwingingArms(boolean swingingArms) {
+	public void setSwingingArms(boolean swingingArms) {
 		dataManager.set(SWINGING_ARMS, Boolean.valueOf(swingingArms));
 	}
 
@@ -1277,45 +1273,40 @@ public class TameableSkeleton extends EntityAnimal implements IRangedAttackMob, 
 			}
 		}
 	}
-	
-	 protected boolean isValidLightLevel()
-	    {
-	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	            if (this.worldObj.isThundering())
-	            {
-	                int j = this.worldObj.getSkylightSubtracted();
-	                this.worldObj.setSkylightSubtracted(10);
-	                i = this.worldObj.getLightFromNeighbors(blockpos);
-	                this.worldObj.setSkylightSubtracted(j);
-	            }
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
 
-	            return i <= this.rand.nextInt(8);
-	        }
-	    }
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
 
-	    /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	 @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+			return i <= this.rand.nextInt(8);
+		}
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

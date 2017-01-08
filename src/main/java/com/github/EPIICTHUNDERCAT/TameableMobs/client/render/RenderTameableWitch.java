@@ -13,44 +13,41 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderTameableWitch extends RenderLiving<TameableWitch>
-{
-    private static final ResourceLocation TAMEABLEWITCH_TEXTURES = new ResourceLocation(Reference.ID, "textures/entity/tameablewitch.png");
+public class RenderTameableWitch extends RenderLiving<TameableWitch> {
+	private static final ResourceLocation TAMEABLEWITCH_TEXTURES = new ResourceLocation(Reference.ID,
+			"textures/entity/tameablewitch.png");
 
-    public RenderTameableWitch(RenderManager renderManagerIn)
-    {
-        super(renderManagerIn, new ModelTameableWitch(0.0F), 0.5F);
-        this.addLayer(new LayerHeldItemTamedWitch(this));
-    }
+	public RenderTameableWitch(RenderManager renderManagerIn) {
+		super(renderManagerIn, new ModelTameableWitch(0.0F), 0.5F);
+		this.addLayer(new LayerHeldItemTamedWitch(this));
+	}
 
-    /**
-     * Renders the desired {@code T} type Entity.
-     */
-    public void doRender(TameableWitch entity, double x, double y, double z, float entityYaw, float partialTicks)
-    {
-        ((ModelTameableWitch)this.mainModel).holdingItem = entity.getHeldItemMainhand() != null;
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
-    }
+	/**
+	 * Renders the desired {@code T} type Entity.
+	 */
+	public void doRender(TameableWitch entity, double x, double y, double z, float entityYaw, float partialTicks) {
+		((ModelTameableWitch) this.mainModel).holdingItem = entity.getHeldItemMainhand() != null;
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+	}
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
-    protected ResourceLocation getEntityTexture(TameableWitch entity)
-    {
-        return TAMEABLEWITCH_TEXTURES;
-    }
+	/**
+	 * Returns the location of an entity's texture. Doesn't seem to be called
+	 * unless you call Render.bindEntityTexture.
+	 */
+	protected ResourceLocation getEntityTexture(TameableWitch entity) {
+		return TAMEABLEWITCH_TEXTURES;
+	}
 
-    public void transformHeldFull3DItemLayer()
-    {
-        GlStateManager.translate(0.0F, 0.1875F, 0.0F);
-    }
+	public void transformHeldFull3DItemLayer() {
+		GlStateManager.translate(0.0F, 0.1875F, 0.0F);
+	}
 
-    /**
-     * Allows the render to do state modifications necessary before the model is rendered.
-     */
-    protected void preRenderCallback(TameableWitch entitylivingbaseIn, float partialTickTime)
-    {
-        float f = 0.9375F;
-        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
-    }
+	/**
+	 * Allows the render to do state modifications necessary before the model is
+	 * rendered.
+	 */
+	protected void preRenderCallback(TameableWitch entitylivingbaseIn, float partialTickTime) {
+		float f = 0.9375F;
+		GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
+	}
 }

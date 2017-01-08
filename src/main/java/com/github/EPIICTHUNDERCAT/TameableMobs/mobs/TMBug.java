@@ -36,6 +36,7 @@ public class TMBug extends EntityAmbientCreature{
 	    {
 	        super(worldIn);
 	        this.setSize(0.4F, 0.5F);
+	        experienceValue = 9;
 	        
 	    }
 	 protected void entityInit()

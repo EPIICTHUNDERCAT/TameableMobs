@@ -1,6 +1,7 @@
 package com.github.epiicthundercat.tameablemobs.models;
 
 import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableRabbit;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -22,7 +23,7 @@ public class ModelTameableRabbit extends ModelBase
     private final ModelRenderer rabbitLeftThigh;
     /** The Rabbit's Right Thigh */
     private final ModelRenderer rabbitRightThigh;
-    /** The Rabbit's Body */
+    /** The Rabbit's rabbitrabbitrabbitBody */
     private final ModelRenderer rabbitBody;
     /** The Rabbit's Left Arm */
     private final ModelRenderer rabbitLeftArm;
@@ -167,6 +168,13 @@ public class ModelTameableRabbit extends ModelBase
         }
     }
 
+    
+    
+    
+    
+    
+    
+    
     /**
      * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
@@ -201,5 +209,35 @@ public class ModelTameableRabbit extends ModelBase
     {
         super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
         this.jumpRotation = MathHelper.sin(((TameableRabbit)entitylivingbaseIn).setJumpCompletion(partialTickTime) * (float)Math.PI);
+        TameableRabbit TameableRabbit = (TameableRabbit) entitylivingbaseIn;
+        int height = 0;
+		if (TameableRabbit.isSitting()) {
+			
+			
+			rabbitLeftArm.setRotationPoint(3.0F, 17.0F, -1.0F);
+			rabbitLeftArm.rotateAngleY = 1f;
+			rabbitLeftArm.rotateAngleZ = 1f;
+			rabbitLeftArm.offsetY = 0.099f;
+			
+			rabbitRightArm.setRotationPoint(-3.0F, 17.0F, -1.0F);
+			
+			rabbitRightArm.rotateAngleY = -1f;
+			rabbitRightArm.rotateAngleZ = -1f;
+			rabbitRightArm.rotateAngleX = -1f;
+			rabbitRightArm.offsetY = 0.099f;
+		} else {
+			
+			
+			rabbitLeftArm.setRotationPoint(3.0F, 17.0F, -1.0F);
+			rabbitLeftArm.rotateAngleY = 0f;
+			rabbitLeftArm.rotateAngleZ = 0f;
+			rabbitLeftArm.offsetY = 0.f;
+			
+			rabbitRightArm.setRotationPoint(-3.0F, 17.0F, -1.0F);
+			rabbitRightArm.rotateAngleY = 0f;
+			rabbitRightArm.rotateAngleZ = 0f;
+			rabbitRightArm.offsetY = 0.0f;
+		
+		}
     }
 }

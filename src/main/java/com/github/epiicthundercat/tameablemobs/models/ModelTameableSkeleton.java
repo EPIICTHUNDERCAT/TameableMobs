@@ -66,6 +66,31 @@ public class ModelTameableSkeleton extends ModelBiped
                 this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
             }
         }
+        TameableSkeleton TameableSkeleton = (TameableSkeleton) entitylivingbaseIn;
+        int height = 0;
+		if (TameableSkeleton.isSitting()) {
+			bipedLeftLeg.setRotationPoint(-4.0F, 12.0F, 0.0F);
+			bipedLeftLeg.rotationPointX = -2f;
+			bipedLeftLeg.rotateAngleY = 0f;
+			bipedLeftLeg.rotateAngleZ = 0f;
+			bipedLeftLeg.offsetX = -0.12f;
+			bipedRightLeg.setRotationPoint(4.0F, 12.0F, 0.0F);
+			bipedRightLeg.offsetX = 0.0f;
+			bipedRightLeg.rotateAngleX = 0f;
+			bipedRightLeg.rotateAngleY = 0f;
+			bipedRightLeg.rotateAngleZ = 0f;
+			
+		} else {
+			bipedLeftLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
+			bipedLeftLeg.rotationPointX = 0f;
+			bipedLeftLeg.rotateAngleY = 0f;
+			bipedLeftLeg.rotateAngleZ = 0f;
+			bipedLeftLeg.offsetX = -0.12f;
+			bipedRightLeg.setRotationPoint(2.0F, 12.0F, 0.0F);
+			bipedRightLeg.offsetX = 0.0f;
+			bipedRightLeg.rotateAngleY = 0f;
+			bipedRightLeg.rotateAngleZ = 0f;
+		}
 
         super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
     }

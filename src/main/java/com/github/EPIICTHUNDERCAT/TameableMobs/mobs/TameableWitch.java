@@ -1025,44 +1025,40 @@ public class TameableWitch extends EntityAnimal implements IEntityOwnable, IRang
 	public float getEyeHeight() {
 		return 1.62F;
 	}
-	 protected boolean isValidLightLevel()
-	    {
-	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	            if (this.worldObj.isThundering())
-	            {
-	                int j = this.worldObj.getSkylightSubtracted();
-	                this.worldObj.setSkylightSubtracted(10);
-	                i = this.worldObj.getLightFromNeighbors(blockpos);
-	                this.worldObj.setSkylightSubtracted(j);
-	            }
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
 
-	            return i <= this.rand.nextInt(8);
-	        }
-	    }
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
 
-	    /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	 @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+			return i <= this.rand.nextInt(8);
+		}
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

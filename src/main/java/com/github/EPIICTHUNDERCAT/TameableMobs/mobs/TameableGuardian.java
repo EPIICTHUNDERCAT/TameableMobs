@@ -576,9 +576,10 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 			maxDist = maxDistIn;
 			setMutexBits(3);
 
-			//if (!(thePetIn.getNavigator() instanceof PathNavigateGround)) {
-				//throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
-			//}
+			// if (!(thePetIn.getNavigator() instanceof PathNavigateGround)) {
+			// throw new IllegalArgumentException("Unsupported mob type for
+			// FollowOwnerGoal");
+			// }
 		}
 
 		/**
@@ -1038,10 +1039,6 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 				this.clientSideSpikesAnimation += (1.0F - this.clientSideSpikesAnimation) * 0.06F;
 			}
 
-			
-			
-			
-			
 			if (this.isMoving() && this.isInWater()) {
 				Vec3d vec3d = this.getLook(0.0F);
 
@@ -1054,10 +1051,6 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 				}
 			}
 
-			
-			
-			
-			
 			if (this.hasTargetedEntity()) {
 				if (this.clientSideAttackTime < this.getAttackDuration()) {
 					++this.clientSideAttackTime;
@@ -1182,7 +1175,7 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 	 * entity.
 	 */
 	public boolean getCanSpawnHere() {
-		  
+
 		return (this.rand.nextInt(20) == 0 || !this.worldObj.canBlockSeeSky(new BlockPos(this)))
 				&& this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && super.getCanSpawnHere();
 	}
@@ -1392,14 +1385,12 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 					&& p_apply_1_.getDistanceSqToEntity(this.parentEntity) > 9.0D;
 		}
 	}
-	
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 
 }

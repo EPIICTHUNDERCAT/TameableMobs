@@ -1,6 +1,8 @@
 package com.github.epiicthundercat.tameablemobs.proxy;
 
 import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.init.TMRecipes;
+import com.github.epiicthundercat.tameablemobs.mobs.MobDrops;
 import com.github.epiicthundercat.tameablemobs.mobs.ModEntities;
 import com.github.epiicthundercat.tameablemobs.util.TMEventHandler;
 
@@ -25,7 +27,10 @@ public class CommonProxy {
 
 	private void register(FMLPreInitializationEvent preEvent) {
 		TMItems.register(preEvent);
+		TMRecipes.register(preEvent);
+		
 		//NGBlocks.register(preEvent);
+		MinecraftForge.EVENT_BUS.register(new MobDrops());
 		MinecraftForge.EVENT_BUS.register(new TMEventHandler());
 		
 

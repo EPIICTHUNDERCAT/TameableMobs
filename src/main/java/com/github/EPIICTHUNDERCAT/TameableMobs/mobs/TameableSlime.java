@@ -1158,14 +1158,13 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 		 * Returns whether the EntityAIBase should begin execution.
 		 */
 		public boolean shouldExecute() {
-			
+
 			EntityLivingBase entitylivingbase = this.slime.getAttackTarget();
 			return entitylivingbase == null ? false
 					: (!entitylivingbase.isEntityAlive() ? false
 							: !(entitylivingbase instanceof EntityPlayer)
 									|| !((EntityPlayer) entitylivingbase).capabilities.disableDamage);
 		}
-		
 
 		/**
 		 * Execute a one shot task or start executing a continuous task
@@ -1341,252 +1340,217 @@ public class TameableSlime extends EntityAnimal implements IEntityOwnable, IMob 
 			}
 		}
 	}
-	public class EntityAIFindEntityNearestPlayerSlime extends EntityAIBase
-	{
-	    
-	    /** The entity that use this AI */
-	    private final EntityLiving entityLiving;
-	    private final Predicate<Entity> predicate;
-	    /** Used to compare two entities */
-	    private final EntityAINearestAttackableTarget.Sorter sorter;
-	    /** The current target */
-	    private EntityLivingBase entityTarget;
 
-	    public EntityAIFindEntityNearestPlayerSlime(EntityLiving entityLivingIn)
-	    {
-	        this.entityLiving = entityLivingIn;
+	public class EntityAIFindEntityNearestPlayerSlime extends EntityAIBase {
 
-	        
+		/** The entity that use this AI */
+		private final EntityLiving entityLiving;
+		private final Predicate<Entity> predicate;
+		/** Used to compare two entities */
+		private final EntityAINearestAttackableTarget.Sorter sorter;
+		/** The current target */
+		private EntityLivingBase entityTarget;
 
-	        this.predicate = new Predicate<Entity>()
-	        {
-	            public boolean apply(@Nullable Entity p_apply_1_)
-	            {
-	                if (!(p_apply_1_ instanceof EntityPlayer))
-	                {
-	                    return false;
-	                }
-	                else if (((EntityPlayer)p_apply_1_).capabilities.disableDamage)
-	                {
-	                    return false;
-	                }
-	                else
-	                {
-	                    double d0 = EntityAIFindEntityNearestPlayerSlime.this.maxTargetRange();
+		public EntityAIFindEntityNearestPlayerSlime(EntityLiving entityLivingIn) {
+			this.entityLiving = entityLivingIn;
 
-	                    if (p_apply_1_.isSneaking())
-	                    {
-	                        d0 *= 0.800000011920929D;
-	                    }
+			this.predicate = new Predicate<Entity>() {
+				public boolean apply(@Nullable Entity p_apply_1_) {
+					if (!(p_apply_1_ instanceof EntityPlayer)) {
+						return false;
+					} else if (((EntityPlayer) p_apply_1_).capabilities.disableDamage) {
+						return false;
+					} else {
+						double d0 = EntityAIFindEntityNearestPlayerSlime.this.maxTargetRange();
 
-	                    if (p_apply_1_.isInvisible())
-	                    {
-	                        float f = ((EntityPlayer)p_apply_1_).getArmorVisibility();
+						if (p_apply_1_.isSneaking()) {
+							d0 *= 0.800000011920929D;
+						}
 
-	                        if (f < 0.1F)
-	                        {
-	                            f = 0.1F;
-	                        }
+						if (p_apply_1_.isInvisible()) {
+							float f = ((EntityPlayer) p_apply_1_).getArmorVisibility();
 
-	                        d0 *= (double)(0.7F * f);
-	                    }
+							if (f < 0.1F) {
+								f = 0.1F;
+							}
 
-	                    return (double)p_apply_1_.getDistanceToEntity(EntityAIFindEntityNearestPlayerSlime.this.entityLiving) > d0 ? false : EntityAITarget.isSuitableTarget(EntityAIFindEntityNearestPlayerSlime.this.entityLiving, (EntityLivingBase)p_apply_1_, false, true);
-	                }
-	            }
-	        };
-	        this.sorter = new EntityAINearestAttackableTarget.Sorter(entityLivingIn);
-	    }
+							d0 *= (double) (0.7F * f);
+						}
 
-	    /**
-	     * Returns whether the EntityAIBase should begin execution.
-	     */
-	    public boolean shouldExecute()
-	    {
-	        double d0 = this.maxTargetRange();
-	        List<EntityPlayer> list = this.entityLiving.worldObj.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.entityLiving.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
-	        Collections.sort(list, this.sorter);
+						return (double) p_apply_1_
+								.getDistanceToEntity(EntityAIFindEntityNearestPlayerSlime.this.entityLiving) > d0
+										? false
+										: EntityAITarget.isSuitableTarget(
+												EntityAIFindEntityNearestPlayerSlime.this.entityLiving,
+												(EntityLivingBase) p_apply_1_, false, true);
+					}
+				}
+			};
+			this.sorter = new EntityAINearestAttackableTarget.Sorter(entityLivingIn);
+		}
 
-	        if (list.isEmpty())
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            this.entityTarget = (EntityLivingBase)list.get(0);
-	            return true;
-	        }
-	    }
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			double d0 = this.maxTargetRange();
+			List<EntityPlayer> list = this.entityLiving.worldObj.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class,
+					this.entityLiving.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
+			Collections.sort(list, this.sorter);
 
-	    /**
-	     * Returns whether an in-progress EntityAIBase should continue executing
-	     */
-	    public boolean continueExecuting()
-	    {
-	        EntityLivingBase entitylivingbase = this.entityLiving.getAttackTarget();
+			if (list.isEmpty()) {
+				return false;
+			} else {
+				this.entityTarget = (EntityLivingBase) list.get(0);
+				return true;
+			}
+		}
 
-	        if (entitylivingbase == null)
-	        {
-	            return false;
-	        }
-	        else if (!entitylivingbase.isEntityAlive())
-	        {
-	            return false;
-	        }
-	        else if (entitylivingbase instanceof EntityPlayer && ((EntityPlayer)entitylivingbase).capabilities.disableDamage)
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            Team team = this.entityLiving.getTeam();
-	            Team team1 = entitylivingbase.getTeam();
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			EntityLivingBase entitylivingbase = this.entityLiving.getAttackTarget();
 
-	            if (team != null && team1 == team)
-	            {
-	                return false;
-	            }
-	            else
-	            {
-	                double d0 = this.maxTargetRange();
-	                return this.entityLiving.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false : !(entitylivingbase instanceof EntityPlayerMP) || !((EntityPlayerMP)entitylivingbase).interactionManager.isCreative();
-	            }
-	        }
-	    }
+			if (entitylivingbase == null) {
+				return false;
+			} else if (!entitylivingbase.isEntityAlive()) {
+				return false;
+			} else if (entitylivingbase instanceof EntityPlayer
+					&& ((EntityPlayer) entitylivingbase).capabilities.disableDamage) {
+				return false;
+			} else {
+				Team team = this.entityLiving.getTeam();
+				Team team1 = entitylivingbase.getTeam();
 
-	    /**
-	     * Execute a one shot task or start executing a continuous task
-	     */
-	    public void startExecuting()
-	    {
-	        this.entityLiving.setAttackTarget(this.entityTarget);
-	        super.startExecuting();
-	    }
+				if (team != null && team1 == team) {
+					return false;
+				} else {
+					double d0 = this.maxTargetRange();
+					return this.entityLiving.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false
+							: !(entitylivingbase instanceof EntityPlayerMP)
+									|| !((EntityPlayerMP) entitylivingbase).interactionManager.isCreative();
+				}
+			}
+		}
 
-	    /**
-	     * Resets the task
-	     */
-	    public void resetTask()
-	    {
-	        this.entityLiving.setAttackTarget((EntityLivingBase)null);
-	        super.startExecuting();
-	    }
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.entityLiving.setAttackTarget(this.entityTarget);
+			super.startExecuting();
+		}
 
-	    /**
-	     * Return the max target range of the entiity (16 by default)
-	     */
-	    protected double maxTargetRange()
-	    {
-	        IAttributeInstance iattributeinstance = this.entityLiving.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
-	    }
+		/**
+		 * Resets the task
+		 */
+		public void resetTask() {
+			this.entityLiving.setAttackTarget((EntityLivingBase) null);
+			super.startExecuting();
+		}
+
+		/**
+		 * Return the max target range of the entiity (16 by default)
+		 */
+		protected double maxTargetRange() {
+			IAttributeInstance iattributeinstance = this.entityLiving
+					.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+			return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+		}
 	}
-	public class SlimeEntityAIFindEntityNearest extends EntityAIBase
-	{
-	    
-	    private final EntityLiving mob;
-	    private final Predicate<EntityLivingBase> predicate;
-	    private final EntityAINearestAttackableTarget.Sorter sorter;
-	    private EntityLivingBase target;
-	    private final Class <? extends EntityLivingBase > classToCheck;
 
-	    public SlimeEntityAIFindEntityNearest(EntityLiving mobIn, Class <? extends EntityLivingBase > p_i45884_2_)
-	    {
-	        this.mob = mobIn;
-	        this.classToCheck = p_i45884_2_;
+	public class SlimeEntityAIFindEntityNearest extends EntityAIBase {
 
-	        
+		private final EntityLiving mob;
+		private final Predicate<EntityLivingBase> predicate;
+		private final EntityAINearestAttackableTarget.Sorter sorter;
+		private EntityLivingBase target;
+		private final Class<? extends EntityLivingBase> classToCheck;
 
-	        this.predicate = new Predicate<EntityLivingBase>()
-	        {
-	            public boolean apply(@Nullable EntityLivingBase p_apply_1_)
-	            {
-	                double d0 = SlimeEntityAIFindEntityNearest.this.getFollowRange();
+		public SlimeEntityAIFindEntityNearest(EntityLiving mobIn, Class<? extends EntityLivingBase> p_i45884_2_) {
+			this.mob = mobIn;
+			this.classToCheck = p_i45884_2_;
 
-	                if (p_apply_1_.isSneaking())
-	                {
-	                    d0 *= 0.800000011920929D;
-	                }
+			this.predicate = new Predicate<EntityLivingBase>() {
+				public boolean apply(@Nullable EntityLivingBase p_apply_1_) {
+					double d0 = SlimeEntityAIFindEntityNearest.this.getFollowRange();
 
-	                return p_apply_1_.isInvisible() ? false : ((double)p_apply_1_.getDistanceToEntity(SlimeEntityAIFindEntityNearest.this.mob) > d0 ? false : EntityAITarget.isSuitableTarget(SlimeEntityAIFindEntityNearest.this.mob, p_apply_1_, false, true));
-	            }
-	        };
-	        this.sorter = new EntityAINearestAttackableTarget.Sorter(mobIn);
-	    }
+					if (p_apply_1_.isSneaking()) {
+						d0 *= 0.800000011920929D;
+					}
 
-	    /**
-	     * Returns whether the EntityAIBase should begin execution.
-	     */
-	    public boolean shouldExecute()
-	    {
-	        double d0 = this.getFollowRange();
-	        List<EntityLivingBase> list = this.mob.worldObj.<EntityLivingBase>getEntitiesWithinAABB(this.classToCheck, this.mob.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
-	        Collections.sort(list, this.sorter);
+					return p_apply_1_.isInvisible() ? false
+							: ((double) p_apply_1_.getDistanceToEntity(SlimeEntityAIFindEntityNearest.this.mob) > d0
+									? false
+									: EntityAITarget.isSuitableTarget(SlimeEntityAIFindEntityNearest.this.mob,
+											p_apply_1_, false, true));
+				}
+			};
+			this.sorter = new EntityAINearestAttackableTarget.Sorter(mobIn);
+		}
 
-	        if (list.isEmpty())
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            this.target = (EntityLivingBase)list.get(0);
-	            return true;
-	        }
-	    }
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			double d0 = this.getFollowRange();
+			List<EntityLivingBase> list = this.mob.worldObj.<EntityLivingBase>getEntitiesWithinAABB(this.classToCheck,
+					this.mob.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
+			Collections.sort(list, this.sorter);
 
-	    /**
-	     * Returns whether an in-progress EntityAIBase should continue executing
-	     */
-	    public boolean continueExecuting()
-	    {
-	        EntityLivingBase entitylivingbase = this.mob.getAttackTarget();
+			if (list.isEmpty()) {
+				return false;
+			} else {
+				this.target = (EntityLivingBase) list.get(0);
+				return true;
+			}
+		}
 
-	        if (entitylivingbase == null)
-	        {
-	            return false;
-	        }
-	        else if (!entitylivingbase.isEntityAlive())
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            double d0 = this.getFollowRange();
-	            return this.mob.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false : !(entitylivingbase instanceof EntityPlayerMP) || !((EntityPlayerMP)entitylivingbase).interactionManager.isCreative();
-	        }
-	    }
+		/**
+		 * Returns whether an in-progress EntityAIBase should continue executing
+		 */
+		public boolean continueExecuting() {
+			EntityLivingBase entitylivingbase = this.mob.getAttackTarget();
 
-	    /**
-	     * Execute a one shot task or start executing a continuous task
-	     */
-	    public void startExecuting()
-	    {
-	        this.mob.setAttackTarget(this.target);
-	        super.startExecuting();
-	    }
+			if (entitylivingbase == null) {
+				return false;
+			} else if (!entitylivingbase.isEntityAlive()) {
+				return false;
+			} else {
+				double d0 = this.getFollowRange();
+				return this.mob.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false
+						: !(entitylivingbase instanceof EntityPlayerMP)
+								|| !((EntityPlayerMP) entitylivingbase).interactionManager.isCreative();
+			}
+		}
 
-	    /**
-	     * Resets the task
-	     */
-	    public void resetTask()
-	    {
-	        this.mob.setAttackTarget((EntityLivingBase)null);
-	        super.startExecuting();
-	    }
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		public void startExecuting() {
+			this.mob.setAttackTarget(this.target);
+			super.startExecuting();
+		}
 
-	    protected double getFollowRange()
-	    {
-	        IAttributeInstance iattributeinstance = this.mob.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
-	    }
+		/**
+		 * Resets the task
+		 */
+		public void resetTask() {
+			this.mob.setAttackTarget((EntityLivingBase) null);
+			super.startExecuting();
+		}
+
+		protected double getFollowRange() {
+			IAttributeInstance iattributeinstance = this.mob.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+			return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+		}
 	}
-	
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

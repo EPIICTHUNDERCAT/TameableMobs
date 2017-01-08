@@ -90,7 +90,7 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.ENDER_PEARL, false));
-		
+
 		aiSit = new TameableEndermite.EntityAISit(this);
 		tasks.addTask(1, aiSit);
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
@@ -137,7 +137,6 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
 		return stack == null ? false : stack.getItem() == Items.ENDER_PEARL;
 	}
-
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
 		return false;
@@ -929,12 +928,11 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 	public EnumCreatureAttribute getCreatureAttribute() {
 		return EnumCreatureAttribute.ARTHROPOD;
 	}
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

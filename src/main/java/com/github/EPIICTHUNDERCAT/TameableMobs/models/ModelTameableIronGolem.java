@@ -1,6 +1,7 @@
 package com.github.epiicthundercat.tameablemobs.models;
 
 import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableIronGolem;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -136,6 +137,38 @@ public class ModelTameableIronGolem extends ModelBase
                 this.ironGolemLeftArm.rotateAngleX = (-0.2F - 1.5F * this.triangleWave(p_78086_2_, 13.0F)) * p_78086_3_;
             }
         }
+        TameableIronGolem TameableIronGolem1 = (TameableIronGolem) entitylivingbaseIn;
+        int height = 0;
+		if (TameableIronGolem1.isSitting()) {
+			ironGolemHead.offsetX = 0f;
+			ironGolemHead.offsetZ = 0.0f;
+			ironGolemHead.offsetY = partialTickTime / 60;
+			ironGolemHead.rotateAngleX = -4f;
+			ironGolemHead.rotateAngleY = 0f;
+			ironGolemHead.rotateAngleZ = 0f;
+			ironGolemLeftLeg.setRotationPoint(-4.0F, 11.0F, 0.0F);
+			ironGolemLeftLeg.rotateAngleX = -4f;
+			ironGolemLeftLeg.rotateAngleY = 0f;
+			ironGolemLeftLeg.rotateAngleZ = 0f;
+			
+			ironGolemRightLeg.setRotationPoint(5.0F, 11.0F, 0.0F);
+			ironGolemRightLeg.rotateAngleY = 0f;
+			ironGolemRightLeg.rotateAngleZ = 0f;
+			
+		} else {
+			this.ironGolemHead.offsetX = 0f;
+			ironGolemHead.offsetZ = 0f;
+			ironGolemHead.offsetY = 0f;
+			ironGolemLeftLeg.setRotationPoint(-4.0F, 11.0F, 0.0F);
+			ironGolemLeftLeg.rotateAngleX = -4f;
+			ironGolemLeftLeg.rotateAngleY = 0f;
+			ironGolemLeftLeg.rotateAngleZ = 0f;
+			
+			ironGolemRightLeg.setRotationPoint(5.0F, 11.0F , 0.0F);
+		
+			ironGolemRightLeg.rotateAngleY = 0f;
+			ironGolemRightLeg.rotateAngleZ = 0f;
+		}
     }
 
     private float triangleWave(float p_78172_1_, float p_78172_2_)

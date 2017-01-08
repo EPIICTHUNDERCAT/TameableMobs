@@ -26,6 +26,7 @@ public class LayerTamedSnowmanHead implements LayerRenderer<TameableSnowman>
     {
         if (!entitylivingbaseIn.isInvisible() && !entitylivingbaseIn.isPumpkinEquipped())
         {
+        	
             GlStateManager.pushMatrix();
             this.snowManRenderer.getMainModel().head.postRender(0.0625F);
             float f = 0.625F;

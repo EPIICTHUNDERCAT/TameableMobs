@@ -5,11 +5,23 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.github.epiicthundercat.tameablemobs.init.TMItems;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableCow.EntityAIFollowOwner;
+import com.github.epiicthundercat.tameablemobs.mobs.TameableCow.EntityAIOwnerHurtByTarget;
 import com.google.common.base.Optional;
 
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIFollowParent;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMate;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -45,6 +57,32 @@ public class TameableMooshroom extends TameableCow implements net.minecraftforge
         spawnableBlock = Blocks.MYCELIUM;
     }
 
+
+	@Override
+	protected void initEntityAI() {
+		tasks.addTask(0, new EntityAISwimming(this));
+		tasks.addTask(1, new EntityAIPanic(this, 2.0D));
+		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.WHEAT, false));
+		tasks.addTask(4, new EntityAIFollowParent(this, 1.25D));
+		aiSit = new TameableMooshroom.EntityAISit(this);
+		tasks.addTask(1, aiSit);
+		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
+		tasks.addTask(2, new TameableMooshroom.AIMeleeAttack(this, 1.0D, false));
+		tasks.addTask(6, new EntityAIMate(this, 1.0D));
+		tasks.addTask(7, new EntityAIWander(this, 1.0D));
+		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+		tasks.addTask(8, new TameableMooshroom.EntityAIBeg(this, 8.0F));
+		tasks.addTask(8, new EntityAILookIdle(this));
+		targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
+		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
+		targetTasks.addTask(3, new TameableMooshroom.AIFindPlayer(this));
+		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
+
+	}
+
+    
+    
+    
     public static void registerFixesTameableMooshroom(DataFixer fixer)
     {
         EntityLiving.registerFixesMob(fixer, "TameableMushroomCow");
@@ -67,7 +105,9 @@ public class TameableMooshroom extends TameableCow implements net.minecraftforge
 
             return true;
         }
-        else if (false && stack != null && stack.getItem() == Items.SHEARS && this.getGrowingAge() >= 0) //Forge Disable, Moved to onSheared
+        else 
+        	if (false && stack != null && stack.getItem() == Items.SHEARS && this.getGrowingAge() >= 0) //Forge Disable, Moved to onSheared
+        	
         {
             this.setDead();
             this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX, this.posY + (double)(this.height / 2.0F), this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
@@ -147,8 +187,9 @@ public class TameableMooshroom extends TameableCow implements net.minecraftforge
 
 			return true;
 		}
+		return true;
 
-		return super.processInteract(player, hand, stack);
+
     }
 
     public TameableMooshroom createChild(EntityAgeable ageable)
@@ -190,4 +231,70 @@ public class TameableMooshroom extends TameableCow implements net.minecraftforge
     {
         return LootTableList.ENTITIES_MUSHROOM_COW;
     }
+    
+    
+    static class EntityAISit extends EntityAIBase {
+		private final TameableMooshroom theEntity;
+
+		/** If the EntityTameable is sitting. */
+
+		private boolean isSitting;
+
+		public EntityAISit(TameableMooshroom entityIn) {
+			theEntity = entityIn;
+			setMutexBits(5);
+		}
+
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		@Override
+		public boolean shouldExecute() {
+			if (!theEntity.isTamed()) {
+				return false;
+			} else if (theEntity.isInWater()) {
+				return false;
+			} else if (!theEntity.onGround) {
+				return false;
+			} else {
+				EntityLivingBase entitylivingbase = theEntity.getOwner();
+				return entitylivingbase == null ? true
+						: (theEntity.getDistanceSqToEntity(entitylivingbase) < 144.0D
+								&& entitylivingbase.getAITarget() != null ? false : isSitting);
+			}
+		}
+
+		/**
+		 * Execute a one shot task or start executing a continuous task
+		 */
+		@Override
+		public void startExecuting() {
+			theEntity.getNavigator().clearPathEntity();
+			theEntity.setSitting(true);
+		}
+
+		/**
+		 * Resets the task
+		 */
+		@Override
+		public void resetTask() {
+			theEntity.setSitting(false);
+		}
+
+		/**
+		 * Sets the sitting flag.
+		 */
+		public void setSitting(boolean sitting) {
+			isSitting = sitting;
+		}
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

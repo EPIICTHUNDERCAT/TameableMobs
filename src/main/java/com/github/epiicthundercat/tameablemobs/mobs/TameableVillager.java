@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.epiicthundercat.tameablemobs.init.TMItems;
 import com.github.epiicthundercat.tameablemobs.mobs.villager.TamedVillagerRegistry;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -107,13 +106,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TameableVillager extends EntityAgeable implements IEntityOwnable, IMerchant, INpc {
 
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
-			.<Float>createKey(TameablePolarBear.class, DataSerializers.FLOAT);
-	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameablePolarBear.class,
+			.<Float>createKey(TameableVillager.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableVillager.class,
 			DataSerializers.BOOLEAN);
-	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameablePolarBear.class,
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableVillager.class,
 			DataSerializers.BYTE);
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-			.<Optional<UUID>>createKey(TameablePolarBear.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+			.<Optional<UUID>>createKey(TameableVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
 	private static final DataParameter<Integer> PROFESSION = EntityDataManager
 			.<Integer>createKey(TameableVillager.class, DataSerializers.VARINT);

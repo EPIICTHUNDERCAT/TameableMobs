@@ -80,7 +80,7 @@ private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean
 protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableSnowman.class,
 		DataSerializers.BYTE);
 protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-		.<Optional<UUID>>createKey(TameableSnowman.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+			.<Optional<UUID>>createKey(TameableSnowman.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
 protected EntityAISit aiSit;
 	

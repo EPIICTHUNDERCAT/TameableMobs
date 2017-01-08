@@ -117,7 +117,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameableEnderman.EntityAIBeg(this, 8.0F));
 		tasks.addTask(8, new EntityAILookIdle(this));
-		
+
 		targetTasks.addTask(2, new EntityAIOwnerHurtByTarget(this));
 		targetTasks.addTask(3, new TameableEnderman.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
@@ -902,23 +902,23 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 	 * Checks to see if this enderman should be attacking this player
 	 */
 	private boolean shouldAttackPlayer(EntityPlayer player) {
-		if (isTamed()){
-			return false;
-		}else{
-		ItemStack itemstack = player.inventory.armorInventory[3];
-
-		if (itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN)) {
+		if (isTamed()) {
 			return false;
 		} else {
-			Vec3d vec3d = player.getLook(1.0F).normalize();
-			Vec3d vec3d1 = new Vec3d(this.posX - player.posX, this.getEntityBoundingBox().minY
-					+ (double) this.getEyeHeight() - (player.posY + (double) player.getEyeHeight()),
-					this.posZ - player.posZ);
-			double d0 = vec3d1.lengthVector();
-			vec3d1 = vec3d1.normalize();
-			double d1 = vec3d.dotProduct(vec3d1);
-			return d1 > 1.0D - 0.025D / d0 ? player.canEntityBeSeen(this) : false;
-		}
+			ItemStack itemstack = player.inventory.armorInventory[3];
+
+			if (itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN)) {
+				return false;
+			} else {
+				Vec3d vec3d = player.getLook(1.0F).normalize();
+				Vec3d vec3d1 = new Vec3d(this.posX - player.posX, this.getEntityBoundingBox().minY
+						+ (double) this.getEyeHeight() - (player.posY + (double) player.getEyeHeight()),
+						this.posZ - player.posZ);
+				double d0 = vec3d1.lengthVector();
+				vec3d1 = vec3d1.normalize();
+				double d1 = vec3d.dotProduct(vec3d1);
+				return d1 > 1.0D - 0.025D / d0 ? player.canEntityBeSeen(this) : false;
+			}
 		}
 	}
 
@@ -951,9 +951,6 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		if (this.isWet()) {
 			this.attackEntityFrom(DamageSource.drown, 1.0F);
 		}
-
-		
-		
 
 		super.updateAITasks();
 	}
@@ -1171,45 +1168,41 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		}
 
 	}
-	 protected boolean isValidLightLevel()
-	    {
-	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	            if (this.worldObj.isThundering())
-	            {
-	                int j = this.worldObj.getSkylightSubtracted();
-	                this.worldObj.setSkylightSubtracted(10);
-	                i = this.worldObj.getLightFromNeighbors(blockpos);
-	                this.worldObj.setSkylightSubtracted(j);
-	            }
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
 
-	            return i <= this.rand.nextInt(8);
-	        }
-	    }
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
 
-	    /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	 @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel() && super.getCanSpawnHere();
-	        
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+			return i <= this.rand.nextInt(8);
+		}
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && isValidLightLevel()
+				&& super.getCanSpawnHere();
+
+	}
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

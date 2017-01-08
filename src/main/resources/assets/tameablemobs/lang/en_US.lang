@@ -12,7 +12,13 @@ item.witch_projectile.name=Witch Projectile
 item.bat_pee.name=Bat Pee
 item.info_book.name=Taming Guid[WIP]
 item.bug.name=Bug
-item.ink_suplement.name=Ink Suplement
+item.heart.name=Heart
+item.polar_bear_fur.name=Polar Bear Fur
+item.polar_bear_fur_chestplate.name=PolarBear Chestplate
+item.polar_bear_fur_helmet.name=PolarBear Helmet
+item.polar_bear_fur_boots.name=PolarBear Boots
+item.polar_bear_fur_leggings.name=PolarBear Leggings
+item.ink_supplement.name=Ink Supplement
 
 
 entity.tameablemobs.bate_pee.name=Bat Pee

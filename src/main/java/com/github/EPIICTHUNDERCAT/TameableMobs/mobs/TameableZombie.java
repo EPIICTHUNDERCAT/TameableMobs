@@ -59,15 +59,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TameableZombie extends EntityZombie implements IEntityOwnable {
 
-    /** The attribute which determines the chance that this mob will spawn reinforcements */
-    protected static final IAttribute SPAWN_REINFORCEMENTS_CHANCE = (new RangedAttribute((IAttribute)null, "zombie.spawnReinforcements", 0.0D, 0.0D, 1.0D)).setDescription("Spawn Reinforcements Chance");
-    private static final UUID BABY_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.5D, 1);
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> VILLAGER_TYPE = EntityDataManager.<Integer>createKey(TameableZombie.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> CONVERTING = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(TameableZombie.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String>  VILLAGER_TYPE_STR = EntityDataManager.<String>createKey(TameableZombie.class, DataSerializers.STRING);
+	/**
+	 * The attribute which determines the chance that this mob will spawn
+	 * reinforcements
+	 */
+	protected static final IAttribute SPAWN_REINFORCEMENTS_CHANCE = (new RangedAttribute((IAttribute) null,
+			"zombie.spawnReinforcements", 0.0D, 0.0D, 1.0D)).setDescription("Spawn Reinforcements Chance");
+	private static final UUID BABY_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
+	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID,
+			"Baby speed boost", 0.5D, 1);
+	private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(TameableZombie.class,
+			DataSerializers.BOOLEAN);
+	private static final DataParameter<Integer> VILLAGER_TYPE = EntityDataManager
+			.<Integer>createKey(TameableZombie.class, DataSerializers.VARINT);
+	private static final DataParameter<Boolean> CONVERTING = EntityDataManager.<Boolean>createKey(TameableZombie.class,
+			DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(TameableZombie.class,
+			DataSerializers.BOOLEAN);
+	private static final DataParameter<String> VILLAGER_TYPE_STR = EntityDataManager
+			.<String>createKey(TameableZombie.class, DataSerializers.STRING);
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableZombie.class,
 			DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableZombie.class,
@@ -82,7 +92,6 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	public TameableZombie(World worldIn) {
 		super(worldIn);
 		setTamed(false);
-	
 
 	}
 
@@ -106,12 +115,12 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 
 	}
 
-
-
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		// this.getAttributeMap().registerAttribute(SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(this.rand.nextDouble() * net.minecraftforge.common.ForgeModContainer.zombieSummonBaseChance);
+		// this.getAttributeMap().registerAttribute(SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(this.rand.nextDouble()
+		// *
+		// net.minecraftforge.common.ForgeModContainer.zombieSummonBaseChance);
 
 		if (isTamed()) {
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(20.0D);
@@ -129,11 +138,11 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		  this.getDataManager().register(IS_CHILD, Boolean.valueOf(false));
-	        this.getDataManager().register(VILLAGER_TYPE, Integer.valueOf(0));
-	        this.getDataManager().register(VILLAGER_TYPE_STR, "");
-	        this.getDataManager().register(CONVERTING, Boolean.valueOf(false));
-	        this.getDataManager().register(ARMS_RAISED, Boolean.valueOf(false));
+		this.getDataManager().register(IS_CHILD, Boolean.valueOf(false));
+		this.getDataManager().register(VILLAGER_TYPE, Integer.valueOf(0));
+		this.getDataManager().register(VILLAGER_TYPE_STR, "");
+		this.getDataManager().register(CONVERTING, Boolean.valueOf(false));
+		this.getDataManager().register(ARMS_RAISED, Boolean.valueOf(false));
 		dataManager.register(TAMED, Byte.valueOf((byte) 0));
 		dataManager.register(OWNER_UNIQUE_ID, Optional.<UUID>absent());
 		dataManager.register(DATA_HEALTH_ID, Float.valueOf(getHealth()));
@@ -798,42 +807,38 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 	 * Checks if the entity's current position is a valid location to spawn this
 	 * entity.
 	 */
-	  @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
 
-	 /**
-     * Return whether this zombie is a villager.
-     */
-	 @Override
-    public boolean isVillager()
-    {
-        return getTheVillagerTypeForge() != null;
-    }
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 
-   
-    private TamedVillagerProfession prof;
-    @Nullable
-    public TamedVillagerProfession getTheVillagerTypeForge()
-    {
-        return this.prof;
-    }
-   
-    public void setTheVillagerType(@Nullable TamedVillagerProfession type)
-    {
-    	
-        this.prof = type;
-        this.getDataManager().set(VILLAGER_TYPE_STR, type == null ? "" : type.getRegistryName().toString());
-        TamedVillagerRegistry.onSetProfession(this, type);
-    }
+	/**
+	 * Return whether this zombie is a villager.
+	 */
+	@Override
+	public boolean isVillager() {
+		return getTheVillagerTypeForge() != null;
+	}
+
+	private TamedVillagerProfession prof;
+
+	@Nullable
+	public TamedVillagerProfession getTheVillagerTypeForge() {
+		return this.prof;
+	}
+
+	public void setTheVillagerType(@Nullable TamedVillagerProfession type) {
+
+		this.prof = type;
+		this.getDataManager().set(VILLAGER_TYPE_STR, type == null ? "" : type.getRegistryName().toString());
+		TamedVillagerRegistry.onSetProfession(this, type);
+	}
 }

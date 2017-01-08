@@ -22,10 +22,9 @@ import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TameableMagmaCube extends TameableSlime
-{
-	protected static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager.<Float>createKey(TameableMagmaCube.class,
-			DataSerializers.FLOAT);
+public class TameableMagmaCube extends TameableSlime {
+	protected static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
+			.<Float>createKey(TameableMagmaCube.class, DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableMagmaCube.class,
 			DataSerializers.BOOLEAN);
 	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableMagmaCube.class,
@@ -33,159 +32,141 @@ public class TameableMagmaCube extends TameableSlime
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
 			.<Optional<UUID>>createKey(TameableMagmaCube.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	protected EntityAISit aiSit;
-    public TameableMagmaCube(World worldIn)
-    {
-        super(worldIn);
-        setTamed(false);
-        this.isImmuneToFire = true;
-    }
 
-    public static void registerFixesTameableMagmaCube(DataFixer fixer)
-    {
-        EntityLiving.registerFixesMob(fixer, "TameableLavaSlime");
-    }
+	public TameableMagmaCube(World worldIn) {
+		super(worldIn);
+		setTamed(false);
+		this.isImmuneToFire = true;
+	}
 
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
-    }
+	public static void registerFixesTameableMagmaCube(DataFixer fixer) {
+		EntityLiving.registerFixesMob(fixer, "TameableLavaSlime");
+	}
 
-    /**
-     * Checks if the entity's current position is a valid location to spawn this entity.
-     */
-    public boolean getCanSpawnHere()
-    {
-        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
-    }
+	protected void applyEntityAttributes() {
+		super.applyEntityAttributes();
+		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+	}
 
-    /**
-     * Checks that the entity is not colliding with any blocks / liquids
-     */
-    public boolean isNotColliding()
-    {
-        return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty() && !this.worldObj.containsAnyLiquid(this.getEntityBoundingBox());
-    }
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL;
+	}
 
-    protected void setSlimeSize(int size)
-    {
-        super.setSlimeSize(size);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue((double)(size * 3));
-    }
+	/**
+	 * Checks that the entity is not colliding with any blocks / liquids
+	 */
+	public boolean isNotColliding() {
+		return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this)
+				&& this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty()
+				&& !this.worldObj.containsAnyLiquid(this.getEntityBoundingBox());
+	}
 
-    @SideOnly(Side.CLIENT)
-    public int getBrightnessForRender(float partialTicks)
-    {
-        return 15728880;
-    }
+	protected void setSlimeSize(int size) {
+		super.setSlimeSize(size);
+		this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue((double) (size * 3));
+	}
 
-    /**
-     * Gets how bright this entity is.
-     */
-    public float getBrightness(float partialTicks)
-    {
-        return 1.0F;
-    }
+	@SideOnly(Side.CLIENT)
+	public int getBrightnessForRender(float partialTicks) {
+		return 15728880;
+	}
 
-    protected EnumParticleTypes getParticleType()
-    {
-        return EnumParticleTypes.FLAME;
-    }
+	/**
+	 * Gets how bright this entity is.
+	 */
+	public float getBrightness(float partialTicks) {
+		return 1.0F;
+	}
 
-    protected TameableSlime createInstance()
-    {
-        return new TameableMagmaCube(this.worldObj);
-    }
+	protected EnumParticleTypes getParticleType() {
+		return EnumParticleTypes.FLAME;
+	}
 
-    @Nullable
-    protected ResourceLocation getLootTable()
-    {
-        return this.isSmallSlime() ? LootTableList.EMPTY : LootTableList.ENTITIES_MAGMA_CUBE;
-    }
+	protected TameableSlime createInstance() {
+		return new TameableMagmaCube(this.worldObj);
+	}
 
-    /**
-     * Returns true if the entity is on fire. Used by render to add the fire effect on rendering.
-     */
-    public boolean isBurning()
-    {
-        return false;
-    }
+	@Nullable
+	protected ResourceLocation getLootTable() {
+		return this.isSmallSlime() ? LootTableList.EMPTY : LootTableList.ENTITIES_MAGMA_CUBE;
+	}
 
-    /**
-     * Gets the amount of time the slime needs to wait between jumps.
-     */
-    protected int getJumpDelay()
-    {
-        return super.getJumpDelay() * 4;
-    }
+	/**
+	 * Returns true if the entity is on fire. Used by render to add the fire
+	 * effect on rendering.
+	 */
+	public boolean isBurning() {
+		return false;
+	}
 
-    protected void alterSquishAmount()
-    {
-        this.squishAmount *= 0.9F;
-    }
+	/**
+	 * Gets the amount of time the slime needs to wait between jumps.
+	 */
+	protected int getJumpDelay() {
+		return super.getJumpDelay() * 4;
+	}
 
-    /**
-     * Causes this entity to do an upwards motion (jumping).
-     */
-    protected void jump()
-    {
-        this.motionY = (double)(0.42F + (float)this.getSlimeSize() * 0.1F);
-        this.isAirBorne = true;
-        net.minecraftforge.common.ForgeHooks.onLivingJump(this);
-    }
+	protected void alterSquishAmount() {
+		this.squishAmount *= 0.9F;
+	}
 
-    protected void handleJumpLava()
-    {
-        this.motionY = (double)(0.22F + (float)this.getSlimeSize() * 0.05F);
-        this.isAirBorne = true;
-    }
+	/**
+	 * Causes this entity to do an upwards motion (jumping).
+	 */
+	protected void jump() {
+		this.motionY = (double) (0.42F + (float) this.getSlimeSize() * 0.1F);
+		this.isAirBorne = true;
+		net.minecraftforge.common.ForgeHooks.onLivingJump(this);
+	}
 
-    public void fall(float distance, float damageMultiplier)
-    {
-    }
+	protected void handleJumpLava() {
+		this.motionY = (double) (0.22F + (float) this.getSlimeSize() * 0.05F);
+		this.isAirBorne = true;
+	}
 
-    /**
-     * Indicates weather the slime is able to damage the player (based upon the slime's size)
-     */
-    protected boolean canDamagePlayer()
-    {
-        return true;
-    }
+	public void fall(float distance, float damageMultiplier) {
+	}
 
-    /**
-     * Gets the amount of damage dealt to the player when "attacked" by the slime.
-     */
-    protected int getAttackStrength()
-    {
-        return super.getAttackStrength() + 2;
-    }
+	/**
+	 * Indicates weather the slime is able to damage the player (based upon the
+	 * slime's size)
+	 */
+	protected boolean canDamagePlayer() {
+		return true;
+	}
 
-    protected SoundEvent getHurtSound()
-    {
-        return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_HURT : SoundEvents.ENTITY_MAGMACUBE_HURT;
-    }
+	/**
+	 * Gets the amount of damage dealt to the player when "attacked" by the
+	 * slime.
+	 */
+	protected int getAttackStrength() {
+		return super.getAttackStrength() + 2;
+	}
 
-    protected SoundEvent getDeathSound()
-    {
-        return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_DEATH : SoundEvents.ENTITY_MAGMACUBE_DEATH;
-    }
+	protected SoundEvent getHurtSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_HURT : SoundEvents.ENTITY_MAGMACUBE_HURT;
+	}
 
-    protected SoundEvent getSquishSound()
-    {
-        return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_SQUISH : SoundEvents.ENTITY_MAGMACUBE_SQUISH;
-    }
+	protected SoundEvent getDeathSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_DEATH : SoundEvents.ENTITY_MAGMACUBE_DEATH;
+	}
 
-    protected SoundEvent getJumpSound()
-    {
-        return SoundEvents.ENTITY_MAGMACUBE_JUMP;
-    }
-   
+	protected SoundEvent getSquishSound() {
+		return this.isSmallSlime() ? SoundEvents.ENTITY_SMALL_MAGMACUBE_SQUISH : SoundEvents.ENTITY_MAGMACUBE_SQUISH;
+	}
 
+	protected SoundEvent getJumpSound() {
+		return SoundEvents.ENTITY_MAGMACUBE_JUMP;
+	}
 
- @Override
-    protected void despawnEntity() {
-        if (!isTamed()) {
-            super.despawnEntity();
-        }
-    }
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

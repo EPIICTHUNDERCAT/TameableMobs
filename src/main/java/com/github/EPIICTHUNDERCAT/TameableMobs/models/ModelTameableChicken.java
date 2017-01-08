@@ -102,7 +102,6 @@ public class ModelTameableChicken extends ModelBase {
 			chin.offsetY = 0.09f;
 			body.setRotationPoint(0.0F, 16.0F, 0.0F);
 			body.offsetY = 0.09f;
-			//body.rotateAngleX = ((float) Math.PI / 2F) - 1 * (float) Math.PI * 0.35F;
 			rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
 			rightLeg.rotationPointX = -2f;
 			rightLeg.rotateAngleY = 1f;
@@ -113,7 +112,7 @@ public class ModelTameableChicken extends ModelBase {
 			leftLeg.rotateAngleY = -1f;
 			leftLeg.rotateAngleZ = -1f;
 			leftLeg.offsetY = 0.099f;
-			//leftLeg.rotateAngleX = ((float) Math.PI * 3F / 10F);
+			
 			
 		} else {
 			

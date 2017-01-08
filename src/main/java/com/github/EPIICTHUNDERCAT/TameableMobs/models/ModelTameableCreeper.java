@@ -1,9 +1,12 @@
 package com.github.epiicthundercat.tameablemobs.models;
 
+import com.github.epiicthundercat.tameablemobs.mobs.TameableCreeper;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -91,5 +94,83 @@ public class ModelTameableCreeper extends ModelBase
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+    
+    /**
+     * Used for easily adding entity-dependent animations. The second and third float params here are the same second
+     * and third as in the setRotationAngles method.
+     */
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwingAmount, float ageInTicks, float partialTickTime)
+    {
+        super.setLivingAnimations(entitylivingbaseIn, limbSwingAmount, ageInTicks, partialTickTime);
+       
+        TameableCreeper TameableCreeper = (TameableCreeper) entitylivingbaseIn;
+        int height = 0;
+		if (TameableCreeper.isSitting()) {
+
+
+			
+			head.setRotationPoint(0.0F, 6.0F, 0.0F);
+			body.setRotationPoint(0.0F, 6.0F, 0.0F);
+			body.offsetY = 0f;
+			body.rotateAngleY = 0f;
+			body.rotateAngleZ = 0f;
+			body.rotateAngleX = 0f;
+			leg1.setRotationPoint(-2.0F, 18.0F, 4.0F);
+			leg1.rotationPointX = -2f;
+			leg1.rotateAngleY = 1f;
+			leg1.rotateAngleZ = 1f;
+			leg1.offsetY = 0.09f;
+			leg1.rotateAngleX = 1f;
+			leg2.setRotationPoint(2.0F, 18.0F, 4.0F);
+			leg2.rotateAngleY = -1f;
+			leg2.rotateAngleZ = -1f;
+			leg2.offsetY = 0.099f;
+			leg3.setRotationPoint(-2.0F, 18.0F, -4.0F);
+			leg3.rotateAngleY = 1f;
+			leg3.rotateAngleZ = 1f;
+			leg3.offsetY = 0.099f;
+			
+			leg4.setRotationPoint(2.0F, 18.0F, -4.0F);
+			
+			leg4.rotateAngleY = -1f;
+			leg4.rotateAngleZ = -1f;
+			leg4.rotateAngleX = -1f;
+			leg4.offsetY = 0.099f;
+			
+			
+		} else {
+			
+			head.setRotationPoint(0.0F, 6.0F, 0.0F);
+			body.setRotationPoint(0.0F, 6.0F, 0.0F);
+			
+			
+			leg1.setRotationPoint(-2.0F, 18.0F, 4.0F);
+			leg1.rotationPointX = -2f;
+			leg1.rotateAngleY = 0f;
+			leg1.rotateAngleZ = 0f;
+			leg1.offsetY = 0.0f;
+			leg2.setRotationPoint(2.0F, 18.0F, 4.0F);
+			leg2.offsetY = 0.0f;
+			leg2.rotateAngleY = 0f;
+			leg2.rotateAngleZ = 0f;
+			leg3.setRotationPoint(-2.0F, 18.0F, -4.0F);
+			leg3.rotateAngleY = 0f;
+			leg3.rotateAngleZ = 0f;
+			leg3.offsetY = 0.f;
+			
+			leg4.setRotationPoint(2.0F, 18.0F, -4.0F);
+			leg4.rotateAngleY = 0f;
+			leg4.rotateAngleZ = 0f;
+			leg4.offsetY = 0.0f;
+		}
+        
+        
+        
+        
+        
+        
+        
+        
     }
 }

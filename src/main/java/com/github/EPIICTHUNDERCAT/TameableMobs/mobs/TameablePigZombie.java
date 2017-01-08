@@ -81,31 +81,30 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 	@Override
 	protected void initEntityAI() {
 		tasks.addTask(2, new EntityAIZombieAttack(this, 1.0D, false));
-        tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
+		tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.GOLD_INGOT, false));
 		aiSit = new TameablePigZombie.EntityAISit(this);
 		tasks.addTask(1, aiSit);
-		
+
 		tasks.addTask(5, new EntityAIFollowOwner(this, 2.0D, 5.0F, 2.0F));
 		tasks.addTask(7, new EntityAIWander(this, 1.0D));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(8, new TameablePigZombie.EntityAIBeg(this, 8.0F));
 		targetTasks.addTask(1, new TameablePigZombie.EntityAIOwnerHurtByTarget(this));
-		
+
 		targetTasks.addTask(2, new TameablePigZombie.AIHurtByAggressor(this));
-        targetTasks.addTask(3, new TameablePigZombie.AITargetAggressor(this));
+		targetTasks.addTask(3, new TameablePigZombie.AITargetAggressor(this));
 		targetTasks.addTask(3, new TameablePigZombie.AIFindPlayer(this));
 		targetTasks.addTask(4, new EntityAIHurtByTarget(this, false, new Class[0]));
-		
 
 	}
 
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		 this.getEntityAttribute(SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
-		//getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+		this.getEntityAttribute(SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
+		// getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 		if (isTamed()) {
 			getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(20.0D);
 			getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.4D);
@@ -129,7 +128,6 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 		dataManager.register(BEGGING, Boolean.valueOf(false));
 
 	}
-
 
 	public static void registerFixesTameablePigZombie(DataFixer fixer) {
 		EntityLiving.registerFixesMob(fixer, "TameablePigZombie");
@@ -274,13 +272,14 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 			dataManager.set(TAMED, Byte.valueOf((byte) (b0 & -5)));
 			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
 		}
-		 getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
+		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(16.0D);
 
 	}
-	
+
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
 		return stack == null ? false : stack.getItem() == Items.GOLD_INGOT;
 	}
+
 	public boolean isSitting() {
 		return (dataManager.get(TAMED).byteValue() & 1) != 0;
 	}
@@ -307,8 +306,6 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 	public int getMaxSpawnedInChunk() {
 		return 8;
 	}
-
-	
 
 	@Override
 	@Nullable
@@ -527,8 +524,6 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 			isSitting = sitting;
 		}
 	}
-
-	
 
 	static class EntityAIFollowOwner extends EntityAIBase {
 		private final TameablePigZombie thePet;
@@ -806,71 +801,56 @@ public class TameablePigZombie extends EntityPigZombie implements IEntityOwnable
 		return flag;
 	}
 
-	
-	
+	private void becomeAngryAt(Entity p_70835_1_) {
+		this.angerLevel = 400 + this.rand.nextInt(400);
+		this.randomSoundDelay = this.rand.nextInt(40);
 
-	 private void becomeAngryAt(Entity p_70835_1_)
-	    {
-	        this.angerLevel = 400 + this.rand.nextInt(400);
-	        this.randomSoundDelay = this.rand.nextInt(40);
+		if (p_70835_1_ instanceof EntityLivingBase) {
+			this.setRevengeTarget((EntityLivingBase) p_70835_1_);
+		}
+	}
 
-	        if (p_70835_1_ instanceof EntityLivingBase)
-	        {
-	            this.setRevengeTarget((EntityLivingBase)p_70835_1_);
-	        }
-	    }
-	
-	
-	
-	
-	
-	 static class AIHurtByAggressor extends EntityAIHurtByTarget
-     {
-         public AIHurtByAggressor(TameablePigZombie p_i45828_1_)
-         {
-             super(p_i45828_1_, true, new Class[0]);
-         }
+	static class AIHurtByAggressor extends EntityAIHurtByTarget {
+		public AIHurtByAggressor(TameablePigZombie p_i45828_1_) {
+			super(p_i45828_1_, true, new Class[0]);
+		}
 
-         protected void setEntityAttackTarget(EntityCreature creatureIn, EntityLivingBase entityLivingBaseIn)
-         {
-             super.setEntityAttackTarget(creatureIn, entityLivingBaseIn);
+		protected void setEntityAttackTarget(EntityCreature creatureIn, EntityLivingBase entityLivingBaseIn) {
+			super.setEntityAttackTarget(creatureIn, entityLivingBaseIn);
 
-             if (creatureIn instanceof TameablePigZombie)
-             {
-                 ((TameablePigZombie)creatureIn).becomeAngryAt(entityLivingBaseIn);
-             }
-         }
-     }
+			if (creatureIn instanceof TameablePigZombie) {
+				((TameablePigZombie) creatureIn).becomeAngryAt(entityLivingBaseIn);
+			}
+		}
+	}
 
- static class AITargetAggressor extends EntityAINearestAttackableTarget<EntityPlayer>
-     {
-         public AITargetAggressor(TameablePigZombie p_i45829_1_)
-         {
-             super(p_i45829_1_, EntityPlayer.class, true);
-         }
+	static class AITargetAggressor extends EntityAINearestAttackableTarget<EntityPlayer> {
+		public AITargetAggressor(TameablePigZombie p_i45829_1_) {
+			super(p_i45829_1_, EntityPlayer.class, true);
+		}
 
-         /**
-          * Returns whether the EntityAIBase should begin execution.
-          */
-         public boolean shouldExecute()
-         {
-             return ((TameablePigZombie)this.taskOwner).isAngry() && super.shouldExecute();
-         }
-     }
- /**
-  * Checks if the entity's current position is a valid location to spawn this entity.
-  */
- @Override
- public boolean getCanSpawnHere()
- {
-     return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
- }
+		/**
+		 * Returns whether the EntityAIBase should begin execution.
+		 */
+		public boolean shouldExecute() {
+			return ((TameablePigZombie) this.taskOwner).isAngry() && super.shouldExecute();
+		}
+	}
 
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
 
-@Override
- protected void despawnEntity() {
-     if (!isTamed()) {
-         super.despawnEntity();
-     }
- }
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
 }

@@ -1,5 +1,8 @@
 package com.github.epiicthundercat.tameablemobs.mobs;
 
+/*
+ * Thank you TheRealP455w0rd for your help with the biome iterator code!
+ */
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,17 +28,17 @@ import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class ModEntities {
 	public static void init() {
-		
 
 		// Every entity in our mod has an ID (local to this mod)
 
 		// TameablePolarBear
 		EntityRegistry.registerModEntity(TameablePolarBear.class, "TameablePolarBear", 0, TameableMobs.instance, 80, 3,
-				false,  0xffffff, 0xd9d9d9);
+				false, 0xffffff, 0xd9d9d9);
 
 		// TameableChicken
 		EntityRegistry.registerModEntity(TameableChicken.class, "TameableChicken", 1, TameableMobs.instance, 80, 3,
@@ -45,16 +48,18 @@ public class ModEntities {
 		EntityRegistry.registerModEntity(TameableBlaze.class, "TameableBlaze", 2, TameableMobs.instance, 80, 3, false,
 				0xffc100, 0xd9d926);
 		// TameableBat
-		EntityRegistry.registerModEntity(TameableBat.class, "TameableBat", 3, TameableMobs.instance, 80, 3, false, 0x996633 ,0x000000);
+		EntityRegistry.registerModEntity(TameableBat.class, "TameableBat", 3, TameableMobs.instance, 80, 3, false,
+				0x996633, 0x000000);
 
 		// TameableSheep
 		EntityRegistry.registerModEntity(TameableSheep.class, "TameableSheep", 4, TameableMobs.instance, 80, 3, false,
 				0xffffff, 0xffe6ff);
 		// TameablePig
-		EntityRegistry.registerModEntity(TameablePig.class, "TameablePig", 5, TameableMobs.instance, 80, 3, false, 
+		EntityRegistry.registerModEntity(TameablePig.class, "TameablePig", 5, TameableMobs.instance, 80, 3, false,
 				0xff9999, 0xff8080);
 		// TameableCow
-		EntityRegistry.registerModEntity(TameableCow.class, "TameableCow", 6, TameableMobs.instance, 80, 3, false, 0x4d3319, 0x4d4d4d);
+		EntityRegistry.registerModEntity(TameableCow.class, "TameableCow", 6, TameableMobs.instance, 80, 3, false,
+				0x4d3319, 0x4d4d4d);
 		// TameableCreeper
 		EntityRegistry.registerModEntity(TameableCreeper.class, "TameableCreeper", 7, TameableMobs.instance, 80, 3,
 				false, 0x19e619, 0x000000);
@@ -114,21 +119,22 @@ public class ModEntities {
 				false, 0xB24CD9, 0x660066);
 		// TameableSilverfish
 		EntityRegistry.registerModEntity(TameableSilverfish.class, "TameableSilverfish", 25, TameableMobs.instance, 80,
-				3, false, 0x999999 , 0x333333);
+				3, false, 0x999999, 0x333333);
 		// TameableSkeleton
 		EntityRegistry.registerModEntity(TameableSkeleton.class, "TameableSkeleton", 26, TameableMobs.instance, 80, 3,
-				false, 0xf2f2f2  , 0x333333);
+				false, 0xf2f2f2, 0x333333);
 		// TameableSlime
 		EntityRegistry.registerModEntity(TameableSlime.class, "TameableSlime", 27, TameableMobs.instance, 80, 3, false,
-				0x2eb82e , 0x4dff4d);
+				0x2eb82e, 0x4dff4d);
 		// TameableWitch
 		EntityRegistry.registerModEntity(TameableWitch.class, "TameableWitch", 28, TameableMobs.instance, 80, 3, false,
-				0x155115,	0x33cc33);
+				0x155115, 0x33cc33);
 		// TameableRabbit
 		EntityRegistry.registerModEntity(TameableRabbit.class, "TameableRabbit", 30, TameableMobs.instance, 80, 3,
 				false, 0xac7339, 0x604020);
 		// Bug
-		EntityRegistry.registerModEntity(TMBug.class, "Bug", 31, TameableMobs.instance, 80, 3, false, 0xff3300, 0x404040);
+		EntityRegistry.registerModEntity(TMBug.class, "Bug", 31, TameableMobs.instance, 80, 3, false, 0xff3300,
+				0x404040);
 
 		// WitchProjectile
 		EntityRegistry.registerModEntity(EntityWitchProjectile.class, "WitchProjectile", 29, TameableMobs.instance, 64,
@@ -318,20 +324,20 @@ public class ModEntities {
 	}
 
 	private static Biome[] getPassiveBiomeList() {
-	
-			List<Biome> biomes = new ArrayList<Biome>();
-			Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
-			while (biomeList.hasNext()) {
-				Biome currentBiome = biomeList.next();
-				List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
-				for (SpawnListEntry spawnEntry : spawnList) {
-					if (spawnEntry.entityClass == EntityCow.class) {
-						biomes.add(currentBiome);
-					}
+
+		List<Biome> biomes = new ArrayList<Biome>();
+		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+		while (biomeList.hasNext()) {
+			Biome currentBiome = biomeList.next();
+			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
+			for (SpawnListEntry spawnEntry : spawnList) {
+				if (spawnEntry.entityClass == EntityCow.class) {
+					biomes.add(currentBiome);
 				}
 			}
-			return biomes.toArray(new Biome[biomes.size()]);
 		}
+		return biomes.toArray(new Biome[biomes.size()]);
+	}
 
 	private static Biome[] getWaterBiomeList() {
 		List<Biome> biomes = new ArrayList<Biome>();
