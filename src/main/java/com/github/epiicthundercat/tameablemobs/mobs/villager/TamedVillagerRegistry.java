@@ -1,49 +1,23 @@
 package com.github.epiicthundercat.tameablemobs.mobs.villager;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.apache.commons.lang3.Validate;
-
-import com.github.epiicthundercat.tameablemobs.mobs.TameableVillager;
-import com.github.epiicthundercat.tameablemobs.mobs.TameableVillager.ITradeList;
-import com.github.epiicthundercat.tameablemobs.mobs.TameableZombie;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import net.minecraft.entity.monster.ZombieType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.village.Village;
-import net.minecraft.world.gen.structure.StructureComponent;
-import net.minecraft.world.gen.structure.StructureVillagePieces;
-import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
-import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
-
 public class TamedVillagerRegistry {
-
-	public static final ResourceLocation PROFESSIONS = new ResourceLocation("minecraft:villagerprofessions");
-	private static final TamedVillagerRegistry INSTANCE = new TamedVillagerRegistry();
-
-	private Map<Class<?>, IVillageCreationHandler> villageCreationHandlers = Maps.newHashMap();
-
-	private TamedVillagerRegistry() {
-		init();
-	}
-
-	/**
-	 * Allow access to the
-	 * {@link net.tameablemobs.world.gen.structure.StructureVillagePieces} array
+	/*
+	 * public static final ResourceLocation PROFESSIONS = new
+	 * ResourceLocation("tameablemobs:villagerprofessions"); private static
+	 * final TamedVillagerRegistry INSTANCE = new TamedVillagerRegistry();
+	 * 
+	 * private Map<Class<?>, IVillageCreationHandler> villageCreationHandlers =
+	 * Maps.newHashMap();
+	 * 
+	 * private TamedVillagerRegistry() { init(); }
+	 * 
+	 * /** Allow access to the {@link
+	 * net.tameablemobs.world.gen.structure.StructureVillagePieces} array
 	 * controlling new village creation so you can insert your own new village
 	 * pieces
 	 *
 	 * @author cpw
-	 */
+	 *
 	public interface IVillageCreationHandler {
 		/**
 		 * Called when
@@ -52,12 +26,12 @@ public class TamedVillagerRegistry {
 		 *
 		 * @param random
 		 * @param i
-		 */
+		 *
 		StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int i);
 
 		/**
 		 * The class of the root structure component to add to the village
-		 */
+		 *
 		Class<?> getComponentClass();
 
 		/**
@@ -73,7 +47,7 @@ public class TamedVillagerRegistry {
 		 * @param p3
 		 * @param facing
 		 * @param p5
-		 */
+		 *
 		Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece,
 				List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5);
 	}
@@ -86,7 +60,7 @@ public class TamedVillagerRegistry {
 	 * Register a new village creation handler
 	 *
 	 * @param handler
-	 */
+	 *
 	public void registerVillageCreationHandler(IVillageCreationHandler handler) {
 		villageCreationHandlers.put(handler.getComponentClass(), handler);
 	}
@@ -285,7 +259,7 @@ public class TamedVillagerRegistry {
 	 *            The new entity
 	 * @param rand
 	 *            The world's RNG
-	 */
+	 *
 	public static void setRandomProfession(TameableVillager entity, Random rand) {
 		List<TamedVillagerProfession> entries = INSTANCE.professions.getValues();
 		entity.setProfession(entries.get(rand.nextInt(entries.size())));
@@ -378,5 +352,5 @@ public class TamedVillagerRegistry {
 		// Moved to inner class to stop static initializer issues.
 		// It is nasty I know but it's vanilla.
 		private static final ITradeList[][][][] trades = TameableVillager.GET_TRADES_DONT_USE();
-	}
+	} */
 }

@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.github.epiicthundercat.tameablemobs.mobs.villager.TamedVillagerRegistry;
-import com.github.epiicthundercat.tameablemobs.mobs.villager.TamedVillagerRegistry.TamedVillagerProfession;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -53,7 +51,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -820,25 +817,4 @@ public class TameableZombie extends EntityZombie implements IEntityOwnable {
 		}
 	}
 
-	/**
-	 * Return whether this zombie is a villager.
-	 */
-	@Override
-	public boolean isVillager() {
-		return getTheVillagerTypeForge() != null;
-	}
-
-	private TamedVillagerProfession prof;
-
-	@Nullable
-	public TamedVillagerProfession getTheVillagerTypeForge() {
-		return this.prof;
-	}
-
-	public void setTheVillagerType(@Nullable TamedVillagerProfession type) {
-
-		this.prof = type;
-		this.getDataManager().set(VILLAGER_TYPE_STR, type == null ? "" : type.getRegistryName().toString());
-		TamedVillagerRegistry.onSetProfession(this, type);
-	}
 }
