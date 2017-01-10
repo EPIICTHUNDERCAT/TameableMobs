@@ -379,6 +379,8 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		} else {
+			super.handleStatusUpdate(id);
 		}
 	}
 
@@ -421,7 +423,7 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(thePlayer);
+			return thePlayer == null ? false : hasPlayerGotFishInHand(thePlayer);
 		}
 
 		/**
@@ -432,7 +434,7 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotFishInHand(thePlayer));
 		}
 
 		/**
@@ -466,14 +468,14 @@ public class TameableGuardian extends EntityAnimal implements IEntityOwnable {
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the Fish in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotFishInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.FISH) {
 						return true;
 					}
 

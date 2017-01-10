@@ -208,7 +208,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.CARROT) {
+				if (stack.getItem() == TMItems.nutritious_carrot) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -317,7 +317,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		if (otherAnimal == this) {
 			return false;
 		} else if (!this.isTamed()) {
-			return false;
+			return true;
 		} else if (!(otherAnimal instanceof TameablePig)) {
 			return false;
 		} else {
@@ -424,7 +424,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(this.thePlayer);
+			return thePlayer == null ? false : hasPlayerGotCarrotInHand(this.thePlayer);
 		}
 
 		/**
@@ -435,7 +435,7 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotCarrotInHand(thePlayer));
 		}
 
 		/**
@@ -469,14 +469,14 @@ public class TameablePig extends EntityAnimal implements IEntityOwnable {
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the Carrot in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotCarrotInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.CARROT) {
 						return true;
 					}
 

@@ -114,7 +114,7 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 		tasks.addTask(0, new EntityAISwimming(this));
 		
 		tasks.addTask(2, new EntityAIMate(this, 1.0D));
-		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.WHEAT, false));
+		tasks.addTask(3, new EntityAITempt(this, 1.1D, Items.GUNPOWDER, false));
 
 		aiSit = new TameableCreeper.EntityAISit(this);
 		tasks.addTask(1, aiSit);
@@ -425,6 +425,8 @@ public class TameableCreeper extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		} else {
+			super.handleStatusUpdate(id);
 		}
 	}
 

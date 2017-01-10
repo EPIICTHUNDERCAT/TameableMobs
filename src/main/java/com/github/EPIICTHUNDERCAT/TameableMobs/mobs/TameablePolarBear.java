@@ -348,7 +348,7 @@ public class TameablePolarBear extends EntityPolarBear implements IEntityOwnable
 		if (otherAnimal == this) {
 			return false;
 		} else if (!this.isTamed()) {
-			return false;
+			return true;
 		} else if (!(otherAnimal instanceof TameablePolarBear)) {
 			return false;
 		} else {

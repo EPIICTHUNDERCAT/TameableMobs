@@ -245,7 +245,7 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 	}
 
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.ENDER_PEARL;
+		return stack == null ? false : stack.getItem() == TMItems.nullified_ender_pearl;
 	}
 
 	@Override
@@ -462,7 +462,7 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(this.thePlayer);
+			return thePlayer == null ? false : hasPlayerGotNullifiedEnderPearlInHand(this.thePlayer);
 		}
 
 		/**
@@ -473,7 +473,7 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotNullifiedEnderPearlInHand(thePlayer));
 		}
 
 		/**
@@ -507,14 +507,14 @@ public class TameableShulker extends EntityAnimal implements IEntityOwnable, IMo
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the NullifiedEnderPearl in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotNullifiedEnderPearlInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == TMItems.nullified_ender_pearl) {
 						return true;
 					}
 

@@ -139,7 +139,7 @@ public class TameableMooshroom extends TameableCow implements net.minecraftforge
         }
         if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.WHEAT) {
+				if (stack.getItem() == TMItems.nutritious_wheat) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;

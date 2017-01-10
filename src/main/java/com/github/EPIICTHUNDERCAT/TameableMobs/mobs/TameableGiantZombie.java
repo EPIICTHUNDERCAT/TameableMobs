@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.github.epiicthundercat.tameablemobs.init.TMItems;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -249,7 +250,7 @@ public class TameableGiantZombie extends EntityAnimal implements IEntityOwnable 
 	}
 
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.ROTTEN_FLESH;
+		return stack == null ? false : stack.getItem() == TMItems.brain;
 	}
 
 	public boolean isSitting() {
@@ -333,7 +334,10 @@ public class TameableGiantZombie extends EntityAnimal implements IEntityOwnable 
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		} else {
+			super.handleStatusUpdate(id);
 		}
+
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
@@ -427,7 +431,7 @@ public class TameableGiantZombie extends EntityAnimal implements IEntityOwnable 
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.ROTTEN_FLESH) {
 						return true;
 					}
 
@@ -803,46 +807,41 @@ public class TameableGiantZombie extends EntityAnimal implements IEntityOwnable 
 
 		return entityTameableGiantZombie;
 	}
-	
-	 protected boolean isValidLightLevel()
-	    {
-	        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	        if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-	        {
-	            return false;
-	        }
-	        else
-	        {
-	            int i = this.worldObj.getLightFromNeighbors(blockpos);
+	protected boolean isValidLightLevel() {
+		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-	            if (this.worldObj.isThundering())
-	            {
-	                int j = this.worldObj.getSkylightSubtracted();
-	                this.worldObj.setSkylightSubtracted(10);
-	                i = this.worldObj.getLightFromNeighbors(blockpos);
-	                this.worldObj.setSkylightSubtracted(j);
-	            }
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32)) {
+			return false;
+		} else {
+			int i = this.worldObj.getLightFromNeighbors(blockpos);
 
-	            return i <= this.rand.nextInt(8);
-	        }
-	    }
+			if (this.worldObj.isThundering()) {
+				int j = this.worldObj.getSkylightSubtracted();
+				this.worldObj.setSkylightSubtracted(10);
+				i = this.worldObj.getLightFromNeighbors(blockpos);
+				this.worldObj.setSkylightSubtracted(j);
+			}
 
-	    /**
-	     * Checks if the entity's current position is a valid location to spawn this entity.
-	     */
-	 @Override
-	    public boolean getCanSpawnHere()
-	    {
-	        return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel() && super.getCanSpawnHere();
-	    }
-	
-	
-	 @Override
-	    protected void despawnEntity() {
-	        if (!isTamed()) {
-	            super.despawnEntity();
-	        }
-	    }
-	
+			return i <= this.rand.nextInt(8);
+		}
+	}
+
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return this.worldObj.getDifficulty() != EnumDifficulty.PEACEFUL && !isValidLightLevel()
+				&& super.getCanSpawnHere();
+	}
+
+	@Override
+	protected void despawnEntity() {
+		if (!isTamed()) {
+			super.despawnEntity();
+		}
+	}
+
 }

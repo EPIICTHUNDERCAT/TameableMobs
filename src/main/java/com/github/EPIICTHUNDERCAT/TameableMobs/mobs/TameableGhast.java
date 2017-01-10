@@ -1,13 +1,19 @@
 package com.github.epiicthundercat.tameablemobs.mobs;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.epiicthundercat.tameablemobs.init.TMItems;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -30,12 +36,14 @@ import net.minecraft.entity.ai.EntityAITempt;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -48,6 +56,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.DamageSource;
@@ -94,12 +103,19 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 
 	@Override
 	protected void initEntityAI() {
+		if (isTamed() && !isSitting()){
 		tasks.addTask(5, new TameableGhast.AIRandomFly(this));
 		tasks.addTask(7, new TameableGhast.AILookAround(this));
+		}else if (!isTamed() && !isSitting()){
+			tasks.addTask(5, new TameableGhast.AIRandomFly(this));
+			tasks.addTask(7, new TameableGhast.AILookAround(this));
+		}else if (isTamed() && isSitting()){
+			
+		}
 		tasks.addTask(7, new TameableGhast.AIFireballAttack(this));
-		targetTasks.addTask(1, new EntityAIFindEntityNearestPlayer(this));
+		targetTasks.addTask(1, new TameableGhast.GhastEntityAIFindEntityNearestPlayer(this));
 
-		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.GUNPOWDER, false));
+		tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.GHAST_TEAR, false));
 		tasks.addTask(4, new EntityAIFollowParent(this, 1.25D));
 		aiSit = new TameableGhast.EntityAISit(this);
 		tasks.addTask(1, aiSit);
@@ -416,7 +432,7 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(this.thePlayer);
+			return thePlayer == null ? false : hasPlayerGotGhastTearInHand(this.thePlayer);
 		}
 
 		/**
@@ -427,7 +443,7 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotGhastTearInHand(thePlayer));
 		}
 
 		/**
@@ -461,14 +477,14 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the GhastTear in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotGhastTearInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.GHAST_TEAR) {
 						return true;
 					}
 
@@ -1341,6 +1357,147 @@ public class TameableGhast extends EntityAnimal implements IEntityOwnable, IMob 
 	protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos) {
 	}
 	 
+	
+	static class GhastEntityAIFindEntityNearestPlayer extends EntityAIBase
+	{
+	   // private static final Logger LOGGER = LogManager.getLogger();
+	    /** The entity that use this AI */
+	    private final EntityLiving entityLiving;
+	    private final Predicate<Entity> predicate;
+	    /** Used to compare two entities */
+	    private final EntityAINearestAttackableTarget.Sorter sorter;
+	    /** The current target */
+	    private EntityLivingBase entityTarget;
+
+	    public GhastEntityAIFindEntityNearestPlayer(EntityLiving entityLivingIn)
+	    {
+	        this.entityLiving = entityLivingIn;
+
+	       
+
+	        this.predicate = new Predicate<Entity>()
+	        {
+	            public boolean apply(@Nullable Entity p_apply_1_)
+	            {
+	                if (!(p_apply_1_ instanceof EntityPlayer))
+	                {
+	                    return false;
+	                }
+	                else if (((EntityPlayer)p_apply_1_).capabilities.disableDamage)
+	                {
+	                    return false;
+	                }
+	                else
+	                {
+	                    double d0 = GhastEntityAIFindEntityNearestPlayer.this.maxTargetRange();
+
+	                    if (p_apply_1_.isSneaking())
+	                    {
+	                        d0 *= 0.800000011920929D;
+	                    }
+
+	                    if (p_apply_1_.isInvisible())
+	                    {
+	                        float f = ((EntityPlayer)p_apply_1_).getArmorVisibility();
+
+	                        if (f < 0.1F)
+	                        {
+	                            f = 0.1F;
+	                        }
+
+	                        d0 *= (double)(0.7F * f);
+	                    }
+
+	                    return (double)p_apply_1_.getDistanceToEntity(GhastEntityAIFindEntityNearestPlayer.this.entityLiving) > d0 ? false : EntityAITarget.isSuitableTarget(GhastEntityAIFindEntityNearestPlayer.this.entityLiving, (EntityLivingBase)p_apply_1_, false, true);
+	                }
+	            }
+	        };
+	        this.sorter = new EntityAINearestAttackableTarget.Sorter(entityLivingIn);
+	    }
+
+	    /**
+	     * Returns whether the EntityAIBase should begin execution.
+	     */
+	    public boolean shouldExecute()
+	    {
+	        double d0 = this.maxTargetRange();
+	        List<EntityPlayer> list = this.entityLiving.worldObj.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, this.entityLiving.getEntityBoundingBox().expand(d0, 4.0D, d0), this.predicate);
+	        Collections.sort(list, this.sorter);
+
+	        if (list.isEmpty())
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            this.entityTarget = (EntityLivingBase)list.get(0);
+	            return true;
+	        }
+	    }
+
+	    /**
+	     * Returns whether an in-progress EntityAIBase should continue executing
+	     */
+	    public boolean continueExecuting()
+	    {
+	        EntityLivingBase entitylivingbase = this.entityLiving.getAttackTarget();
+
+	        if (entitylivingbase == null)
+	        {
+	            return false;
+	        }
+	        else if (!entitylivingbase.isEntityAlive())
+	        {
+	            return false;
+	        }
+	        else if (entitylivingbase instanceof EntityPlayer && ((EntityPlayer)entitylivingbase).capabilities.disableDamage)
+	        {
+	            return false;
+	        }
+	        else
+	        {
+	            Team team = this.entityLiving.getTeam();
+	            Team team1 = entitylivingbase.getTeam();
+
+	            if (team != null && team1 == team)
+	            {
+	                return false;
+	            }
+	            else
+	            {
+	                double d0 = this.maxTargetRange();
+	                return this.entityLiving.getDistanceSqToEntity(entitylivingbase) > d0 * d0 ? false : !(entitylivingbase instanceof EntityPlayerMP) || !((EntityPlayerMP)entitylivingbase).interactionManager.isCreative();
+	            }
+	        }
+	    }
+
+	    /**
+	     * Execute a one shot task or start executing a continuous task
+	     */
+	    public void startExecuting()
+	    {
+	        this.entityLiving.setAttackTarget(this.entityTarget);
+	        super.startExecuting();
+	    }
+
+	    /**
+	     * Resets the task
+	     */
+	    public void resetTask()
+	    {
+	        this.entityLiving.setAttackTarget((EntityLivingBase)null);
+	        super.startExecuting();
+	    }
+
+	    /**
+	     * Return the max target range of the entiity (16 by default)
+	     */
+	    protected double maxTargetRange()
+	    {
+	        IAttributeInstance iattributeinstance = this.entityLiving.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+	        return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+	    }
+	}
 	
 	
 	 @Override

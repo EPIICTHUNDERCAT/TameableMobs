@@ -190,11 +190,12 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 			return this.sheepTimer > 0 ? ((float) Math.PI / 5F) : this.rotationPitch * 0.017453292F;
 		}
 	}
+
 	@Override
-	 public boolean isBreedingItem(@Nullable ItemStack stack)
-	    {
-		return stack == null ? false : stack.getItem() == Items.WHEAT;
-	    }
+	public boolean isBreedingItem(@Nullable ItemStack stack) {
+		return stack == null ? false : stack.getItem() == TMItems.nutritious_wheat;
+	}
+
 	public static void registerFixesSheep(DataFixer fixer) {
 		EntityLiving.registerFixesMob(fixer, "TameableSheep");
 	}
@@ -257,7 +258,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.BREAD) {
+				if (stack.getItem() == Items.WHEAT) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 30.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -314,8 +315,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 
 				for (int j = 0; j < i; ++j) {
 					EntityItem entityitem = this.entityDropItem(
-							new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, getFleeceColor().getMetadata()),
-							1.0F);
+							new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, getFleeceColor().getMetadata()), 1.0F);
 					entityitem.motionY += (double) (rand.nextFloat() * 0.05F);
 					entityitem.motionX += (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F);
 					entityitem.motionZ += (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F);
@@ -379,7 +379,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 		if (otherAnimal == this) {
 			return false;
 		} else if (!this.isTamed()) {
-			return false;
+			return true;
 		} else if (!(otherAnimal instanceof TameableSheep)) {
 			return false;
 		} else {
@@ -449,6 +449,8 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 				super.handleStatusUpdate(id);
 			}
 		}
+		super.handleStatusUpdate(id);
+
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
@@ -542,7 +544,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == TMItems.nutritious_wheat) {
 						return true;
 					}
 
@@ -1063,24 +1065,6 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Internal crafting inventory used to check the result of mixing dyes
 	 * corresponding to the fleece color when breeding sheep.
@@ -1291,8 +1275,7 @@ public class TameableSheep extends EntityAnimal implements IEntityOwnable, IShea
 	}
 
 	@Override
-	public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos,
-			int fortune) {
+	public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune) {
 		this.setSheared(true);
 		int i = 1 + this.rand.nextInt(3);
 

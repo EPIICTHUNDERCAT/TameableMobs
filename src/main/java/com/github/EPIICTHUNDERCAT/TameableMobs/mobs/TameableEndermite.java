@@ -135,7 +135,7 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 
 	@Override
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.ENDER_PEARL;
+		return stack == null ? false : stack.getItem() == TMItems.nullified_ender_pearl;
 	}
 
 	private boolean shouldAttackPlayer(EntityPlayer player) {
@@ -361,15 +361,17 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		}else{
+			super.handleStatusUpdate(id);
 		}
 	}
 
 	public boolean shouldAttackEntity(EntityLivingBase p_142018_1_, EntityLivingBase p_142018_2_) {
 		if (!(p_142018_1_ instanceof TameableEndermite) && !(p_142018_1_ instanceof EntityGhast)) {
 			if (p_142018_1_ instanceof TameableEndermite) {
-				TameableEndermite entityChicken = (TameableEndermite) p_142018_1_;
+				TameableEndermite entityEndermite = (TameableEndermite) p_142018_1_;
 
-				if (entityChicken.isTamed() && entityChicken.getOwner() == p_142018_2_) {
+				if (entityEndermite.isTamed() && entityEndermite.getOwner() == p_142018_2_) {
 					return false;
 				}
 			}
@@ -403,7 +405,7 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(thePlayer);
+			return thePlayer == null ? false : hasPlayerGotNullifiedEnderPearlInHand(thePlayer);
 		}
 
 		/**
@@ -414,7 +416,7 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotNullifiedEnderPearlInHand(thePlayer));
 		}
 
 		/**
@@ -448,14 +450,14 @@ public class TameableEndermite extends EntityAnimal implements IEntityOwnable {
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the NullifiedEnderPearl in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotNullifiedEnderPearlInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == TMItems.nullified_ender_pearl) {
 						return true;
 					}
 

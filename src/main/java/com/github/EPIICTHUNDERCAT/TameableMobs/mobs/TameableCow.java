@@ -202,7 +202,7 @@ public class TameableCow extends EntityAnimal implements IEntityOwnable {
 		}
 		if (isTamed()) {
 			if (stack != null) {
-				if (stack.getItem() == Items.WHEAT) {
+				if (stack.getItem() == TMItems.nutritious_wheat) {
 					if (dataManager.get(DATA_HEALTH_ID).floatValue() < 60.0F) {
 						if (!player.capabilities.isCreativeMode) {
 							--stack.stackSize;
@@ -303,7 +303,7 @@ public class TameableCow extends EntityAnimal implements IEntityOwnable {
 		if (otherAnimal == this) {
 			return false;
 		} else if (!this.isTamed()) {
-			return false;
+			return true;
 		} else if (!(otherAnimal instanceof TameableCow)) {
 			return false;
 		} else {
@@ -462,7 +462,7 @@ public class TameableCow extends EntityAnimal implements IEntityOwnable {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.WHEAT) {
 						return true;
 					}
 

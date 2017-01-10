@@ -82,13 +82,13 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 			DataSerializers.BOOLEAN);
 
 	private static final DataParameter<Float> DATA_HEALTH_ID = EntityDataManager
-			.<Float>createKey(TameablePigZombie.class, DataSerializers.FLOAT);
-	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameablePigZombie.class,
+			.<Float>createKey(TameableEnderman.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> BEGGING = EntityDataManager.<Boolean>createKey(TameableEnderman.class,
 			DataSerializers.BOOLEAN);
-	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameablePigZombie.class,
+	protected static final DataParameter<Byte> TAMED = EntityDataManager.<Byte>createKey(TameableEnderman.class,
 			DataSerializers.BYTE);
 	protected static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager
-			.<Optional<UUID>>createKey(TameablePigZombie.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+			.<Optional<UUID>>createKey(TameableEnderman.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
 	protected EntityAISit aiSit;
 	private int lastCreepySound;
@@ -164,7 +164,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 
 	@Override
 	public boolean isBreedingItem(@Nullable ItemStack stack) {
-		return stack == null ? false : stack.getItem() == Items.ENDER_PEARL;
+		return stack == null ? false : stack.getItem() == TMItems.nullified_ender_pearl;
 	}
 
 	@Override
@@ -403,6 +403,8 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 			playTameEffect(true);
 		} else if (id == 6) {
 			playTameEffect(false);
+		}else {
+			super.handleStatusUpdate(id);
 		}
 	}
 
@@ -445,7 +447,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(thePlayer);
+			return thePlayer == null ? false : hasPlayerGotEnderPearlInHand(thePlayer);
 		}
 
 		/**
@@ -456,7 +458,7 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotEnderPearlInHand(thePlayer));
 		}
 
 		/**
@@ -490,14 +492,14 @@ public class TameableEnderman extends EntityAnimal implements IEntityOwnable {
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the EnderPearl in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotEnderPearlInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.ENDER_PEARL) {
 						return true;
 					}
 

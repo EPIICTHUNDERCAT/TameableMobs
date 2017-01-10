@@ -332,7 +332,7 @@ public class TameableRabbit extends EntityAnimal implements IEntityOwnable {
 		if (otherAnimal == this) {
 			return false;
 		} else if (!this.isTamed()) {
-			return false;
+			return true;
 		} else if (!(otherAnimal instanceof TameableRabbit)) {
 			return false;
 		} else {
@@ -445,7 +445,7 @@ public class TameableRabbit extends EntityAnimal implements IEntityOwnable {
 		public boolean shouldExecute() {
 
 			thePlayer = worldObject.getClosestPlayerToEntity(theBat, (double) minPlayerDistance);
-			return thePlayer == null ? false : hasPlayerGotBlazePowderInHand(this.thePlayer);
+			return thePlayer == null ? false : hasPlayerGotCarrotInHand(this.thePlayer);
 		}
 
 		/**
@@ -456,7 +456,7 @@ public class TameableRabbit extends EntityAnimal implements IEntityOwnable {
 
 			return !thePlayer.isEntityAlive() ? false
 					: (theBat.getDistanceSqToEntity(thePlayer) > (double) (minPlayerDistance * minPlayerDistance)
-							? false : timeoutCounter > 0 && hasPlayerGotBlazePowderInHand(thePlayer));
+							? false : timeoutCounter > 0 && hasPlayerGotCarrotInHand(thePlayer));
 		}
 
 		/**
@@ -490,14 +490,14 @@ public class TameableRabbit extends EntityAnimal implements IEntityOwnable {
 		}
 
 		/**
-		 * Gets if the Player has the BlazePowder in the hand.
+		 * Gets if the Player has the Carrot in the hand.
 		 */
-		private boolean hasPlayerGotBlazePowderInHand(EntityPlayer player) {
+		private boolean hasPlayerGotCarrotInHand(EntityPlayer player) {
 			for (EnumHand enumhand : EnumHand.values()) {
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == Items.GOLDEN_CARROT) {
 						return true;
 					}
 

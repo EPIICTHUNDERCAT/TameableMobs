@@ -47,8 +47,14 @@ public class TMItems {
 				EntityEquipmentSlot.LEGS);
 		public static Item polar_bear_fur_boots = new TMItemArmor("polar_bear_fur_boots",TMItemArmor.polar_bear_fur, 7,
 				EntityEquipmentSlot.FEET);
-		
-		
+		public static Item nutritious_wheat = new TMItem("nutritious_wheat");
+		public static Item nutritious_carrot = new TMItem("nutritious_carrot");
+		public static Item nutritious_seeds = new TMItem("nutritious_seeds");
+		//public static Item nutritious_wheat = new TMItem("nutritious_wheat");
+		public static Item nutrients = new TMItem("nutrients");
+		public static Item nullified_ender_pearl = new TMItem("nullified_ender_pearl");
+		public static Item brain = new TMItem("brain");
+
 		
 		
 		

@@ -449,7 +449,7 @@ public class TameableBat extends EntityAnimal implements IEntityOwnable, IRanged
 				ItemStack itemstack = player.getHeldItem(enumhand);
 
 				if (itemstack != null) {
-					if (theBat.isTamed() && itemstack.getItem() == Items.BLAZE_POWDER) {
+					if (theBat.isTamed() && itemstack.getItem() == TMItems.bug) {
 						return true;
 					}
 
