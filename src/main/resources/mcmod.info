@@ -3,7 +3,7 @@
   "modid": "tameablemobs",
   "name": "Tameable Mobs",
   "description": "Making Everything Tameable!",
-  "version": "${version}",
+  "version": "0.0.2",
   "mcversion": "${mcversion}",
   "url": "https://minecraft.curseforge.com/projects/tameable-mobs",
   "updateUrl": "https://minecraft.curseforge.com/projects/tameable-mobs",

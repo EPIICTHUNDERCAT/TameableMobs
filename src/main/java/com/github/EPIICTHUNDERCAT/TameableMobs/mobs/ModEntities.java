@@ -14,10 +14,12 @@ import com.github.epiicthundercat.tameablemobs.mobs.itementities.EntityWitchProj
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
@@ -28,7 +30,6 @@ import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class ModEntities {
@@ -177,9 +178,9 @@ public class ModEntities {
 		// TameableSpider
 		EntityRegistry.addSpawn(TameableSpider.class, 1, 4, 4, EnumCreatureType.MONSTER, getMobBiomeList());
 		// TameableCaveSpider
-		EntityRegistry.addSpawn(TameableCaveSpider.class, 1, 2, 4, EnumCreatureType.MONSTER, getMobBiomeList());
+		EntityRegistry.addSpawn(TameableCaveSpider.class, 1, 1, 1, EnumCreatureType.MONSTER, getCSpiderBiomeList());
 		// TameableWitch
-		EntityRegistry.addSpawn(TameableWitch.class, 1, 1, 1, EnumCreatureType.MONSTER, getMobBiomeList());
+		EntityRegistry.addSpawn(TameableWitch.class, 1, 0, 1, EnumCreatureType.MONSTER, getWitchBiomeList());
 		// TameableSquid
 		EntityRegistry.addSpawn(TameableSquid.class, 1, 4, 4, EnumCreatureType.WATER_CREATURE, Biomes.OCEAN,
 				Biomes.DEEP_OCEAN, Biomes.RIVER, Biomes.FROZEN_OCEAN, Biomes.FROZEN_RIVER);
@@ -455,7 +456,20 @@ public class ModEntities {
 		}
 		return biomes.toArray(new Biome[biomes.size()]);
 	}
-
+	private static Biome[] getWitchBiomeList() {
+		List<Biome> biomes = new ArrayList<Biome>();
+		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+		while (biomeList.hasNext()) {
+			Biome currentBiome = biomeList.next();
+			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.MONSTER);
+			for (SpawnListEntry spawnEntry : spawnList) {
+				if (spawnEntry.entityClass == EntityWitch.class) {
+					biomes.add(currentBiome);
+				}
+			}
+		}
+		return biomes.toArray(new Biome[biomes.size()]);
+	}
 	private static Biome[] getIronGolemBiomeList() {
 		List<Biome> biomes = new ArrayList<Biome>();
 		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
@@ -500,4 +514,19 @@ public class ModEntities {
 		}
 		return biomes.toArray(new Biome[biomes.size()]);
 	}
+	private static Biome[] getCSpiderBiomeList() {
+		List<Biome> biomes = new ArrayList<Biome>();
+		Iterator<Biome> biomeList = Biome.REGISTRY.iterator();
+		while (biomeList.hasNext()) {
+			Biome currentBiome = biomeList.next();
+			List<SpawnListEntry> spawnList = currentBiome.getSpawnableList(EnumCreatureType.CREATURE);
+			for (SpawnListEntry spawnEntry : spawnList) {
+				if (spawnEntry.entityClass == EntityCaveSpider.class) {
+					biomes.add(currentBiome);
+				}
+			}
+		}
+		return biomes.toArray(new Biome[biomes.size()]);
+	}
+	
 }
